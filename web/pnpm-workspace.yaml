@@ -1,0 +1,13 @@
+packages:
+  - "packages/*"
+  - "apps/*"
+
+catalog:
+  react: ^19.2
+  react-dom: ^19.2
+  tailwindcss: ^4
+  typescript: ~6
+  "@types/react": ^19.2
+  "@types/react-dom": ^19.2
+  "@types/node": ^24
+  typescript-eslint: ^8

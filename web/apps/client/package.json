@@ -25,7 +25,8 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^5.3.4",
+    "common": "workspace:*"
   },
   "devDependencies": {
     "@capacitor/cli": "8.5.0",

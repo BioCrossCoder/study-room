@@ -1,5 +1,5 @@
 {
-  "name": "wxt-react-starter",
+  "name": "extension",
   "description": "manifest.json description",
   "private": true,
   "version": "0.0.0",
@@ -15,9 +15,13 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
+    "@heroui/react": "catalog:",
+    "@heroui/styles": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "common": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "common": "workspace:*"
+    "tailwindcss": "catalog:"
   },
   "devDependencies": {
     "@types/react": "catalog:",

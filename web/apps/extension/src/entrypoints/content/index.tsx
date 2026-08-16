@@ -1,32 +1,34 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "@/assets/style.css";
+import { createWindowMessage, WindowMessageType } from "common";
 
 export default defineContentScript({
   matches: ["<all_urls>"],
-  cssInjectionMode: "ui",
-  async main(ctx) {
-    const ui = await createShadowRootUi(ctx, {
-      name: "study-room-extension-ui",
+  main(ctx) {
+    const cancelers = new Array<() => unknown>();
+    const ui = createIframeUi(ctx, {
+      page: "/content-ui.html",
       position: "overlay",
       anchor: "body",
-      mode: "closed",
-      onMount(container) {
-        const app = document.createElement("div");
-        container.append(app);
-        const root = ReactDOM.createRoot(app);
-        root.render(
-          <React.StrictMode>
-            <ThemeProvider>
-              <App />
-            </ThemeProvider>
-          </React.StrictMode>,
+      onMount(wrapper, iframe) {
+        wrapper.style.position = "fixed";
+        wrapper.style.bottom = "1px";
+        wrapper.style.left = "50%";
+        wrapper.style.transform = "translateX(-50%)";
+        wrapper.style.zIndex = "9999";
+        iframe.style.border = "none";
+        const { listen } = createWindowMessage(
+          window,
+          WindowMessageType.ContentResize,
         );
-        return root;
+        const cancel = listen(({ height, width }) => {
+          iframe.style.height = height + "px";
+          iframe.style.width = width + "px";
+          wrapper.style.bottom = height + "px";
+          wrapper.style.left = `calc(50vw - ${width / 2}px)`;
+        });
+        cancelers.push(cancel);
       },
-      onRemove(root) {
-        root?.unmount();
+      onRemove() {
+        cancelers.forEach((f) => f());
       },
     });
     ui.mount();

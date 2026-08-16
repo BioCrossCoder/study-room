@@ -1,9 +1,7 @@
-import { Card, useTheme } from "@heroui/react";
+import { Card } from "@heroui/react";
+import { useHeroUiTheme } from "common";
 
 export default function App() {
-  const { resolvedTheme, setTheme } = useTheme("system");
-  useEffect(() => {
-    setTheme("system");
-  }, [resolvedTheme]);
+  useHeroUiTheme();
   return <Card>Hello</Card>;
 }

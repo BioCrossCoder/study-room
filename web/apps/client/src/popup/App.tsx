@@ -1,14 +1,11 @@
 import { Card } from "@heroui/react";
-import { useHeroUiTheme, triggerAutoSize } from "common";
+import { triggerAutoSize, useHeroUiTheme } from "common";
+import { useEffect } from "react";
 
 export default function App() {
   useHeroUiTheme();
   useEffect(() => {
     triggerAutoSize(window.parent);
-  }, []);
-  return (
-    <Card>
-      <Card.Content>hello</Card.Content>
-    </Card>
-  );
+  });
+  return <Card>Popup</Card>;
 }

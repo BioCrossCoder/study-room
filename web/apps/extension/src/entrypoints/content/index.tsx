@@ -1,4 +1,4 @@
-import { createWindowMessage, WindowMessageType } from "common";
+import { executeAutoSize } from "common";
 
 export default defineContentScript({
   matches: ["<all_urls>"],
@@ -10,20 +10,15 @@ export default defineContentScript({
       anchor: "body",
       onMount(wrapper, iframe) {
         wrapper.style.position = "fixed";
-        wrapper.style.bottom = "1px";
-        wrapper.style.left = "50%";
-        wrapper.style.transform = "translateX(-50%)";
+        wrapper.style.bottom = "0";
         wrapper.style.zIndex = "9999";
+        wrapper.style.width = "100vw";
+        wrapper.style.display = "flex";
+        iframe.style.position = "";
+        wrapper.style.justifyContent = "center";
         iframe.style.border = "none";
-        const { listen } = createWindowMessage(
-          window,
-          WindowMessageType.ContentResize,
-        );
-        const cancel = listen(({ height, width }) => {
-          iframe.style.height = height + "px";
-          iframe.style.width = width + "px";
+        const cancel = executeAutoSize(iframe, ({ height }) => {
           wrapper.style.bottom = height + "px";
-          wrapper.style.left = `calc(50vw - ${width / 2}px)`;
         });
         cancelers.push(cancel);
       },

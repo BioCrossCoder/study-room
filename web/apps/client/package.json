@@ -13,6 +13,7 @@
     "@heroui/styles": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "common": "workspace:*",
+    "ui": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwindcss": "catalog:"

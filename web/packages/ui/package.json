@@ -1,0 +1,34 @@
+{
+  "name": "ui",
+  "private": true,
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@heroui/react": "catalog:",
+    "@heroui/styles": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwindcss": "catalog:"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@rolldown/plugin-babel": "^0.2.3",
+    "@types/babel__core": "^7.20.5",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "oxlint": "^1.75.0",
+    "typescript": "catalog:",
+    "vite": "^8.2.0"
+  }
+}

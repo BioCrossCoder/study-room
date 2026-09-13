@@ -86,7 +86,7 @@ export const annotation = pgTable(
     end: text().notNull(),
     endOffset: integer().notNull(),
     content: text().notNull(),
-    type: annotationTypeEnum("type"),
+    type: annotationTypeEnum("type").notNull(),
     createAt: timestamptz(),
     updateAt: timestamptz(),
   },

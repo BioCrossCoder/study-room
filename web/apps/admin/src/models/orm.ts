@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   PgColumn,
   pgEnum,
@@ -6,6 +7,7 @@ import {
   PgTimestampConfig,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -13,7 +15,7 @@ import { defineRelations } from "drizzle-orm";
 
 const id = uuid("id").primaryKey();
 const name = varchar({ length: 100 }).notNull().unique();
-const url = text().notNull().unique();
+const url = text().notNull();
 const description = text().notNull();
 
 function timestamptz(config?: PgTimestampConfig) {
@@ -32,23 +34,40 @@ const enum TableName {
   Summary = "summary",
 }
 
-export const library = pgTable(TableName.Library, {
-  id,
-  name,
-  url,
-  description,
-  createAt: timestamptz(),
-  updateAt: timestamptz(),
-});
+export const library = pgTable(
+  TableName.Library,
+  {
+    id,
+    name,
+    url,
+    description,
+    createAt: timestamptz(),
+    updateAt: timestamptz(),
+  },
+  (table) => [
+    uniqueIndex().on(table.name),
+    uniqueIndex().on(table.url),
+    index().on(table.createAt),
+    index().on(table.updateAt),
+  ],
+);
 
-export const bookmark = pgTable(TableName.Bookmark, {
-  id,
-  url,
-  xpath: text().notNull(),
-  offset: integer().notNull(),
-  createAt: timestamptz(),
-  updateAt: timestamptz(),
-});
+export const bookmark = pgTable(
+  TableName.Bookmark,
+  {
+    id,
+    url,
+    xpath: text().notNull(),
+    offset: integer().notNull(),
+    createAt: timestamptz(),
+    updateAt: timestamptz(),
+  },
+  (table) => [
+    uniqueIndex().on(table.url),
+    index().on(table.createAt),
+    index().on(table.updateAt),
+  ],
+);
 
 export const annotationTypeEnum = pgEnum("annotationType", [
   "replace",
@@ -57,38 +76,70 @@ export const annotationTypeEnum = pgEnum("annotationType", [
   "explain",
 ]);
 
-export const annotation = pgTable(TableName.Annotation, {
-  id,
-  url,
-  start: text().notNull(),
-  startOffset: integer().notNull(),
-  end: text().notNull(),
-  endOffset: integer().notNull(),
-  content: text().notNull(),
-  type: annotationTypeEnum("type"),
-  createAt: timestamptz(),
-  updateAt: timestamptz(),
-});
+export const annotation = pgTable(
+  TableName.Annotation,
+  {
+    id,
+    url,
+    start: text().notNull(),
+    startOffset: integer().notNull(),
+    end: text().notNull(),
+    endOffset: integer().notNull(),
+    content: text().notNull(),
+    type: annotationTypeEnum("type"),
+    createAt: timestamptz(),
+    updateAt: timestamptz(),
+  },
+  (table) => [
+    uniqueIndex().on(
+      table.url,
+      table.start,
+      table.startOffset,
+      table.end,
+      table.endOffset,
+    ),
+    index().on(table.createAt),
+    index().on(table.updateAt),
+  ],
+);
 
-export const summary = pgTable(TableName.Summary, {
-  id,
-  url,
-  content: text().notNull(),
-  createAt: timestamptz(),
-  updateAt: timestamptz(),
-});
+export const summary = pgTable(
+  TableName.Summary,
+  {
+    id,
+    url,
+    content: text().notNull(),
+    createAt: timestamptz(),
+    updateAt: timestamptz(),
+  },
+  (table) => [
+    uniqueIndex().on(table.url),
+    index().on(table.createAt),
+    index().on(table.updateAt),
+  ],
+);
 
-export const resource = pgTable(TableName.Resource, {
-  id,
-  name,
-  url,
-  description,
-  libraryId: refId(library.id),
-  bookmarkId: refId(bookmark.id),
-  createAt: timestamptz(),
-  updateAt: timestamptz(),
-  lastVisit: timestamptz(),
-});
+export const resource = pgTable(
+  TableName.Resource,
+  {
+    id,
+    name,
+    url,
+    description,
+    libraryId: refId(library.id),
+    bookmarkId: refId(bookmark.id),
+    createAt: timestamptz(),
+    updateAt: timestamptz(),
+    lastVisit: timestamptz(),
+  },
+  (table) => [
+    uniqueIndex().on(table.name),
+    uniqueIndex().on(table.url),
+    index().on(table.createAt),
+    index().on(table.updateAt),
+    index().on(table.lastVisit),
+  ],
+);
 
 export const relations = defineRelations(
   { library, bookmark, resource },

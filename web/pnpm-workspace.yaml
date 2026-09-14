@@ -17,3 +17,4 @@ catalog:
   tslib: ^2.8.1
   tsup: ^8.5.1
   "@vitejs/plugin-react": ^6.0.1
+  zod: ^4.6.5

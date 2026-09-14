@@ -12,6 +12,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { defineRelations } from "drizzle-orm";
+import { annotationTypes } from "./enums";
 
 const id = uuid("id").primaryKey();
 const name = varchar({ length: 100 }).notNull().unique();
@@ -69,12 +70,7 @@ export const bookmark = pgTable(
   ],
 );
 
-export const annotationTypeEnum = pgEnum("annotationType", [
-  "replace",
-  "append",
-  "remove",
-  "explain",
-]);
+export const annotationTypeEnum = pgEnum("annotationType", annotationTypes);
 
 export const annotation = pgTable(
   TableName.Annotation,

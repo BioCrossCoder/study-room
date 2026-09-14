@@ -20,7 +20,8 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "server-only": "^0.0.1",
-    "ui": "workspace:*"
+    "ui": "workspace:*",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -1,5 +1,6 @@
 import { Card } from "@heroui/react";
-import { useHeroUiTheme, triggerAutoSize } from "common";
+import { triggerAutoSize } from "common";
+import { useHeroUiTheme } from "ui";
 
 export default function App() {
   useHeroUiTheme();

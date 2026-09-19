@@ -1,5 +1,5 @@
 import { Card } from "@heroui/react";
-import { useHeroUiTheme } from "common";
+import { useHeroUiTheme } from "ui";
 
 export default function App() {
   useHeroUiTheme();

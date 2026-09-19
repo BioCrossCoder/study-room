@@ -57,3 +57,7 @@ export function executeAutoSize(
     }
   });
 }
+
+export function wrapError(e: unknown) {
+  return Error.isError(e) ? e : new Error(String(e));
+}

@@ -22,7 +22,7 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
-    "concurrently": "^10.0.5",
+    "concurrently": "catalog:",
     "typescript": "catalog:",
     "vite": "^8.0.11",
     "vite-plugin-monkey": "^8.0.0",

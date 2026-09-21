@@ -138,7 +138,13 @@ export const resource = pgTable(
 );
 
 export const relations = defineRelations(
-  { library, bookmark, resource },
+  {
+    library,
+    bookmark,
+    annotation,
+    summary,
+    resource,
+  },
   (r) => ({
     resource: {
       library: r.one.library({

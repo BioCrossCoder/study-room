@@ -8,7 +8,7 @@ import "server-only";
 import { v7 as uuidV7 } from "uuid";
 import z from "zod";
 
-export const ResourceService = { add, replace, remove };
+export const ResourceService = { add, replace, remove, get };
 
 async function add(
   data: z.infer<typeof Resource.create>,
@@ -47,4 +47,20 @@ async function remove(id: string): Promise<Error | null> {
     wrapError,
   );
   return result.isErr() ? result.error : null;
+}
+
+async function get(
+  where: z.infer<typeof Resource.get>,
+): Promise<Error | typeof resource.$inferSelect | null> {
+  const result = await ResultAsync.fromPromise(
+    db.query.resource.findFirst({
+      where,
+      with: {
+        library: true,
+        bookmark: true,
+      },
+    }),
+    wrapError,
+  );
+  return result.isErr() ? result.error : (result.value ?? null);
 }

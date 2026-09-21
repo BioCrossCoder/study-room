@@ -8,7 +8,7 @@ import "server-only";
 import { v7 as uuidV7 } from "uuid";
 import z from "zod";
 
-export const AnnotationService = { add, replace, remove };
+export const AnnotationService = { add, replace, remove, get };
 
 async function add(
   data: z.infer<typeof Annotation.create>,
@@ -49,4 +49,14 @@ async function remove(id: string): Promise<Error | null> {
     wrapError,
   );
   return result.isErr() ? result.error : null;
+}
+
+async function get(
+  where: z.infer<typeof Annotation.get>,
+): Promise<Error | typeof annotation.$inferSelect | null> {
+  const result = await ResultAsync.fromPromise(
+    db.query.annotation.findFirst({ where }),
+    wrapError,
+  );
+  return result.isErr() ? result.error : (result.value ?? null);
 }

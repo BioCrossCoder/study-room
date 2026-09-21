@@ -5,16 +5,24 @@ const id = z.uuid();
 const name = z.string().min(1).max(100);
 const url = z.url();
 const description = z.string().nonempty();
-const time = z.object({
-  gt: z.date().optional(),
-  lt: z.date().optional(),
-  eq: z.date().optional(),
-  ne: z.date().optional(),
-});
+
+// multiple conditions combine as `or` in array, `and` in object
+const time = z.array(
+  z.object({
+    gt: z.date().optional(),
+    lt: z.date().optional(),
+    eq: z.date().optional(),
+    ne: z.date().optional(),
+  }),
+);
+
+// multiple fields combine with order in array
+const field = z.enum(["createAt", "updateAt", "id"]);
+const direction = z.enum(["asc", "desc"]);
 const sort = z.array(
   z.object({
-    field: z.enum(["createAt", "updateAt", "id"]),
-    direction: z.enum(["asc", "desc"]),
+    field,
+    direction,
   }),
 );
 
@@ -24,11 +32,13 @@ export const Library = {
   delete: z.object({ id }),
   get: z.union([z.object({ id }), z.object({ name }), z.object({ url })]),
   list: z.object({
-    filter: z.object({
-      name: name.optional(),
-      createAt: time.optional(),
-      updateAt: time.optional(),
-    }),
+    filter: z.array(
+      z.object({
+        name: name.optional(),
+        createAt: time.optional(),
+        updateAt: time.optional(),
+      }),
+    ),
     sort,
   }),
 };
@@ -41,10 +51,12 @@ export const Bookmark = {
   delete: z.object({ id }),
   get: z.union([z.object({ id }), z.object({ url })]),
   list: z.object({
-    filter: z.object({
-      createAt: time.optional(),
-      updateAt: time.optional(),
-    }),
+    filter: z.array(
+      z.object({
+        createAt: time.optional(),
+        updateAt: time.optional(),
+      }),
+    ),
     sort,
   }),
 };
@@ -71,12 +83,14 @@ export const Annotation = {
   delete: z.object({ id }),
   get: z.object({ id }),
   list: z.object({
-    filter: z.object({
-      url: url.optional(),
-      type: annotationType.optional(),
-      createAt: time.optional(),
-      updateAt: time.optional(),
-    }),
+    filter: z.array(
+      z.object({
+        url: url.optional(),
+        type: annotationType.optional(),
+        createAt: time.optional(),
+        updateAt: time.optional(),
+      }),
+    ),
     sort,
   }),
 };
@@ -87,10 +101,12 @@ export const Summary = {
   delete: z.object({ id }),
   get: z.union([z.object({ id }), z.object({ url })]),
   list: z.object({
-    filter: z.object({
-      createAt: time.optional(),
-      updateAt: time.optional(),
-    }),
+    filter: z.array(
+      z.object({
+        createAt: time.optional(),
+        updateAt: time.optional(),
+      }),
+    ),
     sort,
   }),
 };
@@ -114,17 +130,19 @@ export const Resource = {
   delete: z.object({ id }),
   get: z.union([z.object({ id }), z.object({ name }), z.object({ url })]),
   list: z.object({
-    filter: z.object({
-      name: name.optional(),
-      libraryId: id.optional(),
-      createAt: time.optional(),
-      updateAt: time.optional(),
-      lastVisit: time.optional(),
-    }),
+    filter: z.array(
+      z.object({
+        name: name.optional(),
+        libraryId: id.optional(),
+        createAt: time.optional(),
+        updateAt: time.optional(),
+        lastVisit: time.optional(),
+      }),
+    ),
     sort: z.array(
       z.object({
-        field: z.enum(["createAt", "updateAt", "id", "lastVisit"]),
-        direction: z.enum(["asc", "desc"]),
+        field: field.or(z.literal('lastVisit')),
+        direction,
       }),
     ),
   }),

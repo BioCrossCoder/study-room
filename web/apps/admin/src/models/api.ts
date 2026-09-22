@@ -7,12 +7,14 @@ const url = z.url();
 const description = z.string().nonempty();
 
 // multiple conditions combine as `or` in array, `and` in object
-const time = z.array(
+export const time = z.array(
   z.object({
     gt: z.date().optional(),
     lt: z.date().optional(),
     eq: z.date().optional(),
     ne: z.date().optional(),
+    lte: z.date().optional(),
+    gte: z.date().optional(),
   }),
 );
 
@@ -25,6 +27,11 @@ const sort = z.array(
     direction,
   }),
 );
+
+export const pagination = z.object({
+  page: z.int().positive(),
+  size: z.int().positive(),
+});
 
 export const Library = {
   create: z.object({ name, url, description }),
@@ -40,11 +47,12 @@ export const Library = {
       }),
     ),
     sort,
+    pagination,
   }),
 };
 
 const xpath = z.string().nonempty();
-const offset = z.number().int().nonnegative();
+const offset = z.int().nonnegative();
 export const Bookmark = {
   create: z.object({ url, xpath, offset }),
   update: z.object({ id, xpath, offset }),
@@ -58,6 +66,7 @@ export const Bookmark = {
       }),
     ),
     sort,
+    pagination,
   }),
 };
 
@@ -92,6 +101,7 @@ export const Annotation = {
       }),
     ),
     sort,
+    pagination,
   }),
 };
 
@@ -108,6 +118,7 @@ export const Summary = {
       }),
     ),
     sort,
+    pagination,
   }),
 };
 
@@ -141,9 +152,10 @@ export const Resource = {
     ),
     sort: z.array(
       z.object({
-        field: field.or(z.literal('lastVisit')),
+        field: field.or(z.literal("lastVisit")),
         direction,
       }),
     ),
+    pagination,
   }),
 };

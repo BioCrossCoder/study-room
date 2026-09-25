@@ -1,7 +1,7 @@
 import { db } from "@/infra/db";
 import { Library } from "@/models/api";
 import { library } from "@/models/orm";
-import { wrapError } from "common";
+import { wrapError, ListResult } from "common";
 import { and, eq, like, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { ResultAsync } from "neverthrow";
@@ -70,15 +70,18 @@ async function get(
 
 async function list(
   params: z.infer<typeof Library.list>,
-): Promise<Error | (typeof library.$inferSelect)[]> {
+): Promise<Error | ListResult<typeof library.$inferSelect>> {
   const { filter, sort, pagination } = params;
+  const RAW = buildWhere(filter);
   const result = await ResultAsync.fromPromise(
-    db.query.library.findMany({
-      where: {
-        RAW: buildWhere(filter),
-      },
-      orderBy: () => buildOrder(sort),
-      ...pager(pagination),
+    db.transaction(async (tx) => {
+      const list = await tx.query.library.findMany({
+        where: { RAW },
+        orderBy: () => buildOrder(sort),
+        ...pager(pagination),
+      });
+      const count = await tx.$count(library, RAW);
+      return { list, count };
     }),
     wrapError,
   );

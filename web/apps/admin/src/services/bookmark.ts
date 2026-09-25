@@ -1,7 +1,7 @@
 import { db } from "@/infra/db";
 import { Bookmark } from "@/models/api";
 import { bookmark } from "@/models/orm";
-import { wrapError } from "common";
+import { wrapError, ListResult } from "common";
 import { and, eq, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { ResultAsync } from "neverthrow";
@@ -70,15 +70,18 @@ async function get(
 
 async function list(
   params: z.infer<typeof Bookmark.list>,
-): Promise<Error | (typeof bookmark.$inferSelect)[]> {
+): Promise<Error | ListResult<typeof bookmark.$inferSelect>> {
   const { filter, sort, pagination } = params;
+  const RAW = buildWhere(filter);
   const result = await ResultAsync.fromPromise(
-    db.query.bookmark.findMany({
-      where: {
-        RAW: buildWhere(filter),
-      },
-      orderBy: () => buildOrder(sort),
-      ...pager(pagination),
+    db.transaction(async (tx) => {
+      const list = await tx.query.bookmark.findMany({
+        where: { RAW },
+        orderBy: () => buildOrder(sort),
+        ...pager(pagination),
+      });
+      const count = await tx.$count(bookmark, RAW);
+      return { list, count };
     }),
     wrapError,
   );

@@ -11,3 +11,8 @@ export type WindowMessage<T extends WindowMessageType> = {
   type: T;
   data: WindowMessageData[T];
 };
+
+export type ListResult<T> = {
+  list: T[];
+  count: number;
+};

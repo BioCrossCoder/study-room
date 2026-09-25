@@ -1,7 +1,7 @@
 import { db } from "@/infra/db";
 import { Annotation } from "@/models/api";
 import { annotation } from "@/models/orm";
-import { wrapError } from "common";
+import { wrapError, ListResult } from "common";
 import { and, eq, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { ResultAsync } from "neverthrow";
@@ -65,15 +65,18 @@ async function get(
 
 async function list(
   params: z.infer<typeof Annotation.list>,
-): Promise<Error | (typeof annotation.$inferSelect)[]> {
+): Promise<Error | ListResult<typeof annotation.$inferSelect>> {
   const { filter, sort, pagination } = params;
+  const RAW = buildWhere(filter);
   const result = await ResultAsync.fromPromise(
-    db.query.annotation.findMany({
-      where: {
-        RAW: buildWhere(filter),
-      },
-      orderBy: () => buildOrder(sort),
-      ...pager(pagination),
+    db.transaction(async (tx) => {
+      const list = await tx.query.annotation.findMany({
+        where: { RAW },
+        orderBy: () => buildOrder(sort),
+        ...pager(pagination),
+      });
+      const count = await tx.$count(annotation, RAW);
+      return { list, count };
     }),
     wrapError,
   );

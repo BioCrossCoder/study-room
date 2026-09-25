@@ -14,10 +14,11 @@ export const LibraryService = { create, update, remove, get, list };
 
 async function create(
   data: z.infer<typeof Library.create>,
-): Promise<Error | null> {
+): Promise<Error | string> {
   const createAt = new Date();
+  const id = uuidV7();
   const values = data.map((item) => ({
-    id: uuidV7(),
+    id,
     ...item,
     createAt,
     updateAt: createAt,
@@ -26,7 +27,7 @@ async function create(
     db.insert(library).values(values),
     wrapError,
   );
-  return result.isErr() ? result.error : null;
+  return result.isErr() ? result.error : id;
 }
 
 async function update(

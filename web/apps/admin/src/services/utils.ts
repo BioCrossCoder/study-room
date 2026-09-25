@@ -31,7 +31,7 @@ export function buildTimeFilter(
       subConditions.push(eq(field, item.eq));
     }
     if (item.ne) {
-      subConditions.push(ne(field, item.eq));
+      subConditions.push(ne(field, item.ne));
     }
     if (item.lte) {
       subConditions.push(lte(field, item.lte));

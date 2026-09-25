@@ -2,7 +2,7 @@ import { db } from "@/infra/db";
 import { Summary } from "@/models/api";
 import { summary } from "@/models/orm";
 import { wrapError, ListResult } from "common";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, inArray, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { ResultAsync } from "neverthrow";
 import "server-only";
@@ -10,18 +10,18 @@ import { v7 as uuidV7 } from "uuid";
 import z from "zod";
 import { buildOrder, buildTimeFilter, pager } from "./utils";
 
-export const SummaryService = { add, replace, remove, get, list };
+export const SummaryService = { create, update, remove, get, list };
 
-async function add(
+async function create(
   data: z.infer<typeof Summary.create>,
 ): Promise<Error | null> {
   const createAt = new Date();
-  const values = {
+  const values = data.map((item) => ({
     id: uuidV7(),
-    ...data,
+    ...item,
     createAt,
     updateAt: createAt,
-  };
+  }));
   const result = await ResultAsync.fromPromise(
     db.insert(summary).values(values),
     wrapError,
@@ -29,7 +29,7 @@ async function add(
   return result.isErr() ? result.error : null;
 }
 
-async function replace(
+async function update(
   data: z.infer<typeof Summary.update>,
 ): Promise<Error | null> {
   const { id, content } = data;
@@ -44,9 +44,11 @@ async function replace(
   return result.isErr() ? result.error : null;
 }
 
-async function remove(id: string): Promise<Error | null> {
+async function remove(
+  ids: z.infer<typeof Summary.delete>,
+): Promise<Error | null> {
   const result = await ResultAsync.fromPromise(
-    db.delete(summary).where(eq(summary.id, id)),
+    db.delete(summary).where(inArray(summary.id, ids)),
     wrapError,
   );
   return result.isErr() ? result.error : null;

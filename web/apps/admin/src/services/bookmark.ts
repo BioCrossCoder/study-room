@@ -2,7 +2,7 @@ import { db } from "@/infra/db";
 import { Bookmark } from "@/models/api";
 import { bookmark } from "@/models/orm";
 import { wrapError, ListResult } from "common";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, inArray, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { ResultAsync } from "neverthrow";
 import "server-only";
@@ -10,18 +10,18 @@ import { v7 as uuidV7 } from "uuid";
 import z from "zod";
 import { buildOrder, buildTimeFilter, pager } from "./utils";
 
-export const BookmarkService = { add, replace, remove, get, list };
+export const BookmarkService = { create, update, remove, get, list };
 
-async function add(
+async function create(
   data: z.infer<typeof Bookmark.create>,
 ): Promise<Error | null> {
   const createAt = new Date();
-  const values = {
+  const values = data.map((item) => ({
     id: uuidV7(),
-    ...data,
+    ...item,
     createAt,
     updateAt: createAt,
-  };
+  }));
   const result = await ResultAsync.fromPromise(
     db.insert(bookmark).values(values),
     wrapError,
@@ -29,7 +29,7 @@ async function add(
   return result.isErr() ? result.error : null;
 }
 
-async function replace(
+async function update(
   data: z.infer<typeof Bookmark.update>,
 ): Promise<Error | null> {
   const { id, xpath, offset } = data;
@@ -45,9 +45,11 @@ async function replace(
   return result.isErr() ? result.error : null;
 }
 
-async function remove(id: string): Promise<Error | null> {
+async function remove(
+  ids: z.infer<typeof Bookmark.delete>,
+): Promise<Error | null> {
   const result = await ResultAsync.fromPromise(
-    db.delete(bookmark).where(eq(bookmark.id, id)),
+    db.delete(bookmark).where(inArray(bookmark.id, ids)),
     wrapError,
   );
   return result.isErr() ? result.error : null;

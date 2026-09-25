@@ -34,9 +34,9 @@ export const pagination = z.object({
 });
 
 export const Library = {
-  create: z.object({ name, url, description }),
+  create: z.array(z.object({ name, url, description })).min(1),
   update: z.object({ id, name, description }),
-  delete: z.object({ id }),
+  delete: z.array(id).min(1),
   get: z.union([z.object({ id }), z.object({ name }), z.object({ url })]),
   list: z.object({
     filter: z.array(
@@ -54,9 +54,9 @@ export const Library = {
 const xpath = z.string().nonempty();
 const offset = z.int().nonnegative();
 export const Bookmark = {
-  create: z.object({ url, xpath, offset }),
+  create: z.array(z.object({ url, xpath, offset })).min(1),
   update: z.object({ id, xpath, offset }),
-  delete: z.object({ id }),
+  delete: z.array(id).min(1),
   get: z.union([z.object({ id }), z.object({ url })]),
   list: z.object({
     filter: z.array(
@@ -75,21 +75,25 @@ const end = z.string().nonempty();
 const content = z.string().nonempty();
 const annotationType = z.enum(annotationTypes);
 export const Annotation = {
-  create: z.object({
-    url,
-    start,
-    startOffset: offset,
-    end,
-    endOffset: offset,
-    content,
-    type: annotationType,
-  }),
+  create: z
+    .array(
+      z.object({
+        url,
+        start,
+        startOffset: offset,
+        end,
+        endOffset: offset,
+        content,
+        type: annotationType,
+      }),
+    )
+    .min(1),
   update: z.object({
     id,
     content,
     type: annotationType,
   }),
-  delete: z.object({ id }),
+  delete: z.array(id).min(1),
   get: z.object({ id }),
   list: z.object({
     filter: z.array(
@@ -106,9 +110,9 @@ export const Annotation = {
 };
 
 export const Summary = {
-  create: z.object({ url, content }),
+  create: z.array(z.object({ url, content })).min(1),
   update: z.object({ id, content }),
-  delete: z.object({ id }),
+  delete: z.array(id).min(1),
   get: z.union([z.object({ id }), z.object({ url })]),
   list: z.object({
     filter: z.array(
@@ -124,13 +128,17 @@ export const Summary = {
 
 const nullableId = z.uuid().nullable();
 export const Resource = {
-  create: z.object({
-    name,
-    url,
-    description,
-    libraryId: nullableId,
-    bookmarkId: nullableId,
-  }),
+  create: z
+    .array(
+      z.object({
+        name,
+        url,
+        description,
+        libraryId: nullableId,
+        bookmarkId: nullableId,
+      }),
+    )
+    .min(1),
   update: z.object({
     id,
     name,
@@ -138,7 +146,7 @@ export const Resource = {
     libraryId: nullableId,
     bookmarkId: nullableId,
   }),
-  delete: z.object({ id }),
+  delete: z.array(id).min(1),
   get: z.union([z.object({ id }), z.object({ name }), z.object({ url })]),
   list: z.object({
     filter: z.array(

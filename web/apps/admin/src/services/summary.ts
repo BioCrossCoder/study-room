@@ -1,7 +1,8 @@
 import { db } from "@/infra/db";
 import { Summary } from "@/models/api";
 import { summary } from "@/models/orm";
-import { wrapError, ListResult } from "common";
+import { wrapError } from "common";
+import { ListResult } from "./utils";
 import { and, eq, inArray, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { ResultAsync } from "neverthrow";

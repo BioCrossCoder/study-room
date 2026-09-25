@@ -1,7 +1,8 @@
 import { db } from "@/infra/db";
 import { Annotation } from "@/models/api";
 import { annotation } from "@/models/orm";
-import { wrapError, ListResult } from "common";
+import { wrapError } from "common";
+import { ListResult } from "./utils";
 import { and, eq, inArray, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { ResultAsync } from "neverthrow";
@@ -10,13 +11,7 @@ import { v7 as uuidV7 } from "uuid";
 import z from "zod";
 import { buildOrder, buildTimeFilter, pager } from "./utils";
 
-export const AnnotationService = {
-  create,
-  update,
-  remove,
-  get,
-  list,
-};
+export const AnnotationService = { create, update, remove, get, list };
 
 async function create(
   data: z.infer<typeof Annotation.create>,

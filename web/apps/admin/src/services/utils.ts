@@ -54,6 +54,11 @@ export function pager(param: z.infer<typeof pagination>) {
   };
 }
 
+export type ListResult<T> = {
+  list: T[];
+  count: number;
+};
+
 export function buildOrder<
   T extends {
     field: string;

@@ -15,20 +15,24 @@ export const SummaryService = { create, update, remove, get, list };
 
 async function create(
   data: z.infer<typeof Summary.create>,
-): Promise<Error | string> {
+): Promise<Error | string[]> {
   const createAt = new Date();
-  const id = uuidV7();
-  const values = data.map((item) => ({
-    id,
-    ...item,
-    createAt,
-    updateAt: createAt,
-  }));
+  const ids = new Array<string>();
+  const values = data.map((item) => {
+    const id = uuidV7();
+    ids.push(id);
+    return {
+      id,
+      ...item,
+      createAt,
+      updateAt: createAt,
+    };
+  });
   const result = await ResultAsync.fromPromise(
     db.insert(summary).values(values),
     wrapError,
   );
-  return result.isErr() ? result.error : id;
+  return result.isErr() ? result.error : ids;
 }
 
 async function update(

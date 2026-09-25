@@ -5,7 +5,7 @@ import { wrapError } from "common";
 import { ListResult } from "./utils";
 import { and, eq, inArray, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
-import { ResultAsync } from "neverthrow";
+import { err, ok, Result, ResultAsync } from "neverthrow";
 import "server-only";
 import { v7 as uuidV7 } from "uuid";
 import z from "zod";
@@ -15,7 +15,7 @@ export const AnnotationService = { create, update, remove, get, list };
 
 async function create(
   data: z.infer<typeof Annotation.create>,
-): Promise<Error | string[]> {
+): Promise<Result<string[], Error>> {
   const createAt = new Date();
   const ids = new Array<string>();
   const values = data.map((item) => {
@@ -32,12 +32,12 @@ async function create(
     db.insert(annotation).values(values),
     wrapError,
   );
-  return result.isErr() ? result.error : ids;
+  return result.isOk() ? ok(ids) : err(result.error);
 }
 
 async function update(
   data: z.infer<typeof Annotation.update>,
-): Promise<Error | null> {
+): Promise<Result<null, Error>> {
   const { id, content, type } = data;
   const values = {
     content,
@@ -48,32 +48,32 @@ async function update(
     db.update(annotation).set(values).where(eq(annotation.id, id)),
     wrapError,
   );
-  return result.isErr() ? result.error : null;
+  return result.isOk() ? ok(null) : err(result.error);
 }
 
 async function remove(
   ids: z.infer<typeof Annotation.delete>,
-): Promise<Error | null> {
+): Promise<Result<null, Error>> {
   const result = await ResultAsync.fromPromise(
     db.delete(annotation).where(inArray(annotation.id, ids)),
     wrapError,
   );
-  return result.isErr() ? result.error : null;
+  return result.isOk() ? ok(null) : err(result.error);
 }
 
 async function get(
   where: z.infer<typeof Annotation.get>,
-): Promise<Error | typeof annotation.$inferSelect | null> {
+): Promise<Result<typeof annotation.$inferSelect | null, Error>> {
   const result = await ResultAsync.fromPromise(
     db.query.annotation.findFirst({ where }),
     wrapError,
   );
-  return result.isErr() ? result.error : (result.value ?? null);
+  return result.isOk() ? ok(result.value ?? null) : err(result.error);
 }
 
 async function list(
   params: z.infer<typeof Annotation.list>,
-): Promise<Error | ListResult<typeof annotation.$inferSelect>> {
+): Promise<Result<ListResult<typeof annotation.$inferSelect>, Error>> {
   const { filter, sort, pagination } = params;
   const RAW = buildWhere(filter);
   const result = await ResultAsync.fromPromise(
@@ -88,7 +88,7 @@ async function list(
     }),
     wrapError,
   );
-  return result.isErr() ? result.error : result.value;
+  return result.isOk() ? ok(result.value) : err(result.error);
 }
 
 function buildWhere(filter: z.infer<typeof Annotation.list>["filter"]) {

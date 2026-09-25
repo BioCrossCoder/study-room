@@ -5,7 +5,7 @@ import { wrapError } from "common";
 import { ListResult } from "./utils";
 import { and, eq, inArray, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
-import { ResultAsync } from "neverthrow";
+import { err, ok, Result, ResultAsync } from "neverthrow";
 import "server-only";
 import { v7 as uuidV7 } from "uuid";
 import z from "zod";
@@ -15,7 +15,7 @@ export const SummaryService = { create, update, remove, get, list };
 
 async function create(
   data: z.infer<typeof Summary.create>,
-): Promise<Error | string[]> {
+): Promise<Result<string[], Error>> {
   const createAt = new Date();
   const ids = new Array<string>();
   const values = data.map((item) => {
@@ -32,12 +32,12 @@ async function create(
     db.insert(summary).values(values),
     wrapError,
   );
-  return result.isErr() ? result.error : ids;
+  return result.isOk() ? ok(ids) : err(result.error);
 }
 
 async function update(
   data: z.infer<typeof Summary.update>,
-): Promise<Error | null> {
+): Promise<Result<null, Error>> {
   const { id, content } = data;
   const values = {
     content,
@@ -47,32 +47,32 @@ async function update(
     db.update(summary).set(values).where(eq(summary.id, id)),
     wrapError,
   );
-  return result.isErr() ? result.error : null;
+  return result.isOk() ? ok(null) : err(result.error);
 }
 
 async function remove(
   ids: z.infer<typeof Summary.delete>,
-): Promise<Error | null> {
+): Promise<Result<null, Error>> {
   const result = await ResultAsync.fromPromise(
     db.delete(summary).where(inArray(summary.id, ids)),
     wrapError,
   );
-  return result.isErr() ? result.error : null;
+  return result.isOk() ? ok(null) : err(result.error);
 }
 
 async function get(
   where: z.infer<typeof Summary.get>,
-): Promise<Error | typeof summary.$inferSelect | null> {
+): Promise<Result<typeof summary.$inferSelect | null, Error>> {
   const result = await ResultAsync.fromPromise(
     db.query.summary.findFirst({ where }),
     wrapError,
   );
-  return result.isErr() ? result.error : (result.value ?? null);
+  return result.isOk() ? ok(result.value ?? null) : err(result.error);
 }
 
 async function list(
   params: z.infer<typeof Summary.list>,
-): Promise<Error | ListResult<typeof summary.$inferSelect>> {
+): Promise<Result<ListResult<typeof summary.$inferSelect>, Error>> {
   const { filter, sort, pagination } = params;
   const RAW = buildWhere(filter);
   const result = await ResultAsync.fromPromise(
@@ -87,7 +87,7 @@ async function list(
     }),
     wrapError,
   );
-  return result.isErr() ? result.error : result.value;
+  return result.isOk() ? ok(result.value) : err(result.error);
 }
 
 function buildWhere(filter: z.infer<typeof Summary.list>["filter"]) {

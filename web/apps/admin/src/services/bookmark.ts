@@ -5,7 +5,7 @@ import { wrapError } from "common";
 import { ListResult } from "./utils";
 import { and, eq, inArray, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
-import { ResultAsync } from "neverthrow";
+import { err, ok, Result, ResultAsync } from "neverthrow";
 import "server-only";
 import { v7 as uuidV7 } from "uuid";
 import z from "zod";
@@ -15,7 +15,7 @@ export const BookmarkService = { create, update, remove, get, list };
 
 async function create(
   data: z.infer<typeof Bookmark.create>,
-): Promise<Error | string[]> {
+): Promise<Result<string[], Error>> {
   const createAt = new Date();
   const ids = new Array<string>();
   const values = data.map((item) => {
@@ -32,12 +32,12 @@ async function create(
     db.insert(bookmark).values(values),
     wrapError,
   );
-  return result.isErr() ? result.error : ids;
+  return result.isOk() ? ok(ids) : err(result.error);
 }
 
 async function update(
   data: z.infer<typeof Bookmark.update>,
-): Promise<Error | null> {
+): Promise<Result<null, Error>> {
   const { id, xpath, offset } = data;
   const values = {
     xpath,
@@ -48,22 +48,22 @@ async function update(
     db.update(bookmark).set(values).where(eq(bookmark.id, id)),
     wrapError,
   );
-  return result.isErr() ? result.error : null;
+  return result.isOk() ? ok(null) : err(result.error);
 }
 
 async function remove(
   ids: z.infer<typeof Bookmark.delete>,
-): Promise<Error | null> {
+): Promise<Result<null, Error>> {
   const result = await ResultAsync.fromPromise(
     db.delete(bookmark).where(inArray(bookmark.id, ids)),
     wrapError,
   );
-  return result.isErr() ? result.error : null;
+  return result.isOk() ? ok(null) : err(result.error);
 }
 
 async function get(
   where: z.infer<typeof Bookmark.get>,
-): Promise<Error | typeof bookmark.$inferSelect | null> {
+): Promise<Result<typeof bookmark.$inferSelect | null, Error>> {
   const result = await ResultAsync.fromPromise(
     db.query.bookmark.findFirst({
       where,
@@ -73,12 +73,12 @@ async function get(
     }),
     wrapError,
   );
-  return result.isErr() ? result.error : (result.value ?? null);
+  return result.isOk() ? ok(result.value ?? null) : err(result.error);
 }
 
 async function list(
   params: z.infer<typeof Bookmark.list>,
-): Promise<Error | ListResult<typeof bookmark.$inferSelect>> {
+): Promise<Result<ListResult<typeof bookmark.$inferSelect>, Error>> {
   const { filter, sort, pagination } = params;
   const RAW = buildWhere(filter);
   const result = await ResultAsync.fromPromise(
@@ -93,7 +93,7 @@ async function list(
     }),
     wrapError,
   );
-  return result.isErr() ? result.error : result.value;
+  return result.isOk() ? ok(result.value) : err(result.error);
 }
 
 function buildWhere(filter: z.infer<typeof Bookmark.list>["filter"]) {

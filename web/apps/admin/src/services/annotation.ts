@@ -1,3 +1,5 @@
+import "server-only";
+
 import { db } from "@/infra/db";
 import { Annotation } from "@/models/api";
 import { annotation } from "@/models/orm";
@@ -6,7 +8,6 @@ import { ListResult } from "./utils";
 import { and, eq, inArray, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { err, ok, Result, ResultAsync } from "neverthrow";
-import "server-only";
 import { v7 as uuidV7 } from "uuid";
 import z from "zod";
 import { buildOrder, buildTimeFilter, pager } from "./utils";

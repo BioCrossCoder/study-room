@@ -2,7 +2,7 @@ import "server-only";
 
 import { db } from "@/infra/db";
 import { Library } from "@/models/api";
-import { library } from "@/models/orm";
+import { library, resource } from "@/models/orm";
 import { wrapError } from "common";
 import { ListResult } from "./utils";
 import { and, eq, inArray, like, or } from "drizzle-orm";
@@ -62,9 +62,15 @@ async function remove(
   return result.isOk() ? ok(null) : err(result.error);
 }
 
-async function get(
-  where: z.infer<typeof Library.get>,
-): Promise<Result<typeof library.$inferSelect | null, Error>> {
+async function get(where: z.infer<typeof Library.get>): Promise<
+  Result<
+    | (typeof library.$inferSelect & {
+        resources: (typeof resource.$inferSelect)[];
+      })
+    | null,
+    Error
+  >
+> {
   const result = await ResultAsync.fromPromise(
     db.query.library.findFirst({
       where,

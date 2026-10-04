@@ -16,6 +16,7 @@
     "common": "workspace:*",
     "dotenv": "catalog:",
     "drizzle-orm": "1.0.0-rc.4",
+    "lucide-react": "catalog:",
     "neverthrow": "catalog:",
     "next": "16.3.0",
     "next-themes": "^0.4.6",

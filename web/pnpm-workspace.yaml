@@ -12,6 +12,7 @@ catalog:
   "@types/react-dom": ^19.2.4
   react: ^19.2.8
   react-dom: ^19.2.8
+  lucide-react: ^1.52.0
   tailwindcss: ^4.3.3
   typescript: ~6.0.3
   typescript-eslint: ^8

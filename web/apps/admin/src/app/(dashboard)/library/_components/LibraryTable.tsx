@@ -2,8 +2,8 @@
 
 import type { library } from "@/models/orm";
 import { removeLibrary } from "@/actions/library";
-import { Button, Table } from "@heroui/react";
-import { Eye } from "lucide-react";
+import { Button, Link, Table } from "@heroui/react";
+import { ExternalLink, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { DeleteButton } from "../../_components/DeleteButton";
 import { formatDateTime } from "common";
@@ -29,7 +29,19 @@ export function LibraryTable({
             {items.map((item) => (
               <Table.Row key={item.id}>
                 <Table.Cell>{item.name}</Table.Cell>
-                <Table.Cell>{item.url}</Table.Cell>
+                <Table.Cell>
+                  <Link
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="flex w-full min-w-0 items-center gap-1"
+                  >
+                    <Link.Icon className="shrink-0">
+                      <ExternalLink className="size-3.5" />
+                    </Link.Icon>
+                    <span className="min-w-0 flex-1 truncate">{item.url}</span>
+                  </Link>
+                </Table.Cell>
                 <Table.Cell>{formatDateTime(item.createAt)}</Table.Cell>
                 <Table.Cell>{formatDateTime(item.updateAt)}</Table.Cell>
                 <Table.Cell>

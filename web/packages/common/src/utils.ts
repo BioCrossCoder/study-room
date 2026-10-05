@@ -61,3 +61,13 @@ export function executeAutoSize(
 export function wrapError(e: unknown) {
   return Error.isError(e) ? e : new Error(String(e));
 }
+
+const dateTimeFormatter = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "UTC",
+});
+
+export function formatDateTime(date: Date | null | undefined) {
+  return date ? `${dateTimeFormatter.format(date)} UTC` : "-";
+}

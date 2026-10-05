@@ -19,7 +19,8 @@ export function LibraryTable({
       <Table.ScrollContainer className="h-full overflow-y-auto">
         <Table.Content aria-label="Libraries">
           <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-1 [&_th]:bg-surface-secondary">
-            <Table.Column isRowHeader>Name</Table.Column>
+            <Table.Column isRowHeader>ID</Table.Column>
+            <Table.Column>Name</Table.Column>
             <Table.Column>URL</Table.Column>
             <Table.Column>Created</Table.Column>
             <Table.Column>Updated</Table.Column>
@@ -28,6 +29,9 @@ export function LibraryTable({
           <Table.Body>
             {items.map((item) => (
               <Table.Row key={item.id}>
+                <Table.Cell className="text-muted font-mono text-xs">
+                  {item.id}
+                </Table.Cell>
                 <Table.Cell>{item.name}</Table.Cell>
                 <Table.Cell>
                   <Link

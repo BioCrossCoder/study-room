@@ -21,7 +21,7 @@ export const time = z.array(
 // multiple fields combine with order in array
 const field = z.enum(["createAt", "updateAt", "id"]);
 const direction = z.enum(["asc", "desc"]);
-const sort = z.array(
+export const sort = z.array(
   z.object({
     field,
     direction,

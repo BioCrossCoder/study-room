@@ -1,10 +1,18 @@
 "use client";
 
 import type { library } from "@/models/orm";
+import type { Sort } from "@/models/types";
 import { removeLibrary } from "@/actions/library";
 import { Button, Link, Table } from "@heroui/react";
-import { ExternalLink, Eye } from "lucide-react";
-import { useRouter } from "next/navigation";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronsUpDown,
+  ExternalLink,
+  Eye,
+} from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import { DeleteButton } from "../../_components/DeleteButton";
 import { formatDateTime } from "common";
 
@@ -14,20 +22,84 @@ export function LibraryTable({
   items: (typeof library.$inferSelect)[];
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+  const sort = JSON.parse(searchParams.get("sort") ?? "[]") as Sort[];
+  const primary =
+    sort[0] ?? ({ field: "createAt", direction: "desc" } satisfies Sort);
+
+  const toggleSort = (field: Sort["field"]) => {
+    const query = new URLSearchParams(searchParams);
+    query.set(
+      "sort",
+      JSON.stringify([
+        {
+          field,
+          direction:
+            primary.field === field && primary.direction === "desc"
+              ? "asc"
+              : "desc",
+        },
+        { field: "id", direction: "desc" },
+      ]),
+    );
+    query.set("page", "1");
+    startTransition(() => {
+      router.push(`${pathname}?${query.toString()}`, { scroll: false });
+    });
+  };
+
   return items.length === 0 ? (
     <div className="text-muted flex min-h-0 flex-1 items-center justify-center py-6 text-sm">
       No libraries yet.
     </div>
   ) : (
-    <Table className="min-h-0 flex-1">
+    <Table className={`min-h-0 flex-1 ${isPending ? "opacity-60" : undefined}`}>
       <Table.ScrollContainer className="h-full overflow-y-auto">
         <Table.Content aria-label="Libraries">
           <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-1 [&_th]:bg-surface-secondary">
             <Table.Column isRowHeader>ID</Table.Column>
             <Table.Column>Name</Table.Column>
             <Table.Column>URL</Table.Column>
-            <Table.Column>Created</Table.Column>
-            <Table.Column>Updated</Table.Column>
+            <Table.Column>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-inherit hover:bg-transparent"
+                onPress={() => toggleSort("createAt")}
+              >
+                Created
+                {primary.field === "createAt" ? (
+                  primary.direction === "asc" ? (
+                    <ArrowUp className="text-accent size-3.5 shrink-0" />
+                  ) : (
+                    <ArrowDown className="text-accent size-3.5 shrink-0" />
+                  )
+                ) : (
+                  <ChevronsUpDown className="text-muted size-3.5 shrink-0 opacity-50" />
+                )}
+              </Button>
+            </Table.Column>
+            <Table.Column>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-inherit hover:bg-transparent"
+                onPress={() => toggleSort("updateAt")}
+              >
+                Updated
+                {primary.field === "updateAt" ? (
+                  primary.direction === "asc" ? (
+                    <ArrowUp className="text-accent size-3.5 shrink-0" />
+                  ) : (
+                    <ArrowDown className="text-accent size-3.5 shrink-0" />
+                  )
+                ) : (
+                  <ChevronsUpDown className="text-muted size-3.5 shrink-0 opacity-50" />
+                )}
+              </Button>
+            </Table.Column>
             <Table.Column>Actions</Table.Column>
           </Table.Header>
           <Table.Body>

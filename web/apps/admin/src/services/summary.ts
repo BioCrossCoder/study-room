@@ -80,7 +80,7 @@ async function list(
     db.transaction(async (tx) => {
       const list = await tx.query.summary.findMany({
         where: { RAW },
-        orderBy: () => buildOrder(sort),
+        orderBy: (fields) => buildOrder(sort, fields),
         ...pager(pagination),
       });
       const count = await tx.$count(summary, RAW);

@@ -1,6 +1,8 @@
 import { pagination, time } from "@/models/api";
 import {
   and,
+  asc,
+  desc,
   eq,
   gt,
   gte,
@@ -8,7 +10,6 @@ import {
   lte,
   ne,
   or,
-  sql,
   SQL,
   SQLWrapper,
 } from "drizzle-orm";
@@ -59,16 +60,27 @@ export type ListResult<T> = {
   count: number;
 };
 
-export function buildOrder<
-  T extends {
+export function buildOrder(
+  param: readonly {
     field: string;
     direction: "asc" | "desc";
   }[],
->(param: T) {
-  const items = new Array<string>();
-  for (const item of param) {
-    const { field, direction } = item;
-    items.push(`${field} ${direction}`);
+  fields: unknown,
+) {
+  const items = new Array<SQL>();
+  const columns = fields as Record<string, SQLWrapper>;
+  for (const { field, direction } of param) {
+    const column = columns[field];
+    if (!column) {
+      continue;
+    }
+    switch (direction) {
+      case "asc":
+        items.push(asc(column));
+        break;
+      case "desc":
+        items.push(desc(column));
+    }
   }
-  return sql`${items.join(",")}`;
+  return items;
 }

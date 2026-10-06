@@ -92,7 +92,7 @@ async function list(
     db.transaction(async (tx) => {
       const list = await tx.query.resource.findMany({
         where: { RAW },
-        orderBy: () => buildOrder(sort),
+        orderBy: (fields) => buildOrder(sort, fields),
         ...pager(pagination),
       });
       const count = await tx.$count(resource, RAW);

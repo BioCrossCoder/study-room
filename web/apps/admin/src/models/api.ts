@@ -9,12 +9,12 @@ const description = z.string().nonempty();
 // multiple conditions combine as `or` in array, `and` in object
 export const time = z.array(
   z.object({
-    gt: z.date().optional(),
-    lt: z.date().optional(),
-    eq: z.date().optional(),
-    ne: z.date().optional(),
-    lte: z.date().optional(),
-    gte: z.date().optional(),
+    gt: z.coerce.date().optional(),
+    lt: z.coerce.date().optional(),
+    eq: z.coerce.date().optional(),
+    ne: z.coerce.date().optional(),
+    lte: z.coerce.date().optional(),
+    gte: z.coerce.date().optional(),
   }),
 );
 

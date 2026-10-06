@@ -12,6 +12,9 @@ catalogs:
     '@heroui/styles':
       specifier: ^3.2.4
       version: 3.2.4
+    '@internationalized/date':
+      specifier: ^3.12.3
+      version: 3.12.3
     '@tailwindcss/postcss':
       specifier: ^4
       version: 4.3.3
@@ -79,6 +82,9 @@ importers:
       '@heroui/styles':
         specifier: 'catalog:'
         version: 3.2.4(tailwind-merge@3.4.0)(tailwindcss@4.3.3)
+      '@internationalized/date':
+        specifier: 'catalog:'
+        version: 3.12.3
       common:
         specifier: workspace:*
         version: link:../../packages/common

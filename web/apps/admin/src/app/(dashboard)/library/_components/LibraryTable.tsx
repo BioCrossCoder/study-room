@@ -1,7 +1,7 @@
 "use client";
 
 import type { library } from "@/models/orm";
-import type { Sort } from "@/models/types";
+import type { LibraryFilter, Sort } from "@/models/types";
 import { removeLibrary } from "@/actions/library";
 import { Button, Link, Table } from "@heroui/react";
 import {
@@ -14,7 +14,9 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { DeleteButton } from "../../_components/DeleteButton";
+import { TableDateFilter } from "../../_components/TableDateFilter";
 import { TableSearch } from "../../_components/TableSearch";
+import { parseFilter } from "@/common/filter";
 import { formatDateTime } from "common";
 
 const FIELDS = [{ id: "name", label: "Name" }] as const;
@@ -53,14 +55,13 @@ export function LibraryTable({
     });
   };
 
-  const applied = (
-    JSON.parse(searchParams.get("filter") ?? "[]") as Record<string, string>[]
-  )[0]?.[FIELDS[0].id];
+  const applied = parseFilter<LibraryFilter>(searchParams.get("filter")).name;
   const [keyword, setKeyword] = useState(applied ?? "");
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex shrink-0 items-center justify-end">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3">
+        <TableDateFilter />
         <TableSearch
           fields={FIELDS}
           keyword={keyword}

@@ -5,6 +5,7 @@ packages:
 catalog:
   "@heroui/react": ^3.2.4
   "@heroui/styles": ^3.2.4
+  "@internationalized/date": ^3.12.3
   "@tailwindcss/vite": ^4.3.3
   "@tailwindcss/postcss": ^4
   "@types/node": ^24

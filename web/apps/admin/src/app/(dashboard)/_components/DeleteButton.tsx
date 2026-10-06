@@ -1,7 +1,7 @@
 "use client";
 
 import type { ActionResult } from "@/actions/utils";
-import { AlertDialog, Button } from "@heroui/react";
+import { AlertDialog, Button, toast } from "@heroui/react";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -9,29 +9,35 @@ import { useState, useTransition } from "react";
 export function DeleteButton({
   id,
   name,
-  resource = "item",
+  resource,
+  redirectTo,
   onDelete,
 }: {
   id: string;
   name: string;
-  resource?: string;
+  resource: string;
+  redirectTo?: string;
   onDelete: (id: string) => Promise<ActionResult<unknown>>;
 }) {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
-    setError(null);
     startTransition(async () => {
       const result = await onDelete(id);
       if (!result.ok) {
-        setError(result.error.message);
+        toast.danger(`Failed to delete ${resource}`, {
+          description: result.error.message,
+        });
         return;
       }
       setVisible(false);
-      router.refresh();
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        router.refresh();
+      }
     });
   };
 
@@ -59,7 +65,6 @@ export function DeleteButton({
                 This will permanently delete <strong>{name}</strong> and its
                 related data. This action cannot be undone.
               </p>
-              {error ? <p className="text-danger">{error}</p> : null}
             </AlertDialog.Body>
             <AlertDialog.Footer>
               <Button slot="close" variant="tertiary">

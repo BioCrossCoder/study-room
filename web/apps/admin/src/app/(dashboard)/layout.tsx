@@ -1,6 +1,6 @@
 "use client";
 
-import { Breadcrumbs, Label, ListBox } from "@heroui/react";
+import { Breadcrumbs, Label, ListBox, Toast } from "@heroui/react";
 import {
   Bookmark,
   FileText,
@@ -39,6 +39,7 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
 
   return (
     <div className="h-dvh flex overflow-hidden">
+      <Toast.Provider placement="bottom" />
       <aside className="border-separator bg-surface w-64 flex shrink-0 flex-col border-r px-2">
         <UserInfo />
         <nav className="flex-1 overflow-y-auto">

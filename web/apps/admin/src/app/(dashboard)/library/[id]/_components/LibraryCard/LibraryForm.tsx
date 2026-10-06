@@ -6,6 +6,7 @@ import { updateLibrary } from "@/actions/library";
 import {
   Button,
   Card,
+  Form,
   Input,
   Label,
   TextArea,
@@ -16,7 +17,7 @@ import {
 import { Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState } from "react";
-import type { SubmitEvent } from "react";
+import type { SyntheticEvent } from "react";
 import { formatDateTime } from "common";
 import { ConfirmDialog } from "../../../../_components/ConfirmDialog";
 
@@ -40,6 +41,7 @@ export function LibraryForm({
 
   const [, formAction, isPending] = useActionState(
     async (_prev: ActionResult<null> | null, form: FormData) => {
+      form.set("id", item.id);
       const result = await updateLibrary(null, form);
       if (result.ok) {
         overlay.close();
@@ -60,7 +62,7 @@ export function LibraryForm({
     onDiscard();
   };
 
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
     if (confirmedRef.current) {
       confirmedRef.current = false;
       return;
@@ -76,13 +78,12 @@ export function LibraryForm({
 
   return (
     <Card>
-      <form
+      <Form
         ref={formRef}
         action={formAction}
         onSubmit={handleSubmit}
         className="flex flex-col gap-3"
       >
-        <input type="hidden" name="id" value={item.id} />
         <Card.Header>
           <div className="flex w-full items-start justify-between gap-3">
             <div className="flex min-w-0 flex-1 flex-col gap-2">
@@ -162,7 +163,7 @@ export function LibraryForm({
             </TextField>
           </div>
         </Card.Content>
-      </form>
+      </Form>
     </Card>
   );
 }

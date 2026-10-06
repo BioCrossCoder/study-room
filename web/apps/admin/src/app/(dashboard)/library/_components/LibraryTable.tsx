@@ -14,7 +14,11 @@ export function LibraryTable({
   items: (typeof library.$inferSelect)[];
 }) {
   const router = useRouter();
-  return (
+  return items.length === 0 ? (
+    <div className="text-muted flex min-h-0 flex-1 items-center justify-center py-6 text-sm">
+      No libraries yet.
+    </div>
+  ) : (
     <Table className="min-h-0 flex-1">
       <Table.ScrollContainer className="h-full overflow-y-auto">
         <Table.Content aria-label="Libraries">

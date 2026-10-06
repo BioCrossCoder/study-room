@@ -32,7 +32,7 @@ export function TableSearch<T extends string>({
 
   return (
     <SearchField
-      className="w-full sm:w-96"
+      className="w-full lg:w-auto lg:flex-none"
       value={keyword}
       onChange={(value) => setKeyword(value ?? "")}
       onSubmit={(value) => {
@@ -41,9 +41,9 @@ export function TableSearch<T extends string>({
       }}
       onClear={() => search("")}
     >
-      <SearchField.Group className="gap-1 pe-1">
+      <SearchField.Group className="w-full min-w-0 gap-1 pe-1 lg:w-auto">
         <Select
-          className="shrink-0"
+          className="w-24 shrink-0 sm:w-28 lg:w-auto"
           selectionMode="single"
           value={field}
           onChange={(key) => setField(key as T)}
@@ -68,7 +68,10 @@ export function TableSearch<T extends string>({
             </ListBox>
           </Select.Popover>
         </Select>
-        <SearchField.Input placeholder="Search" className="px-2" />
+        <SearchField.Input
+          placeholder="Search"
+          className="min-w-0 flex-1 px-2"
+        />
         <SearchField.ClearButton />
         <Button
           type="button"

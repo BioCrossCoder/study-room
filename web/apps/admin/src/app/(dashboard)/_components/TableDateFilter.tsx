@@ -111,10 +111,10 @@ export function TableDateFilter() {
 
   return (
     <I18nProvider locale={LOCALE}>
-      <div className="flex items-center gap-2">
-        <DateField.Group className="w-104 gap-1 pe-1">
+      <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-none">
+        <DateField.Group className="w-full min-w-0 gap-1 pe-1 lg:w-auto">
           <Select
-            className="shrink-0"
+            className="w-24 shrink-0 sm:w-28 lg:w-auto"
             selectionMode="single"
             value={field}
             onChange={(key) => {

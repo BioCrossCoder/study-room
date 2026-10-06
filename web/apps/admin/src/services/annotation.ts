@@ -5,8 +5,8 @@ import { Annotation } from "@/models/api";
 import { annotation } from "@/models/orm";
 import { wrapError } from "common";
 import { ListResult } from "./utils";
-import { and, eq, inArray, or } from "drizzle-orm";
-import type { SQL } from "drizzle-orm";
+import { eq, inArray, operators } from "drizzle-orm";
+import type { Operators, SQL } from "drizzle-orm";
 import { err, ok, Result, ResultAsync } from "neverthrow";
 import { v7 as uuidV7 } from "uuid";
 import z from "zod";
@@ -84,7 +84,7 @@ async function list(
         orderBy: (fields) => buildOrder(sort, fields),
         ...pager(pagination),
       });
-      const count = await tx.$count(annotation, RAW);
+      const count = await tx.$count(annotation, RAW(annotation, operators));
       return { list, count };
     }),
     wrapError,
@@ -93,24 +93,26 @@ async function list(
 }
 
 function buildWhere(filter: z.infer<typeof Annotation.list>["filter"]) {
-  const conditions = new Array<SQL | undefined>();
-  for (const param of filter ?? []) {
-    const subConditions = new Array<SQL | undefined>();
-    if (param.url) {
-      subConditions.push(eq(annotation.url, param.url));
+  return (table: typeof annotation, { and, or, eq }: Operators) => {
+    const conditions = new Array<SQL | undefined>();
+    for (const param of filter ?? []) {
+      const subConditions = new Array<SQL | undefined>();
+      if (param.url) {
+        subConditions.push(eq(table.url, param.url));
+      }
+      if (param.type) {
+        subConditions.push(eq(table.type, param.type));
+      }
+      if (param.createAt) {
+        subConditions.push(buildTimeFilter(param.createAt, table.createAt));
+      }
+      if (param.updateAt) {
+        subConditions.push(buildTimeFilter(param.updateAt, table.updateAt));
+      }
+      if (subConditions.length > 0) {
+        conditions.push(and(...subConditions));
+      }
     }
-    if (param.type) {
-      subConditions.push(eq(annotation.type, param.type));
-    }
-    if (param.createAt) {
-      subConditions.push(buildTimeFilter(param.createAt, annotation.createAt));
-    }
-    if (param.updateAt) {
-      subConditions.push(buildTimeFilter(param.updateAt, annotation.updateAt));
-    }
-    if (subConditions.length > 0) {
-      conditions.push(and(...subConditions));
-    }
-  }
-  return or(...conditions);
+    return or(...conditions)!;
+  };
 }

@@ -5,8 +5,8 @@ import { Resource } from "@/models/api";
 import { bookmark, library, resource } from "@/models/orm";
 import { wrapError } from "common";
 import { ListResult } from "./utils";
-import { and, eq, inArray, like, or } from "drizzle-orm";
-import type { SQL } from "drizzle-orm";
+import { eq, inArray, operators } from "drizzle-orm";
+import type { Operators, SQL } from "drizzle-orm";
 import { err, ok, Result, ResultAsync } from "neverthrow";
 import { v7 as uuidV7 } from "uuid";
 import z from "zod";
@@ -95,7 +95,7 @@ async function list(
         orderBy: (fields) => buildOrder(sort, fields),
         ...pager(pagination),
       });
-      const count = await tx.$count(resource, RAW);
+      const count = await tx.$count(resource, RAW(resource, operators));
       return { list, count };
     }),
     wrapError,
@@ -104,27 +104,29 @@ async function list(
 }
 
 function buildWhere(filter: z.infer<typeof Resource.list>["filter"]) {
-  const conditions = new Array<SQL | undefined>();
-  for (const param of filter ?? []) {
-    const subConditions = new Array<SQL | undefined>();
-    if (param.name) {
-      subConditions.push(like(resource.name, `%${param.name}%`));
+  return (table: typeof resource, { and, or, eq, like }: Operators) => {
+    const conditions = new Array<SQL | undefined>();
+    for (const param of filter ?? []) {
+      const subConditions = new Array<SQL | undefined>();
+      if (param.name) {
+        subConditions.push(like(table.name, `%${param.name}%`));
+      }
+      if (param.libraryId) {
+        subConditions.push(eq(table.libraryId, param.libraryId));
+      }
+      if (param.createAt) {
+        subConditions.push(buildTimeFilter(param.createAt, table.createAt));
+      }
+      if (param.updateAt) {
+        subConditions.push(buildTimeFilter(param.updateAt, table.updateAt));
+      }
+      if (param.lastVisit) {
+        subConditions.push(buildTimeFilter(param.lastVisit, table.lastVisit));
+      }
+      if (subConditions.length > 0) {
+        conditions.push(and(...subConditions));
+      }
     }
-    if (param.libraryId) {
-      subConditions.push(eq(resource.libraryId, param.libraryId));
-    }
-    if (param.createAt) {
-      subConditions.push(buildTimeFilter(param.createAt, resource.createAt));
-    }
-    if (param.updateAt) {
-      subConditions.push(buildTimeFilter(param.updateAt, resource.updateAt));
-    }
-    if (param.lastVisit) {
-      subConditions.push(buildTimeFilter(param.lastVisit, resource.lastVisit));
-    }
-    if (subConditions.length > 0) {
-      conditions.push(and(...subConditions));
-    }
-  }
-  return or(...conditions);
+    return or(...conditions)!;
+  };
 }

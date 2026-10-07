@@ -74,26 +74,31 @@ export function LibraryTable({
         </div>
       ) : (
         <Table
-          className={`min-h-0 flex-1 ${isPending ? "opacity-60" : undefined}`}
+          className={`@container min-h-0 flex-1 ${isPending ? "opacity-60" : undefined}`}
         >
-          <Table.ScrollContainer className="h-full overflow-y-auto">
-            <Table.Content aria-label="Libraries" className="table-fixed">
-              <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-1 [&_th]:bg-surface-secondary">
+          <Table.ScrollContainer className="h-full overflow-x-auto overflow-y-auto">
+            <Table.Content
+              aria-label="Libraries"
+              className="table-fixed min-w-134 sm:min-w-148 md:min-w-152 lg:min-w-172 xl:min-w-209"
+            >
+              <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-surface-secondary">
                 <Table.Column
                   isRowHeader
-                  className="w-20 sm:w-24 lg:w-28 xl:w-36"
+                  className="bg-surface-secondary sticky left-0 z-10! w-20 sm:w-24 lg:w-28 xl:w-36"
                 >
                   ID
                 </Table.Column>
-                <Table.Column className="w-14 sm:w-16 md:w-20 lg:w-28">
+                <Table.Column className="bg-surface-secondary sticky left-20 z-10! w-14 sm:left-24 sm:w-16 md:w-20 lg:left-28 lg:w-28 xl:left-36">
                   Name
                 </Table.Column>
-                <Table.Column className="min-w-[220px]">URL</Table.Column>
-                <Table.Column className="w-32 sm:w-44 lg:w-46">
+                <Table.Column className="min-w-[180px] @max-[52.25rem]:w-16! @max-[52.25rem]:min-w-0!">
+                  URL
+                </Table.Column>
+                <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-inherit text-xs hover:bg-transparent"
+                    className="text-inherit w-full! text-xs hover:bg-transparent"
                     onPress={() => toggleSort("createAt")}
                   >
                     Created
@@ -108,11 +113,11 @@ export function LibraryTable({
                     )}
                   </Button>
                 </Table.Column>
-                <Table.Column className="w-32 sm:w-44 lg:w-46">
+                <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-inherit text-xs hover:bg-transparent"
+                    className="text-inherit w-full! text-xs hover:bg-transparent"
                     onPress={() => toggleSort("updateAt")}
                   >
                     Updated
@@ -127,40 +132,42 @@ export function LibraryTable({
                     )}
                   </Button>
                 </Table.Column>
-                <Table.Column className="w-28">Actions</Table.Column>
+                <Table.Column className="bg-surface-secondary sticky right-0 z-10! w-28 text-center!">
+                  Actions
+                </Table.Column>
               </Table.Header>
               <Table.Body>
                 {items.map((item) => (
                   <Table.Row key={item.id}>
-                    <Table.Cell className="text-muted w-20 break-words font-mono text-xs sm:w-24 lg:w-28">
+                    <Table.Cell className="bg-surface! sticky left-0 z-1 text-muted break-words font-mono text-xs">
                       {item.id}
                     </Table.Cell>
-                    <Table.Cell className="w-14 break-words sm:w-16 md:w-20 lg:w-28">
+                    <Table.Cell className="bg-surface! sticky left-20 z-1 break-words sm:left-24 lg:left-28 xl:left-36">
                       {item.name}
                     </Table.Cell>
-                    <Table.Cell className="min-w-[220px]">
+                    <Table.Cell>
                       <Link
                         href={item.url}
                         target="_blank"
                         rel="noreferrer noopener"
                         className="flex w-full items-center gap-1.5 overflow-hidden"
                       >
-                        <Link.Icon className="shrink-0 size-3.5">
+                        <Link.Icon className="shrink-0 size-3.5 @max-[52.25rem]:size-5!">
                           <ExternalLink />
                         </Link.Icon>
-                        <span className="min-w-0 flex-1 truncate">
+                        <span className="min-w-0 flex-1 truncate @max-[52.25rem]:hidden">
                           {item.url}
                         </span>
                       </Link>
                     </Table.Cell>
-                    <Table.Cell className="w-32 sm:w-44 lg:w-46">
+                    <Table.Cell className="text-center!">
                       {formatDateTime(item.createAt)}
                     </Table.Cell>
-                    <Table.Cell className="w-32 sm:w-44 lg:w-46">
+                    <Table.Cell className="text-center!">
                       {formatDateTime(item.updateAt)}
                     </Table.Cell>
-                    <Table.Cell className="w-28">
-                      <div className="flex items-center gap-1">
+                    <Table.Cell className="bg-surface! sticky right-0 z-1 text-center!">
+                      <div className="flex items-center justify-center gap-1">
                         <Button
                           isIconOnly
                           size="sm"

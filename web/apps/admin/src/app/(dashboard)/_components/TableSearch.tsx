@@ -49,7 +49,7 @@ export function TableSearch<T extends string>({
           onChange={(key) => setField(key as T)}
         >
           <Select.Trigger>
-            <Select.Value />
+            <Select.Value className="text-sm" />
             <Select.Indicator />
           </Select.Trigger>
           <Select.Popover>
@@ -70,7 +70,7 @@ export function TableSearch<T extends string>({
         </Select>
         <SearchField.Input
           placeholder="Search"
-          className="min-w-0 flex-1 px-2"
+          className="min-w-0 flex-1 px-2 text-sm"
         />
         <SearchField.ClearButton />
         <Button

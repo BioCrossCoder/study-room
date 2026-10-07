@@ -124,7 +124,7 @@ export function TableDateFilter() {
             }}
           >
             <Select.Trigger>
-              <Select.Value />
+              <Select.Value className="text-sm" />
               <Select.Indicator />
             </Select.Trigger>
             <Select.Popover>
@@ -178,7 +178,7 @@ export function TableDateFilter() {
                   <DateRangePicker.Trigger
                     ref={triggerRef}
                     aria-label={`${label} time range`}
-                    className="justify-between gap-2 px-3"
+                    className="justify-between gap-2 px-3 text-sm"
                   >
                     <span className="truncate">{rangeLabel}</span>
                     {range ? null : <DateRangePicker.TriggerIndicator />}

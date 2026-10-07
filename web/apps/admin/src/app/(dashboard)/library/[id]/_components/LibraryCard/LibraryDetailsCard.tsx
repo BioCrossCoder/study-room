@@ -2,7 +2,7 @@
 
 import type { library } from "@/models/orm";
 import { removeLibrary } from "@/actions/library";
-import { Button, Card, Link } from "@heroui/react";
+import { Button, Card, Description, Link, Typography } from "@heroui/react";
 import { ExternalLink, Pencil } from "lucide-react";
 import { formatDateTime } from "common";
 import { useTimeZone } from "@/hooks/useTimeZone";
@@ -48,10 +48,10 @@ export function LibraryDetailsCard({
         </div>
       </Card.Header>
       <Card.Content>
-        <dl className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
           <div className="min-w-0">
-            <dt className="text-muted text-sm">URL</dt>
-            <dd className="min-w-0 text-sm">
+            <Description>URL</Description>
+            <Typography.Paragraph size="sm">
               <Link
                 href={item.url}
                 target="_blank"
@@ -63,25 +63,27 @@ export function LibraryDetailsCard({
                 </Link.Icon>
                 <span className="min-w-0 flex-1 truncate">{item.url}</span>
               </Link>
-            </dd>
+            </Typography.Paragraph>
           </div>
           <div>
-            <dt className="text-muted text-sm">Created</dt>
-            <dd className="text-sm">
+            <Description>Created</Description>
+            <Typography.Paragraph size="sm">
               {formatDateTime(item.createAt, timeZone)}
-            </dd>
+            </Typography.Paragraph>
           </div>
           <div>
-            <dt className="text-muted text-sm">Updated</dt>
-            <dd className="text-sm">
+            <Description>Updated</Description>
+            <Typography.Paragraph size="sm">
               {formatDateTime(item.updateAt, timeZone)}
-            </dd>
+            </Typography.Paragraph>
           </div>
           <div className="sm:col-span-2">
-            <dt className="text-muted text-sm">Description</dt>
-            <dd className="text-sm whitespace-pre-wrap">{item.description}</dd>
+            <Description>Description</Description>
+            <Typography.Paragraph size="sm" className="whitespace-pre-wrap">
+              {item.description}
+            </Typography.Paragraph>
           </div>
-        </dl>
+        </div>
       </Card.Content>
     </Card>
   );

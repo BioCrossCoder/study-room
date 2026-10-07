@@ -5,13 +5,14 @@ import type { LibraryFilter } from "@/models/types";
 import {
   DAY_START,
   LOCALE,
-  timeZone,
   formatTimeRange,
   readTimeFilter,
   toTimeRange,
   writeTimeFilter,
 } from "@/common/datetime";
+import { formatTimeZoneLabel } from "common";
 import { patchFilter, parseFilter } from "@/common/filter";
+import { useTimeZone } from "@/hooks/useTimeZone";
 import {
   CalendarDateTime,
   toCalendarDateTime,
@@ -42,6 +43,8 @@ const HOUR_CYCLE = 24;
 
 type Field = (typeof FIELDS)[number]["id"];
 
+type SyncState<T> = { key: string; value: T } | null;
+
 export function TableDateFilter() {
   const router = useRouter();
   const pathname = usePathname();
@@ -49,33 +52,51 @@ export function TableDateFilter() {
   const [, startTransition] = useTransition();
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const filter = parseFilter<LibraryFilter>(searchParams.get("filter"));
+  const timeZone = useTimeZone();
+  const filterParam = searchParams.get("filter");
+  const filter = parseFilter<LibraryFilter>(filterParam);
   const applied =
     FIELDS.find((item) => filter[item.id] != null)?.id ?? FIELDS[0].id;
+  const syncKey = `${timeZone}|${filterParam ?? ""}`;
+
   const [field, setField] = useState<Field>(applied);
-  const [range, setRange] = useState<TimeRange | null>(() =>
-    readTimeFilter(filter[applied]),
-  );
-  const [draft, setDraft] = useState<TimeRange | null>(range);
+  const [draftState, setDraftState] =
+    useState<SyncState<TimeRange | null>>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [pickerSession, setPickerSession] = useState(0);
 
+  const range = useMemo(
+    () =>
+      readTimeFilter(
+        parseFilter<LibraryFilter>(filterParam)[applied],
+        timeZone,
+      ),
+    [filterParam, applied, timeZone],
+  );
+  const draft = draftState?.key === syncKey ? draftState.value : range;
+  const setDraft = (value: TimeRange | null) =>
+    setDraftState({ key: syncKey, value });
+
   const label = FIELDS.find((item) => item.id === field)?.label;
   const rangeLabel = useMemo(
-    () => (range ? formatTimeRange(range) : "All time"),
-    [range],
+    () => (range ? formatTimeRange(range, timeZone) : "All time"),
+    [range, timeZone],
   );
   const maxValue = useMemo(() => {
     const date = today(timeZone);
     return new CalendarDateTime(date.year, date.month, date.day, 23, 59, 59);
-  }, []);
+  }, [timeZone]);
+  const zoneLabel = useMemo(
+    () => formatTimeZoneLabel(new Date(), timeZone),
+    [timeZone],
+  );
 
   const apply = (nextField: Field, nextRange: TimeRange | null) => {
     const query = new URLSearchParams(searchParams);
     patchFilter<LibraryFilter>(query, {
       createAt: undefined,
       updateAt: undefined,
-      [nextField]: writeTimeFilter(nextRange),
+      [nextField]: writeTimeFilter(nextRange, timeZone),
     });
     query.set("page", "1");
     startTransition(() => {
@@ -97,14 +118,12 @@ export function TableDateFilter() {
   };
 
   const submit = (next: TimeRange | null) => {
-    setRange(next);
     setDraft(next);
     setIsOpen(false);
     apply(field, next);
   };
 
   const clear = () => {
-    setRange(null);
     setDraft(null);
     apply(field, null);
   };
@@ -266,13 +285,16 @@ export function TableDateFilter() {
                         </TimeField.Group>
                       </div>
                     </TimeField>
-                    <div className="flex justify-end gap-2">
-                      <Button variant="tertiary" onPress={close}>
-                        Cancel
-                      </Button>
-                      <Button variant="primary" onPress={submitDraft}>
-                        Apply
-                      </Button>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-muted text-xs">{zoneLabel}</span>
+                      <div className="flex gap-2">
+                        <Button variant="tertiary" onPress={close}>
+                          Cancel
+                        </Button>
+                        <Button variant="primary" onPress={submitDraft}>
+                          Apply
+                        </Button>
+                      </div>
                     </div>
                   </DateRangePicker.Popover>
                 </>

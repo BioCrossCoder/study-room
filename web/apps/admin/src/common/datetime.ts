@@ -3,61 +3,53 @@ import type { DateValue } from "@internationalized/date";
 import {
   CalendarDateTime,
   Time,
+  fromDate,
   toCalendarDateTime,
 } from "@internationalized/date";
+import { formatTimeZoneLabel } from "common";
 import { z } from "zod";
 
 export const LOCALE = "en-US";
 export const DAY_START = new Time(0, 0);
 
 export type TimeRange = {
-  start: CalendarDateTime;
-  end: CalendarDateTime;
+  start: DateValue;
+  end: DateValue;
 };
 
-export function toUtcDateTime(value: unknown) {
-  if (typeof value !== "string") {
-    return null;
-  }
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-  return new CalendarDateTime(
-    date.getUTCFullYear(),
-    date.getUTCMonth() + 1,
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-  );
+function toDate(value: DateValue, timeZone: string) {
+  const { year, month, day, hour, minute } = toCalendarDateTime(value);
+  return new CalendarDateTime(year, month, day, hour, minute).toDate(timeZone);
 }
 
-export function toUtcDate(value: CalendarDateTime) {
-  return new Date(
-    Date.UTC(value.year, value.month - 1, value.day, value.hour, value.minute),
-  );
-}
-
-export function readTimeFilter(value: unknown): TimeRange | null {
+export function readTimeFilter(
+  value: unknown,
+  timeZone: string,
+): TimeRange | null {
   const [condition] = (value ?? []) as { gte?: string; lte?: string }[];
-  const start = toUtcDateTime(condition?.gte);
-  if (!start) {
+  const startDate = new Date(condition?.gte ?? NaN);
+  if (Number.isNaN(startDate.getTime())) {
     return null;
   }
-  const end = toUtcDateTime(condition?.lte) ?? start;
+  const rawEnd = new Date(condition?.lte ?? NaN);
+  const start = fromDate(startDate, timeZone);
+  const end = Number.isNaN(rawEnd.getTime())
+    ? start
+    : fromDate(rawEnd, timeZone);
   return { start, end: end.compare(start) < 0 ? start : end };
 }
 
 export function writeTimeFilter(
   range: TimeRange | null,
+  timeZone: string,
 ): z.infer<typeof time> | undefined {
   if (!range) {
     return undefined;
   }
   return [
     {
-      gte: toUtcDate(range.start),
-      lte: toUtcDate(range.end),
+      gte: toDate(range.start, timeZone),
+      lte: toDate(range.end, timeZone),
     },
   ];
 }
@@ -77,19 +69,31 @@ export function toTimeRange(
   };
 }
 
-export const timeZone = "UTC";
-const labelFormatter = new Intl.DateTimeFormat(LOCALE, {
-  day: "2-digit",
-  hour: "2-digit",
-  hourCycle: "h23",
-  minute: "2-digit",
-  month: "2-digit",
-  timeZone,
-  year: "numeric",
-});
+const labelFormatters = new Map<string, Intl.DateTimeFormat>();
 
-export function formatTimeRange(range: TimeRange) {
-  return `${labelFormatter.format(toUtcDate(range.start))} – ${labelFormatter.format(
-    toUtcDate(range.end),
-  )}`;
+function getLabelFormatter(timeZone: string) {
+  const cached = labelFormatters.get(timeZone);
+  if (cached) {
+    return cached;
+  }
+  const formatter = new Intl.DateTimeFormat(LOCALE, {
+    day: "2-digit",
+    hour: "2-digit",
+    hourCycle: "h23",
+    minute: "2-digit",
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+  labelFormatters.set(timeZone, formatter);
+  return formatter;
+}
+
+export function formatTimeRange(range: TimeRange, timeZone: string) {
+  const formatter = getLabelFormatter(timeZone);
+  const startDate = toDate(range.start, timeZone);
+  const endDate = toDate(range.end, timeZone);
+  const start = `${formatter.format(startDate)} ${formatTimeZoneLabel(startDate, timeZone)}`;
+  const end = `${formatter.format(endDate)} ${formatTimeZoneLabel(endDate, timeZone)}`;
+  return `${start} – ${end}`;
 }

@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState } from "react";
 import type { SyntheticEvent } from "react";
 import { formatDateTime } from "common";
+import { useTimeZone } from "@/hooks/useTimeZone";
 import { ConfirmDialog } from "../../../../_components/ConfirmDialog";
 
 export function LibraryForm({
@@ -31,6 +32,7 @@ export function LibraryForm({
   onSaved: () => void;
 }) {
   const router = useRouter();
+  const timeZone = useTimeZone();
   const overlay = useOverlayState();
   const formRef = useRef<HTMLFormElement>(null);
   const confirmedRef = useRef(false);
@@ -143,11 +145,11 @@ export function LibraryForm({
             </TextField>
             <TextField isDisabled>
               <Label className="text-muted text-sm">Created</Label>
-              <Input value={formatDateTime(item.createAt)} />
+              <Input value={formatDateTime(item.createAt, timeZone)} />
             </TextField>
             <TextField isDisabled>
               <Label className="text-muted text-sm">Updated</Label>
-              <Input value={formatDateTime(item.updateAt)} />
+              <Input value={formatDateTime(item.updateAt, timeZone)} />
             </TextField>
             <TextField
               name="description"

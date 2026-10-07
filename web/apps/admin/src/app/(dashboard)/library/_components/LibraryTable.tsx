@@ -20,6 +20,7 @@ import { TableSearch } from "../../_components/TableSearch";
 import { parseFilter } from "@/common/filter";
 import { COMPACT_MEDIA } from "@/common/media";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useTimeZone } from "@/hooks/useTimeZone";
 import { formatDateTime } from "common";
 
 const FIELDS = [{ id: "name", label: "Name" }] as const;
@@ -37,6 +38,7 @@ export function LibraryTable({
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const isCompact = useMediaQuery(COMPACT_MEDIA);
+  const timeZone = useTimeZone();
   const sort = JSON.parse(searchParams.get("sort") ?? "[]") as Sort[];
   const primary =
     sort[0] ?? ({ field: "createAt", direction: "desc" } satisfies Sort);
@@ -197,10 +199,10 @@ export function LibraryTable({
                       </Link>
                     </Table.Cell>
                     <Table.Cell className="text-center!">
-                      {formatDateTime(item.createAt)}
+                      {formatDateTime(item.createAt, timeZone)}
                     </Table.Cell>
                     <Table.Cell className="text-center!">
-                      {formatDateTime(item.updateAt)}
+                      {formatDateTime(item.updateAt, timeZone)}
                     </Table.Cell>
                     <Table.Cell
                       className={`${STICKY_HOVER} bg-surface! sticky right-0 z-1 text-center!`}

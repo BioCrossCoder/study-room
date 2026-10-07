@@ -5,6 +5,7 @@ import { removeLibrary } from "@/actions/library";
 import { Button, Card, Link } from "@heroui/react";
 import { ExternalLink, Pencil } from "lucide-react";
 import { formatDateTime } from "common";
+import { useTimeZone } from "@/hooks/useTimeZone";
 import { DeleteButton } from "@/app/(dashboard)/_components/DeleteButton";
 
 export function LibraryDetailsCard({
@@ -14,6 +15,7 @@ export function LibraryDetailsCard({
   item: typeof library.$inferSelect;
   onEdit: () => void;
 }) {
+  const timeZone = useTimeZone();
   return (
     <Card>
       <Card.Header>
@@ -65,11 +67,15 @@ export function LibraryDetailsCard({
           </div>
           <div>
             <dt className="text-muted text-sm">Created</dt>
-            <dd className="text-sm">{formatDateTime(item.createAt)}</dd>
+            <dd className="text-sm">
+              {formatDateTime(item.createAt, timeZone)}
+            </dd>
           </div>
           <div>
             <dt className="text-muted text-sm">Updated</dt>
-            <dd className="text-sm">{formatDateTime(item.updateAt)}</dd>
+            <dd className="text-sm">
+              {formatDateTime(item.updateAt, timeZone)}
+            </dd>
           </div>
           <div className="sm:col-span-2">
             <dt className="text-muted text-sm">Description</dt>

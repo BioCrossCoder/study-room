@@ -32,7 +32,7 @@ export function TableSearch<T extends string>({
 
   return (
     <SearchField
-      className="w-full lg:w-auto lg:flex-none"
+      className="w-full min-w-0 lg:w-auto lg:flex-none"
       value={keyword}
       onChange={(value) => setKeyword(value ?? "")}
       onSubmit={(value) => {

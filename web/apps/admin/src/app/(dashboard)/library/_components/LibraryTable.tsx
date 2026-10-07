@@ -10,6 +10,7 @@ import {
   ChevronsUpDown,
   ExternalLink,
   Eye,
+  Plus,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -17,9 +18,14 @@ import { DeleteButton } from "../../_components/DeleteButton";
 import { TableDateFilter } from "../../_components/TableDateFilter";
 import { TableSearch } from "../../_components/TableSearch";
 import { parseFilter } from "@/common/filter";
+import { COMPACT_MEDIA } from "@/common/media";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { formatDateTime } from "common";
 
 const FIELDS = [{ id: "name", label: "Name" }] as const;
+
+const STICKY_HOVER =
+  "group-hover:bg-[color-mix(in_srgb,var(--surface)_40%,var(--surface-secondary))]!";
 
 export function LibraryTable({
   items,
@@ -30,6 +36,7 @@ export function LibraryTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const isCompact = useMediaQuery(COMPACT_MEDIA);
   const sort = JSON.parse(searchParams.get("sort") ?? "[]") as Sort[];
   const primary =
     sort[0] ?? ({ field: "createAt", direction: "desc" } satisfies Sort);
@@ -58,19 +65,44 @@ export function LibraryTable({
   const applied = parseFilter<LibraryFilter>(searchParams.get("filter")).name;
   const [keyword, setKeyword] = useState(applied ?? "");
 
+  const create = () => {
+    startTransition(() => {
+      router.push("/library/new");
+    });
+  };
+
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="flex shrink-0 flex-wrap items-center justify-center gap-3 lg:justify-between">
         <TableDateFilter />
-        <TableSearch
-          fields={FIELDS}
-          keyword={keyword}
-          setKeyword={setKeyword}
-        />
+        <div className="flex w-full items-center gap-3 lg:w-auto lg:flex-none">
+          <TableSearch
+            fields={FIELDS}
+            keyword={keyword}
+            setKeyword={setKeyword}
+          />
+          <Button
+            variant="primary"
+            className="shrink-0"
+            isIconOnly={isCompact}
+            aria-label={isCompact ? "Create library" : undefined}
+            onPress={create}
+          >
+            {isCompact ? <Plus className="size-4" /> : "New Library"}
+          </Button>
+        </div>
       </div>
       {items.length === 0 ? (
-        <div className="text-muted flex min-h-0 flex-1 items-center justify-center py-6 text-sm">
-          No libraries yet.
+        <div className="text-muted flex min-h-0 flex-1 flex-col items-center justify-center gap-3 py-6 text-sm">
+          <span>No libraries yet.</span>
+          <Button
+            variant="primary"
+            isIconOnly={isCompact}
+            aria-label={isCompact ? "Create library" : undefined}
+            onPress={create}
+          >
+            {isCompact ? <Plus className="size-4" /> : "New Library"}
+          </Button>
         </div>
       ) : (
         <Table
@@ -138,11 +170,15 @@ export function LibraryTable({
               </Table.Header>
               <Table.Body>
                 {items.map((item) => (
-                  <Table.Row key={item.id}>
-                    <Table.Cell className="bg-surface! sticky left-0 z-1 text-muted break-words font-mono text-xs">
+                  <Table.Row key={item.id} className="group">
+                    <Table.Cell
+                      className={`${STICKY_HOVER} bg-surface! sticky left-0 z-1 text-muted break-words font-mono text-xs`}
+                    >
                       {item.id}
                     </Table.Cell>
-                    <Table.Cell className="bg-surface! sticky left-20 z-1 break-words sm:left-24 lg:left-28 xl:left-36">
+                    <Table.Cell
+                      className={`${STICKY_HOVER} bg-surface! sticky left-20 z-1 break-words sm:left-24 lg:left-28 xl:left-36`}
+                    >
                       {item.name}
                     </Table.Cell>
                     <Table.Cell>
@@ -166,7 +202,9 @@ export function LibraryTable({
                     <Table.Cell className="text-center!">
                       {formatDateTime(item.updateAt)}
                     </Table.Cell>
-                    <Table.Cell className="bg-surface! sticky right-0 z-1 text-center!">
+                    <Table.Cell
+                      className={`${STICKY_HOVER} bg-surface! sticky right-0 z-1 text-center!`}
+                    >
                       <div className="flex items-center justify-center gap-1">
                         <Button
                           isIconOnly

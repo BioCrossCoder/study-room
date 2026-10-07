@@ -98,7 +98,7 @@ export function LibraryForm({
                 }
               >
                 <Label className="text-muted text-sm">Name</Label>
-                <Input className="truncate text-lg" />
+                <Input className="truncate text-lg [--field-background:var(--surface-secondary)]" />
               </TextField>
               <TextField isDisabled>
                 <Label className="text-muted text-sm">ID</Label>
@@ -161,7 +161,10 @@ export function LibraryForm({
               }
             >
               <Label className="text-muted text-sm">Description</Label>
-              <TextArea rows={4} />
+              <TextArea
+                rows={4}
+                className="[--field-background:var(--surface-secondary)]"
+              />
             </TextField>
           </div>
         </Card.Content>

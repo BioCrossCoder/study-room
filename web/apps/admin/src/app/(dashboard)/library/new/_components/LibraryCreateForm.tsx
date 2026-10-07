@@ -68,7 +68,7 @@ export function LibraryCreateForm() {
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <TextField name="name" isRequired>
                 <Label className="text-muted text-sm">Name</Label>
-                <Input className="truncate text-lg" />
+                <Input className="truncate text-lg [--field-background:var(--surface-secondary)]" />
               </TextField>
               <TextField isDisabled>
                 <Label className="text-muted text-sm">ID</Label>
@@ -111,7 +111,7 @@ export function LibraryCreateForm() {
           <div className="grid gap-3 sm:grid-cols-2">
             <TextField name="url" type="url" isRequired>
               <Label className="text-muted text-sm">URL</Label>
-              <Input />
+              <Input className="[--field-background:var(--surface-secondary)]" />
             </TextField>
             <TextField isDisabled>
               <Label className="text-muted text-sm">Created</Label>
@@ -123,7 +123,10 @@ export function LibraryCreateForm() {
             </TextField>
             <TextField name="description" isRequired className="sm:col-span-2">
               <Label className="text-muted text-sm">Description</Label>
-              <TextArea rows={4} />
+              <TextArea
+                rows={4}
+                className="[--field-background:var(--surface-secondary)]"
+              />
             </TextField>
           </div>
         </Card.Content>

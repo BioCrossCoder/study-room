@@ -64,8 +64,9 @@ export function LibraryTable({
     });
   };
 
-  const applied =
-    parseFilterParam<LibraryFilter>(searchParams.get("filter")).name;
+  const applied = parseFilterParam<LibraryFilter>(
+    searchParams.get("filter"),
+  ).name;
   const [keyword, setKeyword] = useState(applied ?? "");
 
   const create = () => {
@@ -100,11 +101,10 @@ export function LibraryTable({
           <span>No libraries yet.</span>
           <Button
             variant="primary"
-            isIconOnly={isCompact}
-            aria-label={isCompact ? "Create library" : undefined}
+            aria-label="Create library"
             onPress={create}
           >
-            {isCompact ? <Plus className="size-4" /> : "New Library"}
+            New Library
           </Button>
         </div>
       ) : (

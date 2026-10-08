@@ -11,8 +11,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useState, useSyncExternalStore } from "react";
-import { COMPACT_MEDIA, getMediaQuery } from "@/common/media";
+import { useState } from "react";
+import { COMPACT_MEDIA } from "@/common/media";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { usePathSegments } from "@/hooks/usePathSegments";
 import { UserInfo } from "@/app/(dashboard)/_components/UserInfo";
 
@@ -35,22 +36,14 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
   const segments = usePathSegments();
   const [expanded, setExpanded] = useState(true);
   const [floating, setFloating] = useState(false);
-  const subscribeCompact = useCallback((onStoreChange: () => void) => {
-    const media = getMediaQuery(COMPACT_MEDIA);
-    const handleChange = () => {
-      if (!media.matches) {
-        setFloating(false);
-      }
-      onStoreChange();
-    };
-    media.addEventListener("change", handleChange);
-    return () => media.removeEventListener("change", handleChange);
-  }, []);
-  const isCompact = useSyncExternalStore(
-    subscribeCompact,
-    () => getMediaQuery(COMPACT_MEDIA).matches,
-    () => true,
-  );
+  const isCompact = useMediaQuery(COMPACT_MEDIA);
+  const [prevIsCompact, setPrevIsCompact] = useState(isCompact);
+  if (prevIsCompact !== isCompact) {
+    setPrevIsCompact(isCompact);
+    if (!isCompact) {
+      setFloating(false);
+    }
+  }
 
   const activeHref = `/${segments[0]}`;
   const crumbs = segments.map((segment, index) => {

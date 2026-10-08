@@ -3,10 +3,10 @@
 import { Breadcrumbs, Button, Label, ListBox, Toast } from "@heroui/react";
 import {
   Bookmark,
-  FileText,
-  Folder,
+  Files,
   Library,
   MessageSquareText,
+  NotebookText,
   PanelLeft,
   type LucideIcon,
 } from "lucide-react";
@@ -24,10 +24,10 @@ type NavItem = {
 
 const ROUTES: readonly NavItem[] = [
   { href: "/library", label: "Library", icon: Library },
-  { href: "/resource", label: "Resource", icon: Folder },
+  { href: "/resource", label: "Resource", icon: Files },
   { href: "/bookmark", label: "Bookmark", icon: Bookmark },
   { href: "/annotation", label: "Annotation", icon: MessageSquareText },
-  { href: "/summary", label: "Summary", icon: FileText },
+  { href: "/summary", label: "Summary", icon: NotebookText },
 ];
 
 export default function DashboardLayout({ children }: LayoutProps<"/">) {

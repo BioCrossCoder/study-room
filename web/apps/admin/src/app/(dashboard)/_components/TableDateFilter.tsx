@@ -43,8 +43,6 @@ const HOUR_CYCLE = 24;
 
 type Field = (typeof FIELDS)[number]["id"];
 
-type SyncState<T> = { key: string; value: T } | null;
-
 export function TableDateFilter() {
   const router = useRouter();
   const pathname = usePathname();
@@ -60,10 +58,7 @@ export function TableDateFilter() {
   const syncKey = `${timeZone}|${filterParam ?? ""}`;
 
   const [field, setField] = useState<Field>(applied);
-  const [draftState, setDraftState] =
-    useState<SyncState<TimeRange | null>>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [pickerSession, setPickerSession] = useState(0);
 
   const range = useMemo(
     () =>
@@ -73,9 +68,6 @@ export function TableDateFilter() {
       ),
     [filterParam, applied, timeZone],
   );
-  const draft = draftState?.key === syncKey ? draftState.value : range;
-  const setDraft = (value: TimeRange | null) =>
-    setDraftState({ key: syncKey, value });
 
   const label = FIELDS.find((item) => item.id === field)?.label;
   const rangeLabel = useMemo(
@@ -104,30 +96,6 @@ export function TableDateFilter() {
     startTransition(() => {
       router.push(`${pathname}?${query.toString()}`, { scroll: false });
     });
-  };
-
-  const handleOpenChange = (next: boolean) => {
-    setIsOpen(next);
-    setDraft(range);
-    if (next) {
-      setPickerSession((session) => session + 1);
-    }
-  };
-
-  const close = () => {
-    setIsOpen(false);
-    setDraft(range);
-  };
-
-  const submit = (next: TimeRange | null) => {
-    setDraft(next);
-    setIsOpen(false);
-    apply(field, next);
-  };
-
-  const clear = () => {
-    setDraft(null);
-    apply(field, null);
   };
 
   return (
@@ -165,7 +133,7 @@ export function TableDateFilter() {
             </Select.Popover>
           </Select>
           <DateRangePicker
-            key={pickerSession}
+            key={syncKey}
             aria-label={`${label} time range`}
             className="min-w-0 flex-1"
             granularity={GRANULARITY}
@@ -175,9 +143,8 @@ export function TableDateFilter() {
             maxValue={maxValue}
             shouldCloseOnSelect={false}
             shouldForceLeadingZeros
-            value={draft}
-            onChange={(value) => setDraft(toTimeRange(value))}
-            onOpenChange={handleOpenChange}
+            defaultValue={range}
+            onOpenChange={setIsOpen}
           >
             {({ state }) => {
               const startTime = state.timeRange?.start ?? DAY_START;
@@ -185,14 +152,15 @@ export function TableDateFilter() {
               const submitDraft = () => {
                 const start = state.dateRange?.start;
                 const end = state.dateRange?.end;
-                submit(
+                const next =
                   start && end
                     ? toTimeRange({
                         start: toCalendarDateTime(start, startTime),
                         end: toCalendarDateTime(end, endTime),
                       })
-                    : null,
-                );
+                    : null;
+                setIsOpen(false);
+                apply(field, next);
               };
               return (
                 <>
@@ -290,7 +258,10 @@ export function TableDateFilter() {
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-muted text-xs">{zoneLabel}</span>
                       <div className="flex gap-2">
-                        <Button variant="tertiary" onPress={close}>
+                        <Button
+                          variant="tertiary"
+                          onPress={() => setIsOpen(false)}
+                        >
                           Cancel
                         </Button>
                         <Button variant="primary" onPress={submitDraft}>
@@ -310,7 +281,7 @@ export function TableDateFilter() {
               variant="ghost"
               className="shrink-0"
               aria-label={`Clear ${label} time range`}
-              onPress={clear}
+              onPress={() => apply(field, null)}
             >
               <X className="size-4" />
             </Button>

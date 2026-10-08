@@ -17,7 +17,7 @@ import { useState, useTransition } from "react";
 import { DeleteButton } from "../../_components/DeleteButton";
 import { TableDateFilter } from "../../_components/TableDateFilter";
 import { TableSearch } from "../../_components/TableSearch";
-import { parseFilter } from "@/common/filter";
+import { parseFilterParam } from "@/common/filter";
 import { COMPACT_MEDIA } from "@/common/media";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useTimeZone } from "@/hooks/useTimeZone";
@@ -64,7 +64,8 @@ export function LibraryTable({
     });
   };
 
-  const applied = parseFilter<LibraryFilter>(searchParams.get("filter")).name;
+  const applied =
+    parseFilterParam<LibraryFilter>(searchParams.get("filter")).name;
   const [keyword, setKeyword] = useState(applied ?? "");
 
   const create = () => {

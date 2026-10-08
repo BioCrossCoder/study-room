@@ -1,11 +1,6 @@
 import { time } from "@/models/api";
 import type { DateValue } from "@internationalized/date";
-import {
-  CalendarDateTime,
-  Time,
-  fromDate,
-  toCalendarDateTime,
-} from "@internationalized/date";
+import { Time, fromDate, toCalendarDateTime } from "@internationalized/date";
 import { formatTimeZoneLabel } from "common";
 import { z } from "zod";
 
@@ -16,11 +11,6 @@ export type TimeRange = {
   start: DateValue;
   end: DateValue;
 };
-
-function toDate(value: DateValue, timeZone: string) {
-  const { year, month, day, hour, minute } = toCalendarDateTime(value);
-  return new CalendarDateTime(year, month, day, hour, minute).toDate(timeZone);
-}
 
 export function readTimeFilter(
   value: unknown,
@@ -48,8 +38,8 @@ export function writeTimeFilter(
   }
   return [
     {
-      gte: toDate(range.start, timeZone),
-      lte: toDate(range.end, timeZone),
+      gte: toCalendarDateTime(range.start).toDate(timeZone),
+      lte: toCalendarDateTime(range.end).toDate(timeZone),
     },
   ];
 }
@@ -91,8 +81,8 @@ function getLabelFormatter(timeZone: string) {
 
 export function formatTimeRange(range: TimeRange, timeZone: string) {
   const formatter = getLabelFormatter(timeZone);
-  const startDate = toDate(range.start, timeZone);
-  const endDate = toDate(range.end, timeZone);
+  const startDate = toCalendarDateTime(range.start).toDate(timeZone);
+  const endDate = toCalendarDateTime(range.end).toDate(timeZone);
   const start = `${formatter.format(startDate)} ${formatTimeZoneLabel(startDate, timeZone)}`;
   const end = `${formatter.format(endDate)} ${formatTimeZoneLabel(endDate, timeZone)}`;
   return `${start} – ${end}`;

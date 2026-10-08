@@ -1,6 +1,6 @@
 "use client";
 
-import { patchFilter } from "@/common/filter";
+import { parseFilterParam } from "@/common/filter";
 import { Button, ListBox, SearchField, Select } from "@heroui/react";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -23,7 +23,11 @@ export function TableSearch<T extends string>({
 
   const search = (value: string) => {
     const query = new URLSearchParams(searchParams);
-    patchFilter(query, { [field]: value || undefined });
+    const filter = {
+      ...parseFilterParam(query.get("filter")),
+      [field]: value || undefined,
+    };
+    query.set("filter", JSON.stringify([filter]));
     query.set("page", "1");
     startTransition(() => {
       router.push(`${pathname}?${query.toString()}`, { scroll: false });

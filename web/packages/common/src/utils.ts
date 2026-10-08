@@ -21,7 +21,7 @@ export function createWindowMessage<T extends WindowMessageType>(
       }
     };
     target.addEventListener("message", callback);
-    return () => window.removeEventListener("message", callback);
+    return () => target.removeEventListener("message", callback);
   };
   return { send, listen } as const;
 }
@@ -52,9 +52,7 @@ export function executeAutoSize(
     const { height, width } = data;
     container.style.height = height + "px";
     container.style.width = width + "px";
-    if (callback) {
-      callback(data);
-    }
+    callback?.(data);
   });
 }
 
@@ -73,37 +71,36 @@ function getFormatter(
   options: Intl.DateTimeFormatOptions,
 ) {
   const key = `${kind}|${timeZone}`;
-  const cached = formatters.get(key);
-  if (cached) {
-    return cached;
+  let formatter = formatters.get(key);
+  if (!formatter) {
+    try {
+      formatter = new Intl.DateTimeFormat("en-US", {
+        ...options,
+        timeZone,
+      });
+    } catch {
+      formatter = new Intl.DateTimeFormat("en-US", {
+        ...options,
+        timeZone: FALLBACK_TIME_ZONE,
+      });
+    }
+    formatters.set(key, formatter);
   }
-  let formatter: Intl.DateTimeFormat;
-  try {
-    formatter = new Intl.DateTimeFormat("en-US", { ...options, timeZone });
-  } catch {
-    formatter = new Intl.DateTimeFormat("en-US", {
-      ...options,
-      timeZone: FALLBACK_TIME_ZONE,
-    });
-  }
-  formatters.set(key, formatter);
   return formatter;
 }
 
 export function resolveTimeZone() {
   try {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (timeZone) {
-      new Intl.DateTimeFormat("en-US", { timeZone });
-      return timeZone;
-    }
-  } catch {}
-  return FALLBACK_TIME_ZONE;
+    return (
+      Intl.DateTimeFormat().resolvedOptions().timeZone || FALLBACK_TIME_ZONE
+    );
+  } catch {
+    return FALLBACK_TIME_ZONE;
+  }
 }
 
 export function formatTimeZoneLabel(date: Date, timeZone?: string) {
-  const zone = timeZone ?? FALLBACK_TIME_ZONE;
-  const parts = getFormatter("offset", zone, {
+  const parts = getFormatter("offset", timeZone ?? FALLBACK_TIME_ZONE, {
     timeZoneName: "shortOffset",
   }).formatToParts(date);
   const label = parts.find((part) => part.type === "timeZoneName")?.value;
@@ -117,10 +114,9 @@ export function formatDateTime(
   if (!date) {
     return "-";
   }
-  const zone = timeZone ?? FALLBACK_TIME_ZONE;
-  const text = getFormatter("dateTime", zone, {
+  const text = getFormatter("dateTime", timeZone ?? FALLBACK_TIME_ZONE, {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(date);
-  return `${text} ${formatTimeZoneLabel(date, zone)}`;
+  return `${text} ${formatTimeZoneLabel(date, timeZone)}`;
 }

@@ -1,25 +1,13 @@
-type ListFilter = Record<string, unknown>;
+import { Result } from "neverthrow";
 
-export function parseFilter<T extends ListFilter>(raw: string | null): T {
-  const [filter] = JSON.parse(raw ?? "[]") as T[];
-  return filter ?? ({} as T);
-}
+const parseJSON = Result.fromThrowable(
+  (raw: string | null) => JSON.parse(raw ?? "[]") as unknown,
+);
 
-export function patchFilter<T extends ListFilter>(
-  query: URLSearchParams,
-  patch: Partial<T>,
-) {
-  const filter: T = { ...parseFilter<T>(query.get("filter")) };
-  for (const key of Object.keys(patch) as (keyof T)[]) {
-    const value = patch[key];
-    if (value !== undefined) {
-      filter[key] = value as T[keyof T];
-    } else {
-      delete filter[key];
-    }
-  }
-  query.set(
-    "filter",
-    JSON.stringify(Object.keys(filter).length ? [filter] : []),
-  );
+export function parseFilterParam<T extends Record<string, unknown>>(
+  raw: string | null,
+): T {
+  const parsed = parseJSON(raw).unwrapOr([]);
+  const [filter] = Array.isArray(parsed) ? parsed : [];
+  return (filter ?? {}) as T;
 }

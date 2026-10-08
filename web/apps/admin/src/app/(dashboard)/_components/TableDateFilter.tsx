@@ -11,7 +11,7 @@ import {
   writeTimeFilter,
 } from "@/common/datetime";
 import { formatTimeZoneLabel } from "common";
-import { patchFilter, parseFilter } from "@/common/filter";
+import { parseFilterParam } from "@/common/filter";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import {
   CalendarDateTime,
@@ -54,7 +54,7 @@ export function TableDateFilter() {
 
   const timeZone = useTimeZone();
   const filterParam = searchParams.get("filter");
-  const filter = parseFilter<LibraryFilter>(filterParam);
+  const filter = parseFilterParam<LibraryFilter>(filterParam);
   const applied =
     FIELDS.find((item) => filter[item.id] != null)?.id ?? FIELDS[0].id;
   const syncKey = `${timeZone}|${filterParam ?? ""}`;
@@ -68,7 +68,7 @@ export function TableDateFilter() {
   const range = useMemo(
     () =>
       readTimeFilter(
-        parseFilter<LibraryFilter>(filterParam)[applied],
+        parseFilterParam<LibraryFilter>(filterParam)[applied],
         timeZone,
       ),
     [filterParam, applied, timeZone],
@@ -93,11 +93,13 @@ export function TableDateFilter() {
 
   const apply = (nextField: Field, nextRange: TimeRange | null) => {
     const query = new URLSearchParams(searchParams);
-    patchFilter<LibraryFilter>(query, {
+    const filter = {
+      ...parseFilterParam<LibraryFilter>(query.get("filter")),
       createAt: undefined,
       updateAt: undefined,
       [nextField]: writeTimeFilter(nextRange, timeZone),
-    });
+    };
+    query.set("filter", JSON.stringify([filter]));
     query.set("page", "1");
     startTransition(() => {
       router.push(`${pathname}?${query.toString()}`, { scroll: false });

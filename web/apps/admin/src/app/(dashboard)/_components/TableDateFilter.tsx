@@ -167,7 +167,7 @@ export function TableDateFilter() {
                   <DateRangePicker.Trigger
                     ref={triggerRef}
                     aria-label={`${label} time range`}
-                    className="justify-between gap-2 px-3 text-sm"
+                    className="justify-between gap-2 px-3"
                   >
                     <span className="truncate">{rangeLabel}</span>
                     {range ? null : <DateRangePicker.TriggerIndicator />}
@@ -283,7 +283,7 @@ export function TableDateFilter() {
               aria-label={`Clear ${label} time range`}
               onPress={() => apply(field, null)}
             >
-              <X className="size-4" />
+              <X />
             </Button>
           ) : null}
         </DateField.Group>

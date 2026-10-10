@@ -64,14 +64,14 @@ export function LibraryCreateForm() {
         className="flex flex-col gap-3"
       >
         <Card.Header>
-          <div className="flex w-full items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <TextField name="name" isRequired>
-                <Label className="text-muted text-sm">Name</Label>
+                <Label className="text-muted">Name</Label>
                 <Input className="truncate text-lg [--field-background:var(--surface-secondary)]" />
               </TextField>
               <TextField isDisabled>
-                <Label className="text-muted text-sm">ID</Label>
+                <Label className="text-muted">ID</Label>
                 <Input className="font-mono text-xs" value="-" />
               </TextField>
             </div>
@@ -91,7 +91,7 @@ export function LibraryCreateForm() {
                   aria-label="Create library"
                   aria-haspopup="dialog"
                 >
-                  <Save className="size-4" />
+                  <Save />
                 </Button>
               </ConfirmDialog>
               <Button
@@ -102,7 +102,7 @@ export function LibraryCreateForm() {
                 aria-label="Discard changes"
                 onPress={() => router.push("/library")}
               >
-                <X className="size-4" />
+                <X />
               </Button>
             </div>
           </div>
@@ -110,19 +110,19 @@ export function LibraryCreateForm() {
         <Card.Content>
           <div className="grid gap-3 sm:grid-cols-2">
             <TextField name="url" type="url" isRequired>
-              <Label className="text-muted text-sm">URL</Label>
+              <Label className="text-muted">URL</Label>
               <Input className="[--field-background:var(--surface-secondary)]" />
             </TextField>
             <TextField isDisabled>
-              <Label className="text-muted text-sm">Created</Label>
+              <Label className="text-muted">Created</Label>
               <Input value="-" />
             </TextField>
             <TextField isDisabled>
-              <Label className="text-muted text-sm">Updated</Label>
+              <Label className="text-muted">Updated</Label>
               <Input value="-" />
             </TextField>
             <TextField name="description" isRequired className="sm:col-span-2">
-              <Label className="text-muted text-sm">Description</Label>
+              <Label className="text-muted">Description</Label>
               <TextArea
                 rows={4}
                 className="[--field-background:var(--surface-secondary)]"

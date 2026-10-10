@@ -10,7 +10,7 @@ export function PaginationNav({ count }: { count: number }) {
 
   return (
     <div className="flex shrink-0 flex-wrap items-center justify-center gap-3 lg:justify-between">
-      <Pagination size="sm" className="w-auto justify-center">
+      <Pagination size="sm" className="w-auto">
         <Pagination.Summary className="self-center">
           {`${count} Results · Page ${page} / ${total}`}
         </Pagination.Summary>
@@ -51,7 +51,7 @@ export function PaginationNav({ count }: { count: number }) {
         </Pagination.Content>
       </Pagination>
 
-      <div className="border-separator flex w-auto flex-wrap items-center justify-center gap-1 rounded-lg border p-0.5">
+      <div className="border-separator flex flex-wrap items-center justify-center gap-1 rounded-lg border p-0.5">
         {sizeOptions.map((option) => (
           <Button
             key={option}

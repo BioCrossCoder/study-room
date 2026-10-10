@@ -123,7 +123,7 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
             aria-controls="dashboard-sidebar"
             onPress={toggle}
           >
-            <PanelLeft className="size-4" />
+            <PanelLeft />
           </Button>
           <Breadcrumbs>
             {crumbs.map((crumb, index) => (

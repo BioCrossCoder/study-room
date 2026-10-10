@@ -87,7 +87,7 @@ export function LibraryForm({
         className="flex flex-col gap-3"
       >
         <Card.Header>
-          <div className="flex w-full items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <TextField
                 name="name"
@@ -97,11 +97,11 @@ export function LibraryForm({
                   setValues((prev) => ({ ...prev, name: value }))
                 }
               >
-                <Label className="text-muted text-sm">Name</Label>
+                <Label className="text-muted">Name</Label>
                 <Input className="truncate text-lg [--field-background:var(--surface-secondary)]" />
               </TextField>
               <TextField isDisabled>
-                <Label className="text-muted text-sm">ID</Label>
+                <Label className="text-muted">ID</Label>
                 <Input className="font-mono text-xs" value={item.id} />
               </TextField>
             </div>
@@ -121,7 +121,7 @@ export function LibraryForm({
                   aria-label="Save changes"
                   aria-haspopup="dialog"
                 >
-                  <Save className="size-4" />
+                  <Save />
                 </Button>
               </ConfirmDialog>
               <Button
@@ -132,7 +132,7 @@ export function LibraryForm({
                 aria-label="Discard changes"
                 onPress={handleDiscard}
               >
-                <X className="size-4" />
+                <X />
               </Button>
             </div>
           </div>
@@ -140,15 +140,15 @@ export function LibraryForm({
         <Card.Content>
           <div className="grid gap-3 sm:grid-cols-2">
             <TextField isDisabled>
-              <Label className="text-muted text-sm">URL</Label>
+              <Label className="text-muted">URL</Label>
               <Input value={item.url} />
             </TextField>
             <TextField isDisabled>
-              <Label className="text-muted text-sm">Created</Label>
+              <Label className="text-muted">Created</Label>
               <Input value={formatDateTime(item.createAt, timeZone)} />
             </TextField>
             <TextField isDisabled>
-              <Label className="text-muted text-sm">Updated</Label>
+              <Label className="text-muted">Updated</Label>
               <Input value={formatDateTime(item.updateAt, timeZone)} />
             </TextField>
             <TextField
@@ -160,7 +160,7 @@ export function LibraryForm({
                 setValues((prev) => ({ ...prev, description: value }))
               }
             >
-              <Label className="text-muted text-sm">Description</Label>
+              <Label className="text-muted">Description</Label>
               <TextArea
                 rows={4}
                 className="[--field-background:var(--surface-secondary)]"

@@ -102,9 +102,9 @@ export function LibraryTable({
         </div>
       ) : (
         <Table
-          className={`@container min-h-0 flex-1 ${isPending ? "opacity-60" : undefined}`}
+          className={`min-h-0 flex-1 ${isPending ? "opacity-60" : undefined}`}
         >
-          <Table.ScrollContainer className="h-full overflow-x-auto overflow-y-auto">
+          <Table.ScrollContainer className="h-full overflow-y-auto">
             <Table.Content
               aria-label="Libraries"
               className="table-fixed min-w-118 sm:min-w-132 md:min-w-136 lg:min-w-156 xl:min-w-172"
@@ -112,11 +112,11 @@ export function LibraryTable({
               <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-surface-secondary">
                 <Table.Column
                   isRowHeader
-                  className="bg-surface-secondary sticky left-0 z-10! w-20 sm:w-24 lg:w-28 xl:w-36"
+                  className="sticky left-0 z-10! w-20 sm:w-24 lg:w-28 xl:w-36"
                 >
                   ID
                 </Table.Column>
-                <Table.Column className="bg-surface-secondary sticky left-20 z-10! w-14 sm:left-24 sm:w-16 md:w-20 lg:left-28 lg:w-28 xl:left-36">
+                <Table.Column className="sticky left-20 z-10! w-14 sm:left-24 sm:w-16 md:w-20 lg:left-28 lg:w-28 xl:left-36">
                   Name
                 </Table.Column>
                 <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
@@ -157,7 +157,7 @@ export function LibraryTable({
                     )}
                   </Button>
                 </Table.Column>
-                <Table.Column className="bg-surface-secondary sticky right-0 z-10! w-28 text-center!">
+                <Table.Column className="sticky right-0 z-10! w-28 text-center!">
                   Actions
                 </Table.Column>
               </Table.Header>
@@ -192,7 +192,7 @@ export function LibraryTable({
                           aria-label="View details"
                           onPress={() => router.push(`/library/${item.id}`)}
                         >
-                          <Eye className="size-4" />
+                          <Eye />
                         </Button>
                         <DeleteButton
                           id={item.id}

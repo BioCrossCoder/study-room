@@ -5,7 +5,7 @@ import { Avatar, Label } from "@heroui/react";
 export function UserInfo() {
   return (
     <div className="flex items-center gap-3 p-4">
-      <Avatar size="md" color="accent">
+      <Avatar color="accent">
         <Avatar.Fallback>?</Avatar.Fallback>
       </Avatar>
       <div className="flex min-w-0 flex-col">

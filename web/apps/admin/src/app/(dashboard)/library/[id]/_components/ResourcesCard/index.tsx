@@ -9,7 +9,7 @@ export function ResourcesCard({
   resources: (typeof resource.$inferSelect)[];
 }) {
   return (
-    <Card className="flex min-h-0 flex-1 flex-col">
+    <Card className="min-h-0 flex-1">
       <Card.Header>
         <div className="flex items-center gap-2">
           <Folder className="text-muted size-4 shrink-0" />
@@ -19,7 +19,7 @@ export function ResourcesCard({
           </Chip>
         </div>
       </Card.Header>
-      <Card.Content className="flex min-h-0 flex-1 flex-col">
+      <Card.Content className="min-h-0">
         {resources.length === 0 ? (
           <div className="text-muted flex flex-1 items-center justify-center py-6 text-sm">
             No resources in this library yet.

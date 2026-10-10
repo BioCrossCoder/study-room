@@ -19,10 +19,10 @@ export function LibraryDetailsCard({
   return (
     <Card>
       <Card.Header>
-        <div className="flex w-full items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <Card.Title className="truncate text-lg">{item.name}</Card.Title>
-            <Card.Description className="text-muted font-mono text-xs">
+            <Card.Description className="font-mono text-xs">
               {item.id}
             </Card.Description>
           </div>
@@ -35,7 +35,7 @@ export function LibraryDetailsCard({
               aria-label="Edit library"
               onPress={onEdit}
             >
-              <Pencil className="size-4" />
+              <Pencil />
             </Button>
             <DeleteButton
               id={item.id}
@@ -56,9 +56,9 @@ export function LibraryDetailsCard({
                 href={item.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="flex w-full min-w-0 items-center gap-1"
+                className="flex w-full min-w-0 gap-1"
               >
-                <Link.Icon className="shrink-0">
+                <Link.Icon>
                   <ExternalLink className="size-3.5" />
                 </Link.Icon>
                 <span className="min-w-0 flex-1 truncate">{item.url}</span>

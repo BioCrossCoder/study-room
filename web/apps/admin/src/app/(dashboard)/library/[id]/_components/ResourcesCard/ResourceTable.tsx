@@ -18,20 +18,20 @@ export function ResourceTable({
   const router = useRouter();
   const timeZone = useTimeZone();
   return (
-    <Table className="@container min-h-0 flex-1">
-      <Table.ScrollContainer className="h-full overflow-x-auto overflow-y-auto">
+    <Table className="min-h-0 flex-1">
+      <Table.ScrollContainer className="h-full overflow-y-auto">
         <Table.Content
           aria-label="Resources"
-          className="table-fixed min-w-112 sm:min-w-128 md:min-w-128 lg:min-w-144 xl:min-w-156"
+          className="table-fixed min-w-112 sm:min-w-128 lg:min-w-144 xl:min-w-156"
         >
           <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-surface-secondary">
             <Table.Column
               isRowHeader
-              className="bg-surface-secondary sticky left-0 z-20! w-20 sm:w-24 lg:w-28 xl:w-36"
+              className="sticky left-0 z-20! w-20 sm:w-24 lg:w-28 xl:w-36"
             >
               ID
             </Table.Column>
-            <Table.Column className="bg-surface-secondary sticky left-20 z-20! w-16 sm:left-24 sm:w-20 lg:left-28 lg:w-24 xl:left-36 xl:w-28">
+            <Table.Column className="sticky left-20 z-20! w-16 sm:left-24 sm:w-20 lg:left-28 lg:w-24 xl:left-36 xl:w-28">
               Name
             </Table.Column>
             <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
@@ -40,7 +40,7 @@ export function ResourceTable({
             <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
               Updated
             </Table.Column>
-            <Table.Column className="bg-surface-secondary sticky right-0 z-20! w-20 text-center!">
+            <Table.Column className="sticky right-0 z-20! w-20 text-center!">
               Actions
             </Table.Column>
           </Table.Header>
@@ -74,7 +74,7 @@ export function ResourceTable({
                     aria-label="View details"
                     onPress={() => router.push(`/resource/${item.id}`)}
                   >
-                    <Eye className="size-4" />
+                    <Eye />
                   </Button>
                 </Table.Cell>
               </Table.Row>

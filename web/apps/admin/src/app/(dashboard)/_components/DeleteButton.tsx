@@ -50,7 +50,7 @@ export function DeleteButton({
         className="bg-danger-soft text-danger hover:bg-danger-soft-hover"
         aria-label={`Delete ${resource}`}
       >
-        <Trash2 className="size-4" />
+        <Trash2 />
       </Button>
       <AlertDialog.Backdrop>
         <AlertDialog.Container>

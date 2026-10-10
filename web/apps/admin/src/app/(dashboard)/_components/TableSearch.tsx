@@ -74,7 +74,7 @@ export function TableSearch<T extends string>({
         </Select>
         <SearchField.Input
           placeholder="Search"
-          className="min-w-0 flex-1 px-2 text-sm"
+          className="min-w-0 px-2 text-sm"
         />
         <SearchField.ClearButton />
         <Button

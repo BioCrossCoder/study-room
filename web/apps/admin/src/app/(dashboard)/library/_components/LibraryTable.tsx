@@ -18,9 +18,6 @@ import { formatDateTime } from "common";
 
 const FIELDS = [{ id: "name", label: "Name" }] as const;
 
-const STICKY_HOVER =
-  "group-hover:bg-[color-mix(in_srgb,var(--surface)_40%,var(--surface-secondary))]!";
-
 export function LibraryTable({
   items,
 }: {
@@ -69,10 +66,10 @@ export function LibraryTable({
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex shrink-0 flex-wrap items-center justify-center gap-3 lg:justify-between">
+    <div className="min-h-0 flex flex-col gap-3">
+      <div className="flex flex-wrap gap-3 justify-between">
         <TableDateFilter />
-        <div className="flex w-full items-center gap-3 lg:w-auto lg:flex-none">
+        <div className="flex w-full gap-3 lg:w-auto">
           <TableSearch
             fields={FIELDS}
             keyword={keyword}
@@ -82,16 +79,16 @@ export function LibraryTable({
             variant="primary"
             className="shrink-0"
             isIconOnly={isCompact}
-            aria-label={isCompact ? "Create library" : undefined}
+            aria-label="Create library"
             onPress={create}
           >
-            {isCompact ? <Plus className="size-4" /> : "New Library"}
+            {isCompact ? <Plus /> : "New Library"}
           </Button>
         </div>
       </div>
       {items.length === 0 ? (
-        <div className="text-muted flex min-h-0 flex-1 flex-col items-center justify-center gap-3 py-6 text-sm">
-          <span>No libraries yet.</span>
+        <div className="h-full flex flex-col items-center justify-center gap-3">
+          <span className="text-lg">No libraries yet.</span>
           <Button
             variant="primary"
             aria-label="Create library"
@@ -101,25 +98,18 @@ export function LibraryTable({
           </Button>
         </div>
       ) : (
-        <Table
-          className={`min-h-0 flex-1 ${isPending ? "opacity-60" : undefined}`}
-        >
-          <Table.ScrollContainer className="h-full overflow-y-auto">
+        <Table className={`min-h-0 ${isPending ? "opacity-60" : undefined}`}>
+          <Table.ScrollContainer>
             <Table.Content
               aria-label="Libraries"
-              className="table-fixed min-w-118 sm:min-w-132 md:min-w-136 lg:min-w-156 xl:min-w-172"
+              className="table-fixed min-w-150"
             >
               <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-surface-secondary">
-                <Table.Column
-                  isRowHeader
-                  className="sticky left-0 z-10! w-20 sm:w-24 lg:w-28 xl:w-36"
-                >
+                <Table.Column isRowHeader className="w-32 lg:w-50 2xl:w-85">
                   ID
                 </Table.Column>
-                <Table.Column className="sticky left-20 z-10! w-14 sm:left-24 sm:w-16 md:w-20 lg:left-28 lg:w-28 xl:left-36">
-                  Name
-                </Table.Column>
-                <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
+                <Table.Column>Name</Table.Column>
+                <Table.Column className="w-32 lg:w-40 xl:w-65">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -129,16 +119,16 @@ export function LibraryTable({
                     Created
                     {primary.field === "createAt" ? (
                       primary.direction === "asc" ? (
-                        <ArrowUp className="text-accent size-3.5 shrink-0" />
+                        <ArrowUp className="text-accent size-3.5" />
                       ) : (
-                        <ArrowDown className="text-accent size-3.5 shrink-0" />
+                        <ArrowDown className="text-accent size-3.5" />
                       )
                     ) : (
-                      <ChevronsUpDown className="text-muted size-3.5 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="text-muted size-3.5" />
                     )}
                   </Button>
                 </Table.Column>
-                <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
+                <Table.Column className="w-32 lg:w-40 xl:w-65">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -148,42 +138,34 @@ export function LibraryTable({
                     Updated
                     {primary.field === "updateAt" ? (
                       primary.direction === "asc" ? (
-                        <ArrowUp className="text-accent size-3.5 shrink-0" />
+                        <ArrowUp className="text-accent size-3.5" />
                       ) : (
-                        <ArrowDown className="text-accent size-3.5 shrink-0" />
+                        <ArrowDown className="text-accent size-3.5" />
                       )
                     ) : (
-                      <ChevronsUpDown className="text-muted size-3.5 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="text-muted size-3.5" />
                     )}
                   </Button>
                 </Table.Column>
-                <Table.Column className="sticky right-0 z-10! w-28 text-center!">
+                <Table.Column className="w-28 text-center!">
                   Actions
                 </Table.Column>
               </Table.Header>
               <Table.Body>
                 {items.map((item) => (
-                  <Table.Row key={item.id} className="group">
-                    <Table.Cell
-                      className={`${STICKY_HOVER} bg-surface! sticky left-0 z-1 text-muted break-words font-mono text-xs`}
-                    >
+                  <Table.Row key={item.id}>
+                    <Table.Cell className="text-muted font-mono">
                       {item.id}
                     </Table.Cell>
-                    <Table.Cell
-                      className={`${STICKY_HOVER} bg-surface! sticky left-20 z-1 break-words sm:left-24 lg:left-28 xl:left-36`}
-                    >
-                      {item.name}
-                    </Table.Cell>
-                    <Table.Cell className="text-center!">
+                    <Table.Cell>{item.name}</Table.Cell>
+                    <Table.Cell className="text-center! font-mono">
                       {formatDateTime(item.createAt, timeZone)}
                     </Table.Cell>
-                    <Table.Cell className="text-center!">
+                    <Table.Cell className="text-center! font-mono">
                       {formatDateTime(item.updateAt, timeZone)}
                     </Table.Cell>
-                    <Table.Cell
-                      className={`${STICKY_HOVER} bg-surface! sticky right-0 z-1 text-center!`}
-                    >
-                      <div className="flex items-center justify-center gap-1">
+                    <Table.Cell>
+                      <div className="flex justify-around">
                         <Button
                           isIconOnly
                           size="sm"

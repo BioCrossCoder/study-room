@@ -66,7 +66,7 @@ export function LibraryTable({
   };
 
   return (
-    <div className="min-h-0 flex flex-col gap-3">
+    <div className="min-h-0 h-full flex flex-col gap-3">
       <div className="flex flex-wrap gap-3 justify-between">
         <TableDateFilter />
         <div className="flex w-full gap-3 lg:w-auto">

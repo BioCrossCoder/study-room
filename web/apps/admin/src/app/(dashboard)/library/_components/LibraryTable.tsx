@@ -3,15 +3,8 @@
 import type { library } from "@/models/orm";
 import type { LibraryFilter, Sort } from "@/models/types";
 import { removeLibrary } from "@/actions/library";
-import { Button, Link, Table } from "@heroui/react";
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronsUpDown,
-  ExternalLink,
-  Eye,
-  Plus,
-} from "lucide-react";
+import { Button, Table } from "@heroui/react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, Eye, Plus } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { DeleteButton } from "../../_components/DeleteButton";
@@ -114,7 +107,7 @@ export function LibraryTable({
           <Table.ScrollContainer className="h-full overflow-x-auto overflow-y-auto">
             <Table.Content
               aria-label="Libraries"
-              className="table-fixed min-w-134 sm:min-w-148 md:min-w-152 lg:min-w-172 xl:min-w-209"
+              className="table-fixed min-w-118 sm:min-w-132 md:min-w-136 lg:min-w-156 xl:min-w-172"
             >
               <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-surface-secondary">
                 <Table.Column
@@ -125,9 +118,6 @@ export function LibraryTable({
                 </Table.Column>
                 <Table.Column className="bg-surface-secondary sticky left-20 z-10! w-14 sm:left-24 sm:w-16 md:w-20 lg:left-28 lg:w-28 xl:left-36">
                   Name
-                </Table.Column>
-                <Table.Column className="min-w-[180px] @max-[52.25rem]:w-16! @max-[52.25rem]:min-w-0!">
-                  URL
                 </Table.Column>
                 <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
                   <Button
@@ -183,21 +173,6 @@ export function LibraryTable({
                       className={`${STICKY_HOVER} bg-surface! sticky left-20 z-1 break-words sm:left-24 lg:left-28 xl:left-36`}
                     >
                       {item.name}
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Link
-                        href={item.url}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className="flex w-full items-center gap-1.5 overflow-hidden"
-                      >
-                        <Link.Icon className="shrink-0 size-3.5 @max-[52.25rem]:size-5!">
-                          <ExternalLink />
-                        </Link.Icon>
-                        <span className="min-w-0 flex-1 truncate @max-[52.25rem]:hidden">
-                          {item.url}
-                        </span>
-                      </Link>
                     </Table.Cell>
                     <Table.Cell className="text-center!">
                       {formatDateTime(item.createAt, timeZone)}

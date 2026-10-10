@@ -98,13 +98,15 @@ export function LibraryTable({
           </Button>
         </div>
       ) : (
-        <Table className={`min-h-0 ${isPending ? "opacity-60" : undefined}`}>
+        <Table
+          className={`bg-background-tertiary dark:bg-surface-secondary min-h-0 ${isPending ? "opacity-60" : undefined}`}
+        >
           <Table.ScrollContainer>
             <Table.Content
               aria-label="Libraries"
               className="table-fixed min-w-150"
             >
-              <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-surface-secondary">
+              <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-background-tertiary dark:[&_th]:bg-surface-secondary">
                 <Table.Column isRowHeader className="w-32 lg:w-50 2xl:w-85">
                   ID
                 </Table.Column>

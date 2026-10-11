@@ -78,7 +78,9 @@ export default function LibraryPage({
           </div>
         </div>
         {list.length === 0 ? (
-          <TableEmptyState resource="library" />
+          <TableEmptyState>
+            <CreateButton resource="library" collapsible={false} />
+          </TableEmptyState>
         ) : (
           <LibraryTable items={list} />
         )}

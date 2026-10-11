@@ -23,7 +23,7 @@ import { useTimeZone } from "@/hooks/useTimeZone";
 import { ConfirmDialog } from "../../../../_components/ConfirmDialog";
 import { DiscardButton } from "../../../../_components/DiscardButton";
 
-export function LibraryForm({
+export function LibraryUpdateForm({
   item,
   onDiscard,
   onSaved,

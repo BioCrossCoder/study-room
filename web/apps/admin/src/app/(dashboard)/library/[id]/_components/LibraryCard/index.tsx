@@ -3,13 +3,13 @@
 import type { library } from "@/models/orm";
 import { useState } from "react";
 import { LibraryDetailsCard } from "./LibraryDetailsCard";
-import { LibraryForm } from "./LibraryForm";
+import { LibraryUpdateForm } from "./LibraryUpdateForm";
 
 export function LibraryCard({ item }: { item: typeof library.$inferSelect }) {
   const [editing, setEditing] = useState(false);
 
   return editing ? (
-    <LibraryForm
+    <LibraryUpdateForm
       item={item}
       onDiscard={() => setEditing(false)}
       onSaved={() => setEditing(false)}

@@ -2,7 +2,7 @@ import { BookmarkService } from "@/services/bookmark";
 import { Bookmark } from "@/models/api";
 import { notFound } from "next/navigation";
 import { prettifyError } from "zod";
-import { BookmarkDetailsCard } from "./_components/BookmarkCard/BookmarkDetailsCard";
+import { BookmarkDetailsCard } from "./_components/BookmarkDetailsCard";
 import { ResourcesCard } from "@/app/(dashboard)/_components/ResourcesCard";
 import { use } from "react";
 

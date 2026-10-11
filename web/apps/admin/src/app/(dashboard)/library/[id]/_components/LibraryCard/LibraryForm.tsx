@@ -130,8 +130,8 @@ export function LibraryForm({
           </div>
         </Card.Header>
         <Card.Content>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <TextField isDisabled>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <TextField isDisabled className="sm:col-span-2">
               <Label className="text-muted">URL</Label>
               <Input value={item.url} />
             </TextField>
@@ -146,7 +146,7 @@ export function LibraryForm({
             <TextField
               name="description"
               isRequired
-              className="sm:col-span-2"
+              className="sm:col-span-2 xl:col-span-4"
               value={values.description}
               onChange={(value) =>
                 setValues((prev) => ({ ...prev, description: value }))

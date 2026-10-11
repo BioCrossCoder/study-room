@@ -6,6 +6,7 @@ import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatDateTime } from "common";
 import { useTimeZone } from "@/hooks/useTimeZone";
+import { ClippedText } from "../ClippedText";
 
 export function ResourceTable({
   items,
@@ -37,7 +38,9 @@ export function ResourceTable({
                 <Table.Cell className="text-muted wrap-break-word">
                   {item.id}
                 </Table.Cell>
-                <Table.Cell className="wrap-break-word">{item.name}</Table.Cell>
+                <Table.Cell>
+                  <ClippedText>{item.name}</ClippedText>
+                </Table.Cell>
                 <Table.Cell className="text-center!">
                   {formatDateTime(item.createAt, timeZone)}
                 </Table.Cell>

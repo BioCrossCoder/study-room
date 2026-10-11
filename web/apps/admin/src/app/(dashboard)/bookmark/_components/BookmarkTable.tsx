@@ -7,6 +7,7 @@ import { Button, Table } from "@heroui/react";
 import { ArrowDown, ArrowUp, ChevronsUpDown, Eye } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
+import { ClippedText } from "../../_components/ClippedText";
 import { DeleteButton } from "../../_components/DeleteButton";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import { formatDateTime } from "common";
@@ -103,7 +104,9 @@ export function BookmarkTable({
                 <Table.Cell className="text-muted wrap-break-word">
                   {item.id}
                 </Table.Cell>
-                <Table.Cell className="wrap-break-word">{item.url}</Table.Cell>
+                <Table.Cell>
+                  <ClippedText>{item.url}</ClippedText>
+                </Table.Cell>
                 <Table.Cell className="text-center!">
                   {formatDateTime(item.createAt, timeZone)}
                 </Table.Cell>

@@ -4,15 +4,15 @@ import type { library } from "@/models/orm";
 import type { LibraryFilter, Sort } from "@/models/types";
 import { removeLibrary } from "@/actions/library";
 import { Button, Table } from "@heroui/react";
-import { ArrowDown, ArrowUp, ChevronsUpDown, Eye, Plus } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, Eye } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
+import { CreateButton } from "../../_components/CreateButton";
 import { DeleteButton } from "../../_components/DeleteButton";
+import { TableEmptyState } from "../../_components/TableEmptyState";
 import { TableDateFilter } from "../../_components/TableDateFilter";
 import { TableSearch } from "../../_components/TableSearch";
 import { parseFilterParam } from "@/common/filter";
-import { COMPACT_MEDIA } from "@/common/media";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import { formatDateTime } from "common";
 
@@ -27,7 +27,6 @@ export function LibraryTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const isCompact = useMediaQuery(COMPACT_MEDIA);
   const timeZone = useTimeZone();
   const sort = JSON.parse(searchParams.get("sort") ?? "[]") as Sort[];
   const primary =
@@ -59,12 +58,6 @@ export function LibraryTable({
   ).name;
   const [keyword, setKeyword] = useState(applied ?? "");
 
-  const create = () => {
-    startTransition(() => {
-      router.push("/library/new");
-    });
-  };
-
   return (
     <div className="min-h-0 h-full flex flex-col gap-3">
       <div className="flex flex-wrap gap-3 justify-between">
@@ -75,28 +68,11 @@ export function LibraryTable({
             keyword={keyword}
             setKeyword={setKeyword}
           />
-          <Button
-            variant="primary"
-            className="shrink-0"
-            isIconOnly={isCompact}
-            aria-label="Create library"
-            onPress={create}
-          >
-            {isCompact ? <Plus /> : "New Library"}
-          </Button>
+          <CreateButton resource="library" />
         </div>
       </div>
       {items.length === 0 ? (
-        <div className="h-full flex flex-col items-center justify-center gap-3">
-          <span className="text-lg">No libraries yet.</span>
-          <Button
-            variant="primary"
-            aria-label="Create library"
-            onPress={create}
-          >
-            New Library
-          </Button>
-        </div>
+        <TableEmptyState resource="library" />
       ) : (
         <Table
           className={`bg-background-tertiary dark:bg-surface-secondary min-h-0 ${isPending ? "opacity-60" : undefined}`}

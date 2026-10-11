@@ -4,3 +4,10 @@ import { Library, sort } from "./api";
 export type Sort = z.infer<typeof sort>[number];
 
 export type LibraryFilter = z.infer<typeof Library.list>["filter"][number];
+
+export type Resource =
+  | "library"
+  | "resource"
+  | "bookmark"
+  | "annotation"
+  | "summary";

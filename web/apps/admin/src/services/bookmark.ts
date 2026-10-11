@@ -110,10 +110,13 @@ async function list(
 }
 
 function buildWhere(filter: z.infer<typeof Bookmark.list>["filter"]) {
-  return (table: typeof bookmark, { and, or }: Operators) => {
+  return (table: typeof bookmark, { and, or, like }: Operators) => {
     const conditions = new Array<SQL | undefined>();
     for (const param of filter ?? []) {
       const subConditions = new Array<SQL | undefined>();
+      if (param.url) {
+        subConditions.push(like(table.url, `%${param.url}%`));
+      }
       if (param.createAt) {
         subConditions.push(buildTimeFilter(param.createAt, table.createAt));
       }

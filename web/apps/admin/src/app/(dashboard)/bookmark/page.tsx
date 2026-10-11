@@ -7,7 +7,10 @@ import { prettifyError } from "zod";
 import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
 import { TableEmptyState } from "../_components/TableEmptyState";
+import { TableSearch } from "../_components/TableSearch";
 import { BookmarkTable } from "./_components/BookmarkTable";
+
+const FIELDS = [{ id: "url", label: "URL" }] as const;
 
 export default function BookmarkPage({
   searchParams,
@@ -68,6 +71,7 @@ export default function BookmarkPage({
       <div className="min-h-0 h-full flex flex-col gap-3">
         <div className="flex flex-wrap gap-3 justify-between">
           <TableDateFilter />
+          <TableSearch fields={FIELDS} />
         </div>
         {list.length === 0 ? (
           <TableEmptyState />

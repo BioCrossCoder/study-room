@@ -100,20 +100,31 @@ export function LibraryCreateForm() {
           </div>
         </Card.Header>
         <Card.Content>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <TextField name="url" type="url" isRequired>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <TextField
+              name="url"
+              type="url"
+              isRequired
+              className="sm:col-span-2"
+            >
               <Label className="text-muted">URL</Label>
               <Input className="[--field-background:var(--surface-secondary)]" />
             </TextField>
-            <TextField isDisabled>
-              <Label className="text-muted">Created</Label>
-              <Input value="-" />
-            </TextField>
-            <TextField isDisabled>
-              <Label className="text-muted">Updated</Label>
-              <Input value="-" />
-            </TextField>
-            <TextField name="description" isRequired className="sm:col-span-2">
+            <div className="grid grid-cols-2 gap-3 sm:col-span-2">
+              <TextField isDisabled>
+                <Label className="text-muted">Created</Label>
+                <Input value="-" />
+              </TextField>
+              <TextField isDisabled>
+                <Label className="text-muted">Updated</Label>
+                <Input value="-" />
+              </TextField>
+            </div>
+            <TextField
+              name="description"
+              isRequired
+              className="sm:col-span-2 xl:col-span-4"
+            >
               <Label className="text-muted">Description</Label>
               <TextArea
                 rows={4}

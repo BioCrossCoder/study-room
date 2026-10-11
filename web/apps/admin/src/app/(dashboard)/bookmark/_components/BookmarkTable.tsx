@@ -53,11 +53,11 @@ export function BookmarkTable({
       <Table.ScrollContainer>
         <Table.Content aria-label="Bookmarks" className="table-fixed min-w-150">
           <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-background-tertiary dark:[&_th]:bg-surface-secondary">
-            <Table.Column isRowHeader className="w-32 lg:w-50 2xl:w-85">
+            <Table.Column isRowHeader className="w-40 lg:w-50 2xl:w-85">
               ID
             </Table.Column>
             <Table.Column>URL</Table.Column>
-            <Table.Column className="w-32 lg:w-40 xl:w-65">
+            <Table.Column className="w-32 lg:w-40 xl:w-68">
               <Button
                 variant="ghost"
                 size="sm"
@@ -76,7 +76,7 @@ export function BookmarkTable({
                 )}
               </Button>
             </Table.Column>
-            <Table.Column className="w-32 lg:w-40 xl:w-65">
+            <Table.Column className="w-32 lg:w-40 xl:w-68">
               <Button
                 variant="ghost"
                 size="sm"

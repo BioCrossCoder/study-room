@@ -10,7 +10,7 @@ export function PaginationNav({ count }: { count: number }) {
 
   return (
     <div className="flex shrink-0 flex-wrap items-center justify-center gap-3 lg:justify-between">
-      <Pagination size="sm" className="w-auto">
+      <Pagination size="sm" className="w-auto font-mono">
         <Pagination.Summary className="self-center">
           {`${count} Results · Page ${page} / ${total}`}
         </Pagination.Summary>

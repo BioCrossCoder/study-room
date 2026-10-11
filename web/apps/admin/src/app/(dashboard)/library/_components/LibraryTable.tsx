@@ -1,22 +1,15 @@
 "use client";
 
 import type { library } from "@/models/orm";
-import type { LibraryFilter, Sort } from "@/models/types";
+import type { Sort } from "@/models/types";
 import { removeLibrary } from "@/actions/library";
 import { Button, Table } from "@heroui/react";
 import { ArrowDown, ArrowUp, ChevronsUpDown, Eye } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
-import { CreateButton } from "../../_components/CreateButton";
+import { useTransition } from "react";
 import { DeleteButton } from "../../_components/DeleteButton";
-import { TableEmptyState } from "../../_components/TableEmptyState";
-import { TableDateFilter } from "../../_components/TableDateFilter";
-import { TableSearch } from "../../_components/TableSearch";
-import { parseFilterParam } from "@/common/filter";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import { formatDateTime } from "common";
-
-const FIELDS = [{ id: "name", label: "Name" }] as const;
 
 export function LibraryTable({
   items,
@@ -53,122 +46,95 @@ export function LibraryTable({
     });
   };
 
-  const applied = parseFilterParam<LibraryFilter>(
-    searchParams.get("filter"),
-  ).name;
-  const [keyword, setKeyword] = useState(applied ?? "");
-
   return (
-    <div className="min-h-0 h-full flex flex-col gap-3">
-      <div className="flex flex-wrap gap-3 justify-between">
-        <TableDateFilter />
-        <div className="flex w-full gap-3 lg:w-auto">
-          <TableSearch
-            fields={FIELDS}
-            keyword={keyword}
-            setKeyword={setKeyword}
-          />
-          <CreateButton resource="library" />
-        </div>
-      </div>
-      {items.length === 0 ? (
-        <TableEmptyState resource="library" />
-      ) : (
-        <Table
-          className={`bg-background-tertiary dark:bg-surface-secondary min-h-0 ${isPending ? "opacity-60" : undefined}`}
-        >
-          <Table.ScrollContainer>
-            <Table.Content
-              aria-label="Libraries"
-              className="table-fixed min-w-150"
-            >
-              <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-background-tertiary dark:[&_th]:bg-surface-secondary">
-                <Table.Column isRowHeader className="w-32 lg:w-50 2xl:w-85">
-                  ID
-                </Table.Column>
-                <Table.Column>Name</Table.Column>
-                <Table.Column className="w-32 lg:w-40 xl:w-65">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-inherit w-full! text-xs hover:bg-transparent"
-                    onPress={() => toggleSort("createAt")}
-                  >
-                    Created
-                    {primary.field === "createAt" ? (
-                      primary.direction === "asc" ? (
-                        <ArrowUp className="text-accent size-3.5" />
-                      ) : (
-                        <ArrowDown className="text-accent size-3.5" />
-                      )
-                    ) : (
-                      <ChevronsUpDown className="text-muted size-3.5" />
-                    )}
-                  </Button>
-                </Table.Column>
-                <Table.Column className="w-32 lg:w-40 xl:w-65">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-inherit w-full! text-xs hover:bg-transparent"
-                    onPress={() => toggleSort("updateAt")}
-                  >
-                    Updated
-                    {primary.field === "updateAt" ? (
-                      primary.direction === "asc" ? (
-                        <ArrowUp className="text-accent size-3.5" />
-                      ) : (
-                        <ArrowDown className="text-accent size-3.5" />
-                      )
-                    ) : (
-                      <ChevronsUpDown className="text-muted size-3.5" />
-                    )}
-                  </Button>
-                </Table.Column>
-                <Table.Column className="w-28 text-center!">
-                  Actions
-                </Table.Column>
-              </Table.Header>
-              <Table.Body>
-                {items.map((item) => (
-                  <Table.Row key={item.id}>
-                    <Table.Cell className="text-muted font-mono">
-                      {item.id}
-                    </Table.Cell>
-                    <Table.Cell>{item.name}</Table.Cell>
-                    <Table.Cell className="text-center! font-mono">
-                      {formatDateTime(item.createAt, timeZone)}
-                    </Table.Cell>
-                    <Table.Cell className="text-center! font-mono">
-                      {formatDateTime(item.updateAt, timeZone)}
-                    </Table.Cell>
-                    <Table.Cell>
-                      <div className="flex justify-around">
-                        <Button
-                          isIconOnly
-                          size="sm"
-                          variant="ghost"
-                          className="bg-surface-secondary hover:bg-surface-tertiary"
-                          aria-label="View details"
-                          onPress={() => router.push(`/library/${item.id}`)}
-                        >
-                          <Eye />
-                        </Button>
-                        <DeleteButton
-                          id={item.id}
-                          name={item.name}
-                          resource="library"
-                          onDelete={removeLibrary}
-                        />
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table.Content>
-          </Table.ScrollContainer>
-        </Table>
-      )}
-    </div>
+    <Table
+      className={`bg-background-tertiary dark:bg-surface-secondary min-h-0 ${isPending ? "opacity-60" : undefined}`}
+    >
+      <Table.ScrollContainer>
+        <Table.Content aria-label="Libraries" className="table-fixed min-w-150">
+          <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-background-tertiary dark:[&_th]:bg-surface-secondary">
+            <Table.Column isRowHeader className="w-32 lg:w-50 2xl:w-85">
+              ID
+            </Table.Column>
+            <Table.Column>Name</Table.Column>
+            <Table.Column className="w-32 lg:w-40 xl:w-65">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-inherit w-full! text-xs hover:bg-transparent"
+                onPress={() => toggleSort("createAt")}
+              >
+                Created
+                {primary.field === "createAt" ? (
+                  primary.direction === "asc" ? (
+                    <ArrowUp className="text-accent size-3.5" />
+                  ) : (
+                    <ArrowDown className="text-accent size-3.5" />
+                  )
+                ) : (
+                  <ChevronsUpDown className="text-muted size-3.5" />
+                )}
+              </Button>
+            </Table.Column>
+            <Table.Column className="w-32 lg:w-40 xl:w-65">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-inherit w-full! text-xs hover:bg-transparent"
+                onPress={() => toggleSort("updateAt")}
+              >
+                Updated
+                {primary.field === "updateAt" ? (
+                  primary.direction === "asc" ? (
+                    <ArrowUp className="text-accent size-3.5" />
+                  ) : (
+                    <ArrowDown className="text-accent size-3.5" />
+                  )
+                ) : (
+                  <ChevronsUpDown className="text-muted size-3.5" />
+                )}
+              </Button>
+            </Table.Column>
+            <Table.Column className="w-28 text-center!">Actions</Table.Column>
+          </Table.Header>
+          <Table.Body>
+            {items.map((item) => (
+              <Table.Row key={item.id}>
+                <Table.Cell className="text-muted font-mono">
+                  {item.id}
+                </Table.Cell>
+                <Table.Cell>{item.name}</Table.Cell>
+                <Table.Cell className="text-center! font-mono">
+                  {formatDateTime(item.createAt, timeZone)}
+                </Table.Cell>
+                <Table.Cell className="text-center! font-mono">
+                  {formatDateTime(item.updateAt, timeZone)}
+                </Table.Cell>
+                <Table.Cell>
+                  <div className="flex justify-around">
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="ghost"
+                      className="bg-surface-secondary hover:bg-surface-tertiary"
+                      aria-label="View details"
+                      onPress={() => router.push(`/library/${item.id}`)}
+                    >
+                      <Eye />
+                    </Button>
+                    <DeleteButton
+                      id={item.id}
+                      name={item.name}
+                      resource="library"
+                      onDelete={removeLibrary}
+                    />
+                  </div>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Content>
+      </Table.ScrollContainer>
+    </Table>
   );
 }

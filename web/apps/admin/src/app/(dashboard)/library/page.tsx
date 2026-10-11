@@ -4,8 +4,14 @@ import { Library } from "@/models/api";
 import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
 import { prettifyError } from "zod";
-import { LibraryTable } from "./_components/LibraryTable";
+import { CreateButton } from "../_components/CreateButton";
 import { PaginationNav } from "../_components/PaginationNav";
+import { TableDateFilter } from "../_components/TableDateFilter";
+import { TableEmptyState } from "../_components/TableEmptyState";
+import { TableSearch } from "../_components/TableSearch";
+import { LibraryTable } from "./_components/LibraryTable";
+
+const FIELDS = [{ id: "name", label: "Name" }] as const;
 
 export default function LibraryPage({
   searchParams,
@@ -63,7 +69,20 @@ export default function LibraryPage({
   const { list, count } = result.value;
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
-      <LibraryTable items={list} />
+      <div className="min-h-0 h-full flex flex-col gap-3">
+        <div className="flex flex-wrap gap-3 justify-between">
+          <TableDateFilter />
+          <div className="flex w-full gap-3 lg:w-auto">
+            <TableSearch fields={FIELDS} />
+            <CreateButton resource="library" />
+          </div>
+        </div>
+        {list.length === 0 ? (
+          <TableEmptyState resource="library" />
+        ) : (
+          <LibraryTable items={list} />
+        )}
+      </div>
       <PaginationNav count={count} />
     </div>
   );

@@ -8,18 +8,20 @@ import { useState, useTransition } from "react";
 
 export function TableSearch<T extends string>({
   fields,
-  keyword,
-  setKeyword,
 }: {
   fields: readonly { id: T; label: string }[];
-  keyword: string;
-  setKeyword: (keyword: string) => void;
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
   const [field, setField] = useState<T>(fields[0].id);
+  const [keyword, setKeyword] = useState(
+    () =>
+      parseFilterParam<Record<string, string | undefined>>(
+        searchParams.get("filter"),
+      )[fields[0].id] ?? "",
+  );
 
   const search = (value: string) => {
     const query = new URLSearchParams(searchParams);
@@ -43,7 +45,10 @@ export function TableSearch<T extends string>({
         setKeyword(value ?? "");
         search(value ?? "");
       }}
-      onClear={() => search("")}
+      onClear={() => {
+        setKeyword("");
+        search("");
+      }}
     >
       <SearchField.Group className="w-full min-w-0 gap-1 pe-1 lg:w-auto">
         <Select

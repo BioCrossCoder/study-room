@@ -97,17 +97,15 @@ export function LibraryTable({
             </Table.Column>
             <Table.Column className="w-28 text-center!">Actions</Table.Column>
           </Table.Header>
-          <Table.Body>
+          <Table.Body className="font-mono">
             {items.map((item) => (
               <Table.Row key={item.id}>
-                <Table.Cell className="text-muted font-mono">
-                  {item.id}
-                </Table.Cell>
+                <Table.Cell className="text-muted">{item.id}</Table.Cell>
                 <Table.Cell>{item.name}</Table.Cell>
-                <Table.Cell className="text-center! font-mono">
+                <Table.Cell className="text-center!">
                   {formatDateTime(item.createAt, timeZone)}
                 </Table.Cell>
-                <Table.Cell className="text-center! font-mono">
+                <Table.Cell className="text-center!">
                   {formatDateTime(item.updateAt, timeZone)}
                 </Table.Cell>
                 <Table.Cell>

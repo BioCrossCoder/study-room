@@ -118,6 +118,7 @@ export const Summary = {
   list: z.object({
     filter: z.array(
       z.object({
+        url: z.string().optional(),
         createAt: time.optional(),
         updateAt: time.optional(),
       }),

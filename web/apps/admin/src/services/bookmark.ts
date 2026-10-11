@@ -56,7 +56,13 @@ async function remove(
   ids: z.infer<typeof Bookmark.delete>,
 ): Promise<Result<null, Error>> {
   const result = await ResultAsync.fromPromise(
-    db.delete(bookmark).where(inArray(bookmark.id, ids)),
+    db.transaction(async (tx) => {
+      await tx
+        .update(resource)
+        .set({ bookmarkId: null })
+        .where(inArray(resource.bookmarkId, ids));
+      await tx.delete(bookmark).where(inArray(bookmark.id, ids));
+    }),
     wrapError,
   );
   return result.isOk() ? ok(null) : err(result.error);

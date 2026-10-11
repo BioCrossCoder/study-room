@@ -16,7 +16,7 @@ export function ResourceTable({
   const timeZone = useTimeZone();
   return (
     <Table className="min-h-0 flex-1">
-      <Table.ScrollContainer className="h-full overflow-y-auto">
+      <Table.ScrollContainer>
         <Table.Content aria-label="Resources" className="table-fixed min-w-150">
           <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-surface-secondary">
             <Table.Column isRowHeader className="w-32 lg:w-50 2xl:w-85">

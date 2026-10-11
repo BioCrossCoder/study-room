@@ -48,8 +48,8 @@ export function LibraryDetailsCard({
         </div>
       </Card.Header>
       <Card.Content>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="min-w-0">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="min-w-0 sm:col-span-2">
             <Description>URL</Description>
             <Typography.Paragraph size="sm">
               <Link
@@ -58,8 +58,8 @@ export function LibraryDetailsCard({
                 rel="noreferrer noopener"
                 className="flex w-full min-w-0 gap-1"
               >
-                <Link.Icon>
-                  <ExternalLink className="size-3.5" />
+                <Link.Icon className="size-4">
+                  <ExternalLink className="size-full" />
                 </Link.Icon>
                 <span className="min-w-0 flex-1 truncate">{item.url}</span>
               </Link>
@@ -77,7 +77,7 @@ export function LibraryDetailsCard({
               {formatDateTime(item.updateAt, timeZone)}
             </Typography.Paragraph>
           </div>
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-2 xl:col-span-4">
             <Description>Description</Description>
             <Typography.Paragraph size="sm" className="whitespace-pre-wrap">
               {item.description}

@@ -124,7 +124,7 @@ export function SummaryTable({
                     </Button>
                     <DeleteButton
                       id={item.id}
-                      name={item.url}
+                      name={item.id}
                       resource="summary"
                       onDelete={removeSummary}
                     />

@@ -124,7 +124,7 @@ export function BookmarkTable({
                     </Button>
                     <DeleteButton
                       id={item.id}
-                      name={item.url}
+                      name={item.id}
                       resource="bookmark"
                       onDelete={removeBookmark}
                     />

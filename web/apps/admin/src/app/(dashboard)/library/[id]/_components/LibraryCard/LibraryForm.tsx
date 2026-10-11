@@ -14,13 +14,14 @@ import {
   toast,
   useOverlayState,
 } from "@heroui/react";
-import { Save, X } from "lucide-react";
+import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState } from "react";
 import type { SyntheticEvent } from "react";
 import { formatDateTime } from "common";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import { ConfirmDialog } from "../../../../_components/ConfirmDialog";
+import { DiscardButton } from "../../../../_components/DiscardButton";
 
 export function LibraryForm({
   item,
@@ -124,16 +125,7 @@ export function LibraryForm({
                   <Save />
                 </Button>
               </ConfirmDialog>
-              <Button
-                isIconOnly
-                size="sm"
-                variant="ghost"
-                className="bg-danger-soft text-danger hover:bg-danger-soft-hover"
-                aria-label="Discard changes"
-                onPress={handleDiscard}
-              >
-                <X />
-              </Button>
+              <DiscardButton onDiscard={handleDiscard} />
             </div>
           </div>
         </Card.Header>

@@ -13,11 +13,12 @@ import {
   toast,
   useOverlayState,
 } from "@heroui/react";
-import { Save, X } from "lucide-react";
+import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useRef } from "react";
 import type { SyntheticEvent } from "react";
 import { ConfirmDialog } from "../../../_components/ConfirmDialog";
+import { DiscardButton } from "../../../_components/DiscardButton";
 
 export function LibraryCreateForm() {
   const router = useRouter();
@@ -94,16 +95,7 @@ export function LibraryCreateForm() {
                   <Save />
                 </Button>
               </ConfirmDialog>
-              <Button
-                isIconOnly
-                size="sm"
-                variant="ghost"
-                className="bg-danger-soft text-danger hover:bg-danger-soft-hover"
-                aria-label="Discard changes"
-                onPress={() => router.push("/library")}
-              >
-                <X />
-              </Button>
+              <DiscardButton onDiscard={() => router.push("/library")} />
             </div>
           </div>
         </Card.Header>

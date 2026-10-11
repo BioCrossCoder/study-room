@@ -95,7 +95,7 @@ export function LibraryCreateForm() {
                   <Save />
                 </Button>
               </ConfirmDialog>
-              <DiscardButton onDiscard={() => router.push("/library")} />
+              <DiscardButton onDiscard={router.back} />
             </div>
           </div>
         </Card.Header>

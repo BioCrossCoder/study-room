@@ -7,9 +7,6 @@ import { useRouter } from "next/navigation";
 import { formatDateTime } from "common";
 import { useTimeZone } from "@/hooks/useTimeZone";
 
-const STICKY_HOVER =
-  "group-hover:bg-[color-mix(in_srgb,var(--surface)_40%,var(--surface-secondary))]!";
-
 export function ResourceTable({
   items,
 }: {
@@ -20,62 +17,46 @@ export function ResourceTable({
   return (
     <Table className="min-h-0 flex-1">
       <Table.ScrollContainer className="h-full overflow-y-auto">
-        <Table.Content
-          aria-label="Resources"
-          className="table-fixed min-w-112 sm:min-w-128 lg:min-w-144 xl:min-w-156"
-        >
+        <Table.Content aria-label="Resources" className="table-fixed min-w-150">
           <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-surface-secondary">
-            <Table.Column
-              isRowHeader
-              className="sticky left-0 z-20! w-20 sm:w-24 lg:w-28 xl:w-36"
-            >
+            <Table.Column isRowHeader className="w-32 lg:w-50 2xl:w-85">
               ID
             </Table.Column>
-            <Table.Column className="sticky left-20 z-20! w-16 sm:left-24 sm:w-20 lg:left-28 lg:w-24 xl:left-36 xl:w-28">
-              Name
-            </Table.Column>
-            <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
+            <Table.Column>Name</Table.Column>
+            <Table.Column className="w-32 lg:w-40 xl:w-65 text-center!">
               Created
             </Table.Column>
-            <Table.Column className="w-28 text-center! sm:w-32 lg:w-36">
+            <Table.Column className="w-32 lg:w-40 xl:w-65 text-center!">
               Updated
             </Table.Column>
-            <Table.Column className="sticky right-0 z-20! w-20 text-center!">
-              Actions
-            </Table.Column>
+            <Table.Column className="w-28 text-center!">Actions</Table.Column>
           </Table.Header>
-          <Table.Body>
+          <Table.Body className="font-mono">
             {items.map((item) => (
-              <Table.Row key={item.id} className="group">
-                <Table.Cell
-                  className={`${STICKY_HOVER} bg-surface! sticky left-0 z-10 text-muted break-words font-mono text-xs`}
-                >
+              <Table.Row key={item.id}>
+                <Table.Cell className="text-muted wrap-break-word">
                   {item.id}
                 </Table.Cell>
-                <Table.Cell
-                  className={`${STICKY_HOVER} bg-surface! sticky left-20 z-10 break-words sm:left-24 lg:left-28 xl:left-36`}
-                >
-                  {item.name}
-                </Table.Cell>
+                <Table.Cell className="wrap-break-word">{item.name}</Table.Cell>
                 <Table.Cell className="text-center!">
                   {formatDateTime(item.createAt, timeZone)}
                 </Table.Cell>
                 <Table.Cell className="text-center!">
                   {formatDateTime(item.updateAt, timeZone)}
                 </Table.Cell>
-                <Table.Cell
-                  className={`${STICKY_HOVER} bg-surface! sticky right-0 z-10 text-center!`}
-                >
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    variant="ghost"
-                    className="bg-surface-secondary hover:bg-surface-tertiary"
-                    aria-label="View details"
-                    onPress={() => router.push(`/resource/${item.id}`)}
-                  >
-                    <Eye />
-                  </Button>
+                <Table.Cell>
+                  <div className="flex justify-around">
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="ghost"
+                      className="bg-surface-secondary hover:bg-surface-tertiary"
+                      aria-label="View details"
+                      onPress={() => router.push(`/resource/${item.id}`)}
+                    >
+                      <Eye />
+                    </Button>
+                  </div>
                 </Table.Cell>
               </Table.Row>
             ))}

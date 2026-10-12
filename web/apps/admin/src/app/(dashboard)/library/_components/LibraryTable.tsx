@@ -6,7 +6,7 @@ import { removeLibrary } from "@/actions/library";
 import { Table } from "@heroui/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import { ClippedText } from "../../_components/ClippedText";
+import { CopyableText } from "../../_components/CopyableText";
 import { DeleteButton } from "../../_components/DeleteButton";
 import { SortButton } from "../../_components/SortButton";
 import { ViewButton } from "../../_components/ViewButton";
@@ -76,7 +76,7 @@ export function LibraryTable({
               <Table.Row key={item.id}>
                 <Table.Cell className="text-muted">{item.id}</Table.Cell>
                 <Table.Cell>
-                  <ClippedText>{item.name}</ClippedText>
+                  <CopyableText>{item.name}</CopyableText>
                 </Table.Cell>
                 <Table.Cell className="text-center!">
                   {formatDateTime(item.createAt, timeZone)}

@@ -24,7 +24,7 @@ export function SummaryDetailsCard({
                 href={item.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="flex min-w-0 items-center gap-1"
+                className="flex max-w-full min-w-0 items-center gap-1"
               >
                 <Link.Icon className="size-4 shrink-0">
                   <ExternalLink className="size-full" />

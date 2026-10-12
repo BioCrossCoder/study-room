@@ -24,7 +24,7 @@ export function BookmarkDetailsCard({
                 href={item.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="flex min-w-0 items-center gap-1"
+                className="flex max-w-full min-w-0 items-center gap-1"
               >
                 <Link.Icon className="size-4 shrink-0">
                   <ExternalLink className="size-full" />
@@ -74,7 +74,7 @@ export function BookmarkDetailsCard({
             </div>
             <Typography.Paragraph
               size="sm"
-              className="font-mono text-xs whitespace-pre-wrap"
+              className="font-mono text-xs wrap-break-word whitespace-pre-wrap"
             >
               {`${item.xpath}#${item.offset}`}
             </Typography.Paragraph>

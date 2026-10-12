@@ -8,7 +8,6 @@ import { prettifyError, type z } from "zod";
 import { CreateButton } from "../_components/CreateButton";
 import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
-import { TableEmptyState } from "../_components/TableEmptyState";
 import { TableSearch } from "../_components/TableSearch";
 import { LibraryTable } from "./_components/LibraryTable";
 
@@ -85,13 +84,7 @@ export default function LibraryPage({
             <CreateButton resource="library" />
           </div>
         </div>
-        {list.length === 0 ? (
-          <TableEmptyState>
-            <CreateButton resource="library" collapsible={false} />
-          </TableEmptyState>
-        ) : (
-          <LibraryTable items={list} />
-        )}
+        <LibraryTable items={list} />
       </div>
       <PaginationNav count={count} />
     </div>

@@ -9,6 +9,7 @@ import { useTransition } from "react";
 import { CopyableText } from "../../_components/CopyableText";
 import { DeleteButton } from "../../_components/DeleteButton";
 import { SortButton } from "../../_components/SortButton";
+import { TableEmptyState } from "../../_components/TableEmptyState";
 import { ViewButton } from "../../_components/ViewButton";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import { formatDateTime } from "common";
@@ -50,7 +51,7 @@ export function BookmarkTable({
 
   return (
     <Table
-      className={`bg-background-tertiary dark:bg-surface-secondary min-h-0 ${isPending ? "opacity-60" : undefined}`}
+      className={`bg-background-tertiary dark:bg-surface-secondary min-h-0 ${items.length === 0 ? "flex-1" : undefined} ${isPending ? "opacity-60" : undefined}`}
     >
       <Table.ScrollContainer>
         <Table.Content aria-label="Bookmarks" className="table-fixed min-w-150">
@@ -71,7 +72,14 @@ export function BookmarkTable({
             </Table.Column>
             <Table.Column className="w-28 text-center!">Actions</Table.Column>
           </Table.Header>
-          <Table.Body className="font-mono">
+          <Table.Body
+            className="font-mono"
+            renderEmptyState={() => (
+              <div className="absolute inset-0 bg-background-tertiary dark:bg-surface-secondary">
+                <TableEmptyState />
+              </div>
+            )}
+          >
             {items.map((item) => (
               <Table.Row key={item.id}>
                 <Table.Cell className="text-muted wrap-break-word">

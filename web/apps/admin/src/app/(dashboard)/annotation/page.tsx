@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 import { prettifyError, type z } from "zod";
 import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
-import { TableEmptyState } from "../_components/TableEmptyState";
 import { AnnotationTable } from "./_components/AnnotationTable";
 
 type AnnotationFilter = z.infer<typeof Annotation.list>["filter"][number];
@@ -75,11 +74,7 @@ export default function AnnotationPage({
     <div className="flex h-full min-h-0 flex-col gap-3">
       <div className="min-h-0 h-full flex flex-col gap-3">
         <TableDateFilter fields={DATE_FIELDS} />
-        {list.length === 0 ? (
-          <TableEmptyState />
-        ) : (
-          <AnnotationTable items={list} />
-        )}
+        <AnnotationTable items={list} />
       </div>
       <PaginationNav count={count} />
     </div>

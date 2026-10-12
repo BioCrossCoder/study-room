@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 import { prettifyError, type z } from "zod";
 import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
-import { TableEmptyState } from "../_components/TableEmptyState";
 import { TableSearch } from "../_components/TableSearch";
 import { SummaryTable } from "./_components/SummaryTable";
 
@@ -81,11 +80,7 @@ export default function SummaryPage({
           <TableDateFilter fields={DATE_FIELDS} />
           <TableSearch fields={FIELDS} />
         </div>
-        {list.length === 0 ? (
-          <TableEmptyState />
-        ) : (
-          <SummaryTable items={list} />
-        )}
+        <SummaryTable items={list} />
       </div>
       <PaginationNav count={count} />
     </div>

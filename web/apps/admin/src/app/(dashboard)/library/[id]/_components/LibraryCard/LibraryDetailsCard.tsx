@@ -21,7 +21,9 @@ export function LibraryDetailsCard({
       <Card.Header>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <Card.Title className="truncate text-lg">{item.name}</Card.Title>
+            <Card.Title className="text-lg wrap-break-word">
+              {item.name}
+            </Card.Title>
             <Card.Description className="font-mono text-xs">
               {item.id}
             </Card.Description>

@@ -29,7 +29,7 @@ export function BookmarkDetailsCard({
                 <Link.Icon className="size-4 shrink-0">
                   <ExternalLink className="size-full" />
                 </Link.Icon>
-                <span className="min-w-0 truncate">{item.url}</span>
+                <span className="min-w-0 wrap-break-word">{item.url}</span>
               </Link>
             </Card.Title>
             <Card.Description className="font-mono text-xs">

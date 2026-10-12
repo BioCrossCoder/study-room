@@ -1,7 +1,6 @@
 "use client";
 
 import type { TimeRange } from "@/common/datetime";
-import type { LibraryFilter } from "@/models/types";
 import {
   DAY_START,
   LOCALE,
@@ -33,17 +32,14 @@ import { X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState, useTransition } from "react";
 
-const FIELDS = [
-  { id: "createAt", label: "Created" },
-  { id: "updateAt", label: "Updated" },
-] as const;
-
 const GRANULARITY = "minute";
 const HOUR_CYCLE = 24;
 
-type Field = (typeof FIELDS)[number]["id"];
-
-export function TableDateFilter() {
+export function TableDateFilter({
+  fields: FIELDS,
+}: {
+  fields: readonly { id: string; label: string }[];
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -52,18 +48,18 @@ export function TableDateFilter() {
 
   const timeZone = useTimeZone();
   const filterParam = searchParams.get("filter");
-  const filter = parseFilterParam<LibraryFilter>(filterParam);
+  const filter = parseFilterParam<Record<string, unknown>>(filterParam);
   const applied =
     FIELDS.find((item) => filter[item.id] != null)?.id ?? FIELDS[0].id;
   const syncKey = `${timeZone}|${filterParam ?? ""}`;
 
-  const [field, setField] = useState<Field>(applied);
+  const [field, setField] = useState<string>(applied);
   const [isOpen, setIsOpen] = useState(false);
 
   const range = useMemo(
     () =>
       readTimeFilter(
-        parseFilterParam<LibraryFilter>(filterParam)[applied],
+        parseFilterParam<Record<string, unknown>>(filterParam)[applied],
         timeZone,
       ),
     [filterParam, applied, timeZone],
@@ -83,12 +79,11 @@ export function TableDateFilter() {
     [timeZone],
   );
 
-  const apply = (nextField: Field, nextRange: TimeRange | null) => {
+  const apply = (nextField: string, nextRange: TimeRange | null) => {
     const query = new URLSearchParams(searchParams);
     const filter = {
-      ...parseFilterParam<LibraryFilter>(query.get("filter")),
-      createAt: undefined,
-      updateAt: undefined,
+      ...parseFilterParam<Record<string, unknown>>(query.get("filter")),
+      ...Object.fromEntries(FIELDS.map(({ id }) => [id, undefined] as const)),
       [nextField]: writeTimeFilter(nextRange, timeZone),
     };
     query.set("filter", JSON.stringify([filter]));
@@ -107,7 +102,7 @@ export function TableDateFilter() {
             selectionMode="single"
             value={field}
             onChange={(key) => {
-              const next = key as Field;
+              const next = key as string;
               setField(next);
               apply(next, range);
             }}

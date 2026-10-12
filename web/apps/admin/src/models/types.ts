@@ -1,9 +1,7 @@
 import type { z } from "zod";
-import { Library, sort } from "./api";
+import { sort, time } from "./api";
 
 export type Sort = z.infer<typeof sort>[number];
-
-export type LibraryFilter = z.infer<typeof Library.list>["filter"][number];
 
 export type Resource =
   | "library"
@@ -11,3 +9,14 @@ export type Resource =
   | "bookmark"
   | "annotation"
   | "summary";
+
+export type TimeFilter = z.infer<typeof time>;
+
+export type TimestampFilter<T> = {
+  [K in keyof T as NonNullable<T[K]> extends TimeFilter ? K : never]: T[K];
+};
+
+export type TimestampFields<T> = readonly {
+  id: keyof TimestampFilter<T> & string;
+  label: string;
+}[];

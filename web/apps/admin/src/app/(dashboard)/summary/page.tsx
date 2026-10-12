@@ -1,9 +1,10 @@
 import { SummaryService } from "@/services/summary";
 import { use } from "react";
 import { Summary } from "@/models/api";
+import type { TimestampFields } from "@/models/types";
 import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
-import { prettifyError } from "zod";
+import { prettifyError, type z } from "zod";
 import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
 import { TableEmptyState } from "../_components/TableEmptyState";
@@ -11,6 +12,13 @@ import { TableSearch } from "../_components/TableSearch";
 import { SummaryTable } from "./_components/SummaryTable";
 
 const FIELDS = [{ id: "url", label: "URL" }] as const;
+
+type SummaryFilter = z.infer<typeof Summary.list>["filter"][number];
+
+const DATE_FIELDS = [
+  { id: "createAt", label: "Created" },
+  { id: "updateAt", label: "Updated" },
+] as const satisfies TimestampFields<SummaryFilter>;
 
 export default function SummaryPage({
   searchParams,
@@ -70,7 +78,7 @@ export default function SummaryPage({
     <div className="flex h-full min-h-0 flex-col gap-3">
       <div className="min-h-0 h-full flex flex-col gap-3">
         <div className="flex flex-wrap gap-3 justify-between">
-          <TableDateFilter />
+          <TableDateFilter fields={DATE_FIELDS} />
           <TableSearch fields={FIELDS} />
         </div>
         {list.length === 0 ? (

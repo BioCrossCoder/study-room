@@ -1,9 +1,10 @@
 import { LibraryService } from "@/services/library";
 import { use } from "react";
 import { Library } from "@/models/api";
+import type { TimestampFields } from "@/models/types";
 import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
-import { prettifyError } from "zod";
+import { prettifyError, type z } from "zod";
 import { CreateButton } from "../_components/CreateButton";
 import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
@@ -12,6 +13,13 @@ import { TableSearch } from "../_components/TableSearch";
 import { LibraryTable } from "./_components/LibraryTable";
 
 const FIELDS = [{ id: "name", label: "Name" }] as const;
+
+type LibraryFilter = z.infer<typeof Library.list>["filter"][number];
+
+const DATE_FIELDS = [
+  { id: "createAt", label: "Created" },
+  { id: "updateAt", label: "Updated" },
+] as const satisfies TimestampFields<LibraryFilter>;
 
 export default function LibraryPage({
   searchParams,
@@ -71,7 +79,7 @@ export default function LibraryPage({
     <div className="flex h-full min-h-0 flex-col gap-3">
       <div className="min-h-0 h-full flex flex-col gap-3">
         <div className="flex flex-wrap gap-3 justify-between">
-          <TableDateFilter />
+          <TableDateFilter fields={DATE_FIELDS} />
           <div className="flex w-full gap-3 lg:w-auto">
             <TableSearch fields={FIELDS} />
             <CreateButton resource="library" />

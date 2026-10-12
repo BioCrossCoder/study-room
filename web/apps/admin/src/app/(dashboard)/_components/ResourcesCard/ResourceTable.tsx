@@ -1,19 +1,17 @@
 "use client";
 
 import type { resource } from "@/models/orm";
-import { Button, Table } from "@heroui/react";
-import { Eye } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Table } from "@heroui/react";
 import { formatDateTime } from "common";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import { ClippedText } from "../ClippedText";
+import { ViewButton } from "../ViewButton";
 
 export function ResourceTable({
   items,
 }: {
   items: (typeof resource.$inferSelect)[];
 }) {
-  const router = useRouter();
   const timeZone = useTimeZone();
   return (
     <Table className="min-h-0 flex-1">
@@ -49,16 +47,7 @@ export function ResourceTable({
                 </Table.Cell>
                 <Table.Cell>
                   <div className="flex justify-around">
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      variant="ghost"
-                      className="bg-surface-secondary hover:bg-surface-tertiary"
-                      aria-label="View details"
-                      onPress={() => router.push(`/resource/${item.id}`)}
-                    >
-                      <Eye />
-                    </Button>
+                    <ViewButton resource="resource" id={item.id} />
                   </div>
                 </Table.Cell>
               </Table.Row>

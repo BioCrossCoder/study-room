@@ -3,12 +3,13 @@
 import type { library } from "@/models/orm";
 import type { Sort } from "@/models/types";
 import { removeLibrary } from "@/actions/library";
-import { Button, Table } from "@heroui/react";
-import { ArrowDown, ArrowUp, ChevronsUpDown, Eye } from "lucide-react";
+import { Table } from "@heroui/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { ClippedText } from "../../_components/ClippedText";
 import { DeleteButton } from "../../_components/DeleteButton";
+import { SortButton } from "../../_components/SortButton";
+import { ViewButton } from "../../_components/ViewButton";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import { formatDateTime } from "common";
 
@@ -59,42 +60,14 @@ export function LibraryTable({
             </Table.Column>
             <Table.Column>Name</Table.Column>
             <Table.Column className="w-32 lg:w-40 xl:w-68">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-inherit w-full! text-xs hover:bg-transparent"
-                onPress={() => toggleSort("createAt")}
-              >
+              <SortButton field="createAt" sort={primary} onSort={toggleSort}>
                 Created
-                {primary.field === "createAt" ? (
-                  primary.direction === "asc" ? (
-                    <ArrowUp className="text-accent size-3.5" />
-                  ) : (
-                    <ArrowDown className="text-accent size-3.5" />
-                  )
-                ) : (
-                  <ChevronsUpDown className="text-muted size-3.5" />
-                )}
-              </Button>
+              </SortButton>
             </Table.Column>
             <Table.Column className="w-32 lg:w-40 xl:w-68">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-inherit w-full! text-xs hover:bg-transparent"
-                onPress={() => toggleSort("updateAt")}
-              >
+              <SortButton field="updateAt" sort={primary} onSort={toggleSort}>
                 Updated
-                {primary.field === "updateAt" ? (
-                  primary.direction === "asc" ? (
-                    <ArrowUp className="text-accent size-3.5" />
-                  ) : (
-                    <ArrowDown className="text-accent size-3.5" />
-                  )
-                ) : (
-                  <ChevronsUpDown className="text-muted size-3.5" />
-                )}
-              </Button>
+              </SortButton>
             </Table.Column>
             <Table.Column className="w-28 text-center!">Actions</Table.Column>
           </Table.Header>
@@ -113,16 +86,7 @@ export function LibraryTable({
                 </Table.Cell>
                 <Table.Cell>
                   <div className="flex justify-around">
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      variant="ghost"
-                      className="bg-surface-secondary hover:bg-surface-tertiary"
-                      aria-label="View details"
-                      onPress={() => router.push(`/library/${item.id}`)}
-                    >
-                      <Eye />
-                    </Button>
+                    <ViewButton resource="library" id={item.id} />
                     <DeleteButton
                       id={item.id}
                       name={item.name}

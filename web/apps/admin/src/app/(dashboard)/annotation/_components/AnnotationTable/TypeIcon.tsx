@@ -1,10 +1,8 @@
 "use client";
 
-import { annotationTypes } from "@/models/enums";
+import type { AnnotationType } from "@/models/types";
 import type { LucideIcon } from "lucide-react";
 import { ArrowLeftRight, MessageSquareText, Minus, Plus } from "lucide-react";
-
-type AnnotationType = (typeof annotationTypes)[number];
 
 const TYPE_ICONS = {
   replace: ArrowLeftRight,

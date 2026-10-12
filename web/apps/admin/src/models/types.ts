@@ -1,5 +1,6 @@
 import type { z } from "zod";
 import { sort, time } from "./api";
+import { annotationTypes } from "./enums";
 
 export type Sort = z.infer<typeof sort>[number];
 
@@ -9,6 +10,8 @@ export type Resource =
   | "bookmark"
   | "annotation"
   | "summary";
+
+export type AnnotationType = (typeof annotationTypes)[number];
 
 export type TimeFilter = z.infer<typeof time>;
 

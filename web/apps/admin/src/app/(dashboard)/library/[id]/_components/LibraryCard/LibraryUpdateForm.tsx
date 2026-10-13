@@ -16,7 +16,13 @@ import {
 } from "@heroui/react";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState, useRef, useState } from "react";
+import {
+  useEffect,
+  useEffectEvent,
+  useActionState,
+  useRef,
+  useState,
+} from "react";
 import type { SyntheticEvent } from "react";
 import { formatDateTime } from "common";
 import { useTimeZone } from "@/hooks/useTimeZone";
@@ -42,23 +48,31 @@ export function LibraryUpdateForm({
     description: item.description,
   });
 
-  const [, formAction, isPending] = useActionState(
+  const [state, formAction, isPending] = useActionState(
     async (_prev: ActionResult<null> | null, form: FormData) => {
       form.set("id", item.id);
-      const result = await updateLibrary(null, form);
-      if (result.ok) {
-        overlay.close();
-        onSaved();
-        router.refresh();
-      } else {
-        toast.danger("Failed to save changes", {
-          description: result.error.message,
-        });
-      }
-      return result;
+      return updateLibrary(null, form);
     },
     null,
   );
+
+  const handleSettled = useEffectEvent((result: ActionResult<null>) => {
+    if (!result.ok) {
+      toast.danger("Failed to save changes", {
+        description: result.error.message,
+      });
+      return;
+    }
+    overlay.close();
+    onSaved();
+    router.refresh();
+  });
+
+  useEffect(() => {
+    if (state) {
+      handleSettled(state);
+    }
+  }, [state]);
 
   const handleDiscard = () => {
     overlay.close();

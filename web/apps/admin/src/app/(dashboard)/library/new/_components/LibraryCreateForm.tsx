@@ -15,7 +15,7 @@ import {
 } from "@heroui/react";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState, useRef } from "react";
+import { useEffect, useEffectEvent, useActionState, useRef } from "react";
 import type { SyntheticEvent } from "react";
 import { ConfirmDialog } from "../../../_components/ConfirmDialog";
 import { DiscardButton } from "../../../_components/DiscardButton";
@@ -26,21 +26,24 @@ export function LibraryCreateForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const confirmedRef = useRef(false);
 
-  const [, formAction, isPending] = useActionState(
-    async (_prev: ActionResult<string[]> | null, form: FormData) => {
-      const result = await createLibrary(null, form);
-      if (result.ok) {
-        overlay.close();
-        router.push(`/library/${result.data[0]}`);
-      } else {
-        toast.danger("Failed to create library", {
-          description: result.error.message,
-        });
-      }
-      return result;
-    },
-    null,
-  );
+  const [state, formAction, isPending] = useActionState(createLibrary, null);
+
+  const handleSettled = useEffectEvent((result: ActionResult<string[]>) => {
+    if (!result.ok) {
+      toast.danger("Failed to create library", {
+        description: result.error.message,
+      });
+      return;
+    }
+    overlay.close();
+    router.push(`/library/${result.data[0]}`);
+  });
+
+  useEffect(() => {
+    if (state) {
+      handleSettled(state);
+    }
+  }, [state]);
 
   const handleSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
     if (confirmedRef.current) {

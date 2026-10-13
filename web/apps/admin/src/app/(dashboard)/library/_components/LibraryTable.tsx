@@ -8,6 +8,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { CopyableText } from "../../_components/CopyableText";
 import { DeleteButton } from "../../_components/DeleteButton";
+import { PaginationNav } from "../../_components/PaginationNav";
 import { SortButton } from "../../_components/SortButton";
 import { TableEmptyState } from "../../_components/TableEmptyState";
 import { ViewButton } from "../../_components/ViewButton";
@@ -16,8 +17,10 @@ import { formatDateTime } from "common";
 
 export function LibraryTable({
   items,
+  count,
 }: {
   items: (typeof library.$inferSelect)[];
+  count: number;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -108,6 +111,9 @@ export function LibraryTable({
           </Table.Body>
         </Table.Content>
       </Table.ScrollContainer>
+      <Table.Footer>
+        <PaginationNav count={count} />
+      </Table.Footer>
     </Table>
   );
 }

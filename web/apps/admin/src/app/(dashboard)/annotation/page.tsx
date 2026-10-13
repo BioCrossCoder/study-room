@@ -5,7 +5,6 @@ import type { TimestampFields } from "@/models/types";
 import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
 import { prettifyError, type z } from "zod";
-import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
 import { AnnotationTable } from "./_components/AnnotationTable";
 
@@ -74,9 +73,8 @@ export default function AnnotationPage({
     <div className="flex h-full min-h-0 flex-col gap-3">
       <div className="min-h-0 h-full flex flex-col gap-3">
         <TableDateFilter fields={DATE_FIELDS} />
-        <AnnotationTable items={list} />
+        <AnnotationTable items={list} count={count} />
       </div>
-      <PaginationNav count={count} />
     </div>
   );
 }

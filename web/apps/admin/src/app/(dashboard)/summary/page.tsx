@@ -5,7 +5,6 @@ import type { TimestampFields } from "@/models/types";
 import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
 import { prettifyError, type z } from "zod";
-import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
 import { TableSearch } from "../_components/TableSearch";
 import { SummaryTable } from "./_components/SummaryTable";
@@ -80,9 +79,8 @@ export default function SummaryPage({
           <TableDateFilter fields={DATE_FIELDS} />
           <TableSearch fields={FIELDS} />
         </div>
-        <SummaryTable items={list} />
+        <SummaryTable items={list} count={count} />
       </div>
-      <PaginationNav count={count} />
     </div>
   );
 }

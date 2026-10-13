@@ -6,7 +6,6 @@ import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
 import { prettifyError, type z } from "zod";
 import { CreateButton } from "../_components/CreateButton";
-import { PaginationNav } from "../_components/PaginationNav";
 import { TableDateFilter } from "../_components/TableDateFilter";
 import { TableSearch } from "../_components/TableSearch";
 import { LibraryTable } from "./_components/LibraryTable";
@@ -84,9 +83,8 @@ export default function LibraryPage({
             <CreateButton resource="library" />
           </div>
         </div>
-        <LibraryTable items={list} />
+        <LibraryTable items={list} count={count} />
       </div>
-      <PaginationNav count={count} />
     </div>
   );
 }

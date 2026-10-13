@@ -113,9 +113,11 @@ export function SummaryTable({
           </Table.Body>
         </Table.Content>
       </Table.ScrollContainer>
-      <Table.Footer>
-        <PaginationNav count={count} />
-      </Table.Footer>
+      {items.length > 0 && (
+        <Table.Footer>
+          <PaginationNav count={count} />
+        </Table.Footer>
+      )}
     </Table>
   );
 }

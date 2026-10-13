@@ -2,6 +2,8 @@
 
 import { Breadcrumbs, Button, Label, ListBox, Toast } from "@heroui/react";
 import {
+  ArrowLeft,
+  ArrowRight,
   Bookmark,
   Files,
   Library,
@@ -135,6 +137,28 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
               </Breadcrumbs.Item>
             ))}
           </Breadcrumbs>
+          <div className="ml-auto flex shrink-0 items-center gap-1">
+            <Button
+              isIconOnly
+              size="sm"
+              variant="ghost"
+              // isDisabled={!canGoBack}
+              aria-label="Go back"
+              onPress={router.back}
+            >
+              <ArrowLeft />
+            </Button>
+            <Button
+              isIconOnly
+              size="sm"
+              variant="ghost"
+              // isDisabled={!canGoForward}
+              aria-label="Go forward"
+              onPress={router.forward}
+            >
+              <ArrowRight />
+            </Button>
+          </div>
         </header>
         {!isCompact || !floating ? null : (
           <div

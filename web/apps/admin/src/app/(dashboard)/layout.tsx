@@ -167,8 +167,8 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
             onClick={() => setFloating(false)}
           />
         )}
-        <main className="bg-background flex-1 overflow-y-auto p-3">
-          {children}
+        <main className="bg-background flex-1 overflow-y-auto @container">
+          <div className="h-full p-3">{children}</div>
         </main>
       </div>
     </div>

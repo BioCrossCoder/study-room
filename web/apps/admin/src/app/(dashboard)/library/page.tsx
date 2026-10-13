@@ -76,9 +76,9 @@ export default function LibraryPage({
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
       <div className="min-h-0 h-full flex flex-col gap-3">
-        <div className="flex flex-wrap gap-3 justify-between">
+        <div className="flex flex-wrap gap-3 justify-between @toolbar-md:flex-nowrap">
           <TableDateFilter fields={DATE_FIELDS} />
-          <div className="flex w-full gap-3 lg:w-auto">
+          <div className="flex w-full gap-3 @toolbar-md:w-auto">
             <TableSearch fields={FIELDS} />
             <CreateButton resource="library" />
           </div>

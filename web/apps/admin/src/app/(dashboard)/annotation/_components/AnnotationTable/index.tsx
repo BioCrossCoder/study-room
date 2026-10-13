@@ -89,31 +89,31 @@ export function AnnotationTable({
       <Table.ScrollContainer>
         <Table.Content
           aria-label="Annotations"
-          className="table-fixed min-w-216 lg:min-w-258 xl:min-w-314 2xl:min-w-366"
+          className="table-fixed min-w-216 @5xl:min-w-258 @7xl:min-w-314 @8xl:min-w-366"
         >
           <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-background-tertiary dark:[&_th]:bg-surface-secondary">
-            <Table.Column isRowHeader className="w-40 lg:w-50 2xl:w-85">
+            <Table.Column isRowHeader className="w-40 @5xl:w-50 @8xl:w-85">
               ID
             </Table.Column>
-            <Table.Column className="w-32 lg:w-40 2xl:w-52">
+            <Table.Column className="w-32 @5xl:w-40 @8xl:w-52">
               <UrlFilter
                 value={urlFilter}
                 onApply={(url) => applyFilter({ url, types: typeFilter })}
               />
             </Table.Column>
-            <Table.Column className="w-20 lg:w-24">
+            <Table.Column className="w-20 @5xl:w-24">
               <TypeFilter
                 value={typeFilter}
                 onApply={(types) => applyFilter({ url: urlFilter, types })}
               />
             </Table.Column>
             <Table.Column>Content</Table.Column>
-            <Table.Column className="w-32 lg:w-40 xl:w-68">
+            <Table.Column className="w-32 @5xl:w-40 @7xl:w-68">
               <SortButton field="createAt" sort={primary} onSort={toggleSort}>
                 Created
               </SortButton>
             </Table.Column>
-            <Table.Column className="w-32 lg:w-40 xl:w-68">
+            <Table.Column className="w-32 @5xl:w-40 @7xl:w-68">
               <SortButton field="updateAt" sort={primary} onSort={toggleSort}>
                 Updated
               </SortButton>

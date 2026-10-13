@@ -59,16 +59,16 @@ export function SummaryTable({
       <Table.ScrollContainer>
         <Table.Content aria-label="Summaries" className="table-fixed min-w-150">
           <Table.Header className="[&_th]:sticky [&_th]:top-0 [&_th]:z-2 [&_th]:bg-background-tertiary dark:[&_th]:bg-surface-secondary">
-            <Table.Column isRowHeader className="w-40 lg:w-50 2xl:w-85">
+            <Table.Column isRowHeader className="w-40 @5xl:w-50 @8xl:w-85">
               ID
             </Table.Column>
             <Table.Column>URL</Table.Column>
-            <Table.Column className="w-32 lg:w-40 xl:w-68">
+            <Table.Column className="w-32 @5xl:w-40 @7xl:w-68">
               <SortButton field="createAt" sort={primary} onSort={toggleSort}>
                 Created
               </SortButton>
             </Table.Column>
-            <Table.Column className="w-32 lg:w-40 xl:w-68">
+            <Table.Column className="w-32 @5xl:w-40 @7xl:w-68">
               <SortButton field="updateAt" sort={primary} onSort={toggleSort}>
                 Updated
               </SortButton>

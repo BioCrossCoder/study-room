@@ -38,7 +38,7 @@ export function TableSearch<T extends string>({
 
   return (
     <SearchField
-      className="w-full min-w-0 lg:w-auto lg:flex-none"
+      className="w-full min-w-0 @toolbar-md:w-64 @toolbar-md:flex-none"
       value={keyword}
       onChange={(value) => setKeyword(value ?? "")}
       onSubmit={(value) => {
@@ -50,9 +50,9 @@ export function TableSearch<T extends string>({
         search("");
       }}
     >
-      <SearchField.Group className="w-full min-w-0 gap-1 pe-1 lg:w-auto">
+      <SearchField.Group className="w-full min-w-0 gap-1 pe-1 @toolbar-md:w-auto">
         <Select
-          className="w-24 shrink-0 sm:w-28 lg:w-auto"
+          className="w-24 shrink-0 @toolbar-sm:w-28 @toolbar-md:w-auto"
           selectionMode="single"
           value={field}
           onChange={(key) => setField(key as T)}

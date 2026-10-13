@@ -48,20 +48,20 @@ export function BookmarkDetailsCard({
         </div>
       </Card.Header>
       <Card.Content>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="xl:col-span-2">
+        <div className="grid gap-3 @2xl:grid-cols-2 @7xl:grid-cols-4">
+          <div className="@7xl:col-span-2">
             <Description>Created</Description>
             <Typography.Paragraph size="sm">
               {formatDateTime(item.createAt, timeZone)}
             </Typography.Paragraph>
           </div>
-          <div className="xl:col-span-2">
+          <div className="@7xl:col-span-2">
             <Description>Updated</Description>
             <Typography.Paragraph size="sm">
               {formatDateTime(item.updateAt, timeZone)}
             </Typography.Paragraph>
           </div>
-          <div className="min-w-0 sm:col-span-2 xl:col-span-4">
+          <div className="min-w-0 @2xl:col-span-2 @7xl:col-span-4">
             <div className="flex items-center gap-2">
               <Description>Path</Description>
               <Typography.Paragraph

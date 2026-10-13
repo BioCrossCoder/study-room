@@ -95,10 +95,10 @@ export function TableDateFilter({
 
   return (
     <I18nProvider locale={LOCALE}>
-      <div className="flex w-full items-center gap-2 lg:w-auto lg:flex-none">
-        <DateField.Group className="w-full min-w-0 gap-1 pe-1 lg:w-auto">
+      <div className="flex w-full min-w-0 items-center gap-2 @toolbar-md:w-auto @toolbar-md:shrink">
+        <DateField.Group className="w-full min-w-0 gap-1 pe-1 @toolbar-md:w-auto">
           <Select
-            className="w-24 shrink-0 sm:w-28 lg:w-auto"
+            className="min-w-24 shrink-0"
             selectionMode="single"
             value={field}
             onChange={(key) => {
@@ -162,7 +162,7 @@ export function TableDateFilter({
                   <DateRangePicker.Trigger
                     ref={triggerRef}
                     aria-label={`${label} time range`}
-                    className="justify-between gap-2 px-3"
+                    className="justify-between gap-2"
                   >
                     <span className="truncate">{rangeLabel}</span>
                     {range ? null : <DateRangePicker.TriggerIndicator />}

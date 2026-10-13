@@ -48,7 +48,7 @@ export function AnnotationDetailsCard({
         </div>
       </Card.Header>
       <Card.Content>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 @2xl:grid-cols-2 @7xl:grid-cols-4">
           <div>
             <Description>Created</Description>
             <Typography.Paragraph size="sm">
@@ -65,7 +65,7 @@ export function AnnotationDetailsCard({
             <Description>Type</Description>
             <Typography.Paragraph size="sm">{item.type}</Typography.Paragraph>
           </div>
-          <div className="min-w-0 sm:col-span-2 xl:col-span-4">
+          <div className="min-w-0 @2xl:col-span-2 @7xl:col-span-4">
             <div className="flex items-center gap-2">
               <Description>Path</Description>
               <Typography.Paragraph
@@ -83,7 +83,7 @@ export function AnnotationDetailsCard({
               {`${item.start}#${item.startOffset}~${item.end}#${item.endOffset}`}
             </Typography.Paragraph>
           </div>
-          <div className="sm:col-span-2 xl:col-span-4">
+          <div className="@2xl:col-span-2 @7xl:col-span-4">
             <Description>Content</Description>
             <Typography.Paragraph size="sm" className="whitespace-pre-wrap">
               {item.content}

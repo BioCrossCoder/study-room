@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import "ui/src/assets/style.css";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Study Room",

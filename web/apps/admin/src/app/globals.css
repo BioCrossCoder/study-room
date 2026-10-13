@@ -1,0 +1,8 @@
+@import "ui/src/assets/style.css";
+
+@theme {
+  --container-8xl: 96rem;
+  --container-toolbar-sm: 40rem;
+  --container-toolbar-md: 50.875rem;
+  --container-pagination-md: 43.3125rem;
+}

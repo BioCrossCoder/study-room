@@ -103,17 +103,17 @@ export function LibraryCreateForm() {
           </div>
         </Card.Header>
         <Card.Content>
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 @2xl:grid-cols-2 @7xl:grid-cols-4">
             <TextField
               name="url"
               type="url"
               isRequired
-              className="sm:col-span-2"
+              className="@2xl:col-span-2"
             >
               <Label className="text-muted">URL</Label>
               <Input className="[--field-background:var(--surface-secondary)]" />
             </TextField>
-            <div className="grid grid-cols-2 gap-3 sm:col-span-2">
+            <div className="grid grid-cols-2 gap-3 @2xl:col-span-2">
               <TextField isDisabled>
                 <Label className="text-muted">Created</Label>
                 <Input value="-" />
@@ -126,7 +126,7 @@ export function LibraryCreateForm() {
             <TextField
               name="description"
               isRequired
-              className="sm:col-span-2 xl:col-span-4"
+              className="@2xl:col-span-2 @7xl:col-span-4"
             >
               <Label className="text-muted">Description</Label>
               <TextArea

@@ -20,6 +20,7 @@ export function PaginationNav({ count }: { count: number }) {
               aria-label="Previous page"
               isDisabled={page <= 1}
               onPress={() => go(page - 1)}
+              className="size-7 md:size-6"
             >
               <Pagination.PreviousIcon />
             </Pagination.Previous>
@@ -27,12 +28,12 @@ export function PaginationNav({ count }: { count: number }) {
           {pages.map((item, index) => (
             <Pagination.Item key={`${item}-${index}`}>
               {item === "..." ? (
-                <Pagination.Ellipsis />
+                <Pagination.Ellipsis className="size-7 md:size-6" />
               ) : (
                 <Pagination.Link
                   isActive={item === page}
                   onPress={() => go(item)}
-                  className={item === page ? "ring-accent ring-2" : undefined}
+                  className={`size-7 md:size-6${item === page ? " ring-accent ring-2" : ""}`}
                 >
                   {item}
                 </Pagination.Link>
@@ -44,6 +45,7 @@ export function PaginationNav({ count }: { count: number }) {
               aria-label="Next page"
               isDisabled={page >= total}
               onPress={() => go(page + 1)}
+              className="size-7 md:size-6"
             >
               <Pagination.NextIcon />
             </Pagination.Next>
@@ -57,12 +59,15 @@ export function PaginationNav({ count }: { count: number }) {
             key={option}
             size="sm"
             variant={option === size ? "primary" : "ghost"}
+            className="h-7 px-2 md:h-6"
             onPress={() => go(1, option)}
           >
             {option}
           </Button>
         ))}
-        <span className="text-muted px-2 text-sm">Records / Page</span>
+        <span className="text-muted px-2 text-xs font-mono">
+          Records / Page
+        </span>
       </div>
     </div>
   );

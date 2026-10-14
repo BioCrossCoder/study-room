@@ -98,7 +98,7 @@ export function TableDateFilter({
       <div className="flex w-full min-w-0 items-center gap-2 @toolbar-md:w-auto @toolbar-md:shrink">
         <DateField.Group className="w-full min-w-0 gap-1 pe-1 @toolbar-md:w-auto">
           <Select
-            className="min-w-24 shrink-0"
+            className="@max-toolbar-md:min-w-25 shrink-0"
             selectionMode="single"
             value={field}
             onChange={(key) => {

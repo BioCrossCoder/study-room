@@ -52,7 +52,7 @@ export function TableSearch<T extends string>({
     >
       <SearchField.Group className="w-full min-w-0 gap-1 pe-1 @toolbar-md:w-auto">
         <Select
-          className="w-24 shrink-0 @toolbar-sm:w-28 @toolbar-md:w-auto"
+          className="@max-toolbar-md:min-w-25 shrink-0"
           selectionMode="single"
           value={field}
           onChange={(key) => setField(key as T)}

@@ -75,7 +75,7 @@ export default function BookmarkPage({
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
       <div className="min-h-0 h-full flex flex-col gap-3">
-        <div className="flex flex-wrap gap-3 justify-between">
+        <div className="flex flex-wrap gap-3 justify-between @toolbar-md:flex-nowrap">
           <TableDateFilter fields={DATE_FIELDS} />
           <TableSearch fields={FIELDS} />
         </div>

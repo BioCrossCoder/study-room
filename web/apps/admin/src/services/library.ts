@@ -12,7 +12,7 @@ import { v7 as uuidV7 } from "uuid";
 import z from "zod";
 import { buildOrder, buildTimeFilter, pager } from "./utils";
 
-export const LibraryService = { create, update, remove, get, list };
+export const LibraryService = { create, update, remove, get, getByIds, list };
 
 async function create(
   data: z.infer<typeof Library.create>,
@@ -81,6 +81,22 @@ async function get(where: z.infer<typeof Library.get>): Promise<
     wrapError,
   );
   return result.isOk() ? ok(result.value ?? null) : err(result.error);
+}
+
+async function getByIds(
+  ids: string[],
+): Promise<Result<{ id: string; name: string }[], Error>> {
+  if (ids.length === 0) {
+    return ok([]);
+  }
+  const result = await ResultAsync.fromPromise(
+    db
+      .select({ id: library.id, name: library.name })
+      .from(library)
+      .where(inArray(library.id, ids)),
+    wrapError,
+  );
+  return result.isOk() ? ok(result.value) : err(result.error);
 }
 
 async function list(

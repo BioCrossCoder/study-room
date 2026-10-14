@@ -1,19 +1,23 @@
 "use client";
 
-import type { Sort } from "@/models/types";
 import { Button } from "@heroui/react";
 import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
 import type { PropsWithChildren } from "react";
 
-export function SortButton({
+type SortItem = {
+  field: string;
+  direction: "asc" | "desc";
+};
+
+export function SortButton<T extends SortItem>({
   field,
   sort,
   onSort,
   children,
 }: PropsWithChildren<{
-  field: Sort["field"];
-  sort: Sort;
-  onSort: (field: Sort["field"]) => void;
+  field: T["field"];
+  sort: T;
+  onSort: (field: T["field"]) => void;
 }>) {
   const isActive = sort.field === field;
 

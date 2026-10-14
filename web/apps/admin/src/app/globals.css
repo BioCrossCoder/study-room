@@ -2,6 +2,7 @@
 
 @theme {
   --container-8xl: 96rem;
+  --container-9xl: 100rem;
   --container-toolbar-sm: 40rem;
   --container-toolbar-md: 52rem;
 }

@@ -83,9 +83,16 @@ async function get(where: z.infer<typeof Resource.get>): Promise<
   return result.isOk() ? ok(result.value ?? null) : err(result.error);
 }
 
-async function list(
-  params: z.infer<typeof Resource.list>,
-): Promise<Result<ListResult<typeof resource.$inferSelect>, Error>> {
+async function list(params: z.infer<typeof Resource.list>): Promise<
+  Result<
+    ListResult<
+      typeof resource.$inferSelect & {
+        library: typeof library.$inferSelect | null;
+      }
+    >,
+    Error
+  >
+> {
   const { filter, sort, pagination } = params;
   const RAW = buildWhere(filter);
   const result = await ResultAsync.fromPromise(
@@ -93,6 +100,9 @@ async function list(
       const list = await tx.query.resource.findMany({
         where: { RAW },
         orderBy: (fields) => buildOrder(sort, fields),
+        with: {
+          library: true,
+        },
         ...pager(pagination),
       });
       const count = await tx.$count(resource, RAW(resource, operators));

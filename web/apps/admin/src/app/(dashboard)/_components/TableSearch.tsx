@@ -38,6 +38,7 @@ export function TableSearch<T extends string>({
 
   return (
     <SearchField
+      aria-label="Search"
       className="w-full min-w-0 @toolbar-md:w-64 @toolbar-md:flex-none"
       value={keyword}
       onChange={(value) => setKeyword(value ?? "")}
@@ -52,6 +53,7 @@ export function TableSearch<T extends string>({
     >
       <SearchField.Group className="w-full min-w-0 gap-1 pe-1 @toolbar-md:w-auto">
         <Select
+          aria-label="Search field"
           className="@max-toolbar-md:min-w-25 shrink-0"
           selectionMode="single"
           value={field}

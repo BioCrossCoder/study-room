@@ -63,7 +63,9 @@ export function LibraryDetailsCard({
                 <Link.Icon className="size-4">
                   <ExternalLink className="size-full" />
                 </Link.Icon>
-                <span className="min-w-0 flex-1 truncate">{item.url}</span>
+                <span className="min-w-0 flex-1 wrap-break-word">
+                  {item.url}
+                </span>
               </Link>
             </Typography.Paragraph>
           </div>

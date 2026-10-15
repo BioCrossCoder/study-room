@@ -63,7 +63,9 @@ export function ResourceDetailsCard({
                 <Link.Icon className="size-4">
                   <ExternalLink className="size-full" />
                 </Link.Icon>
-                <span className="min-w-0 flex-1 truncate">{item.url}</span>
+                <span className="min-w-0 flex-1 wrap-break-word">
+                  {item.url}
+                </span>
               </Link>
             </Typography.Paragraph>
           </div>
@@ -90,7 +92,7 @@ export function ResourceDetailsCard({
                   <Link.Icon className="size-4">
                     <LinkIcon className="size-full" />
                   </Link.Icon>
-                  <span className="min-w-0 flex-1 truncate">
+                  <span className="min-w-0 flex-1 wrap-break-word">
                     {item.library.name}
                   </span>
                 </Link>
@@ -118,7 +120,7 @@ export function ResourceDetailsCard({
                   <Link.Icon className="size-4">
                     <LinkIcon className="size-full" />
                   </Link.Icon>
-                  <span className="min-w-0 flex-1 truncate">
+                  <span className="min-w-0 flex-1 wrap-break-word">
                     {item.bookmark.id}
                   </span>
                 </Link>

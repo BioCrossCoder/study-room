@@ -100,7 +100,11 @@ export function ResourceTable({
             </Table.Column>
             <Table.Column className="w-40">Name</Table.Column>
             <Table.Column className="w-40">
-              <LibraryFilter value={libraryIds} onApply={applyLibraryFilter} />
+              <LibraryFilter
+                selectionMode="multiple"
+                value={libraryIds}
+                onApply={applyLibraryFilter}
+              />
             </Table.Column>
             <Table.Column className="w-32 @7xl:w-40 @9xl:w-68 text-center!">
               <SortButton field="lastVisit" sort={primary} onSort={toggleSort}>

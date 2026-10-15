@@ -47,7 +47,7 @@ export function DeleteButton({
         isIconOnly
         size="sm"
         variant="ghost"
-        className="bg-danger-soft text-danger hover:bg-danger-soft-hover"
+        className="bg-danger-soft text-danger hover:bg-danger-soft-hover size-8"
         aria-label={`Delete ${resource}`}
       >
         <Trash2 />

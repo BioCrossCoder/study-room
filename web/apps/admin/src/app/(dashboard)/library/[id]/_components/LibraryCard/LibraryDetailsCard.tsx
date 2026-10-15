@@ -33,7 +33,7 @@ export function LibraryDetailsCard({
               isIconOnly
               size="sm"
               variant="ghost"
-              className="bg-surface-secondary hover:bg-surface-tertiary"
+              className="bg-surface-secondary hover:bg-surface-tertiary size-8"
               aria-label="Edit library"
               onPress={onEdit}
             >

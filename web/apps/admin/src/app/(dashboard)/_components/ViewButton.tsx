@@ -18,7 +18,7 @@ export function ViewButton({
       isIconOnly
       size="sm"
       variant="ghost"
-      className="bg-surface-secondary hover:bg-surface-tertiary"
+      className="bg-surface-secondary hover:bg-surface-tertiary size-8"
       aria-label="View details"
       onPress={() => router.push(`/${resource}/${id}`)}
     >

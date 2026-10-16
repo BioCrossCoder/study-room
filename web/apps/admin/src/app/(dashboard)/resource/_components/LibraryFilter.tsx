@@ -181,7 +181,10 @@ export function LibraryFilter({
               <SearchField.ClearButton />
             </SearchField.Group>
           </SearchField>
-          <div className="max-h-72 overflow-y-auto" onScroll={handleScroll}>
+          <div
+            className="-me-1.5 max-h-72 overflow-y-auto [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-(--scrollbar-thumb) [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5"
+            onScroll={handleScroll}
+          >
             <ListBox
               aria-label="Library options"
               selectionMode={single ? "single" : "multiple"}

@@ -127,7 +127,7 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
           >
             <PanelLeft />
           </Button>
-          <Breadcrumbs>
+          <Breadcrumbs className="max-sm:hidden">
             {crumbs.map((crumb, index) => (
               <Breadcrumbs.Item
                 key={crumb.href}

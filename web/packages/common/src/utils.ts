@@ -99,12 +99,15 @@ export function resolveTimeZone() {
   }
 }
 
+const ZERO_OFFSET = /^(?:GMT|UTC)(?:[+-]0+(?::0+)?)?$/;
+
 export function formatTimeZoneLabel(date: Date, timeZone?: string) {
   const parts = getFormatter("offset", timeZone ?? FALLBACK_TIME_ZONE, {
     timeZoneName: "shortOffset",
   }).formatToParts(date);
   const label = parts.find((part) => part.type === "timeZoneName")?.value;
-  return !label || label === "GMT+0" ? FALLBACK_TIME_ZONE_LABEL : label;
+  // 零偏移时区在 Node 与浏览器 ICU 下分别输出 "GMT+0" 和 "GMT"，需统一
+  return !label || ZERO_OFFSET.test(label) ? FALLBACK_TIME_ZONE_LABEL : label;
 }
 
 export function formatDateTime(

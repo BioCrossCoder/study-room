@@ -17,7 +17,7 @@ import { useState } from "react";
 import { COMPACT_MEDIA } from "@/common/media";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { usePathSegments } from "@/hooks/usePathSegments";
-import { UserInfo } from "@/app/(dashboard)/_components/UserInfo";
+import { UserInfo } from "@/app/(dashboard)/components/UserInfo";
 import { useAppHistory } from "@/hooks/useAppHistory";
 
 type NavItem = {

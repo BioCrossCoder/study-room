@@ -2,8 +2,8 @@ import { LibraryService } from "@/services/library";
 import { Library } from "@/models/api";
 import { notFound } from "next/navigation";
 import { prettifyError } from "zod";
-import { LibraryCard } from "./_components/LibraryCard";
-import { ResourcesCard } from "@/app/(dashboard)/_components/ResourcesCard";
+import { LibraryCard } from "./components/LibraryCard";
+import { ResourcesCard } from "@/app/(dashboard)/components/ResourcesCard";
 import { use } from "react";
 
 export default function LibraryDetailPage({

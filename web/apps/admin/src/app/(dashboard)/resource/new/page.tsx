@@ -1,4 +1,4 @@
-import { ResourceCreateForm } from "./_components/ResourceCreateForm";
+import { ResourceCreateForm } from "./components/ResourceCreateForm";
 
 export default function ResourceNewPage() {
   return <ResourceCreateForm />;

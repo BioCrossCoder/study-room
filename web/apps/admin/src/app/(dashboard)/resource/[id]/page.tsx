@@ -3,7 +3,7 @@ import { Resource } from "@/models/api";
 import { notFound } from "next/navigation";
 import { prettifyError } from "zod";
 import { use } from "react";
-import { ResourceCard } from "./_components/ResourceCard";
+import { ResourceCard } from "./components/ResourceCard";
 
 export default function ResourceDetailPage({
   params,

@@ -2,7 +2,7 @@ import { AnnotationService } from "@/services/annotation";
 import { Annotation } from "@/models/api";
 import { notFound } from "next/navigation";
 import { prettifyError } from "zod";
-import { AnnotationDetailsCard } from "./_components/AnnotationDetailsCard";
+import { AnnotationDetailsCard } from "./components/AnnotationDetailsCard";
 import { use } from "react";
 
 export default function AnnotationDetailPage({

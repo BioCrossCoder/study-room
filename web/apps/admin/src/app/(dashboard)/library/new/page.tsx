@@ -1,4 +1,4 @@
-import { LibraryCreateForm } from "./_components/LibraryCreateForm";
+import { LibraryCreateForm } from "./components/LibraryCreateForm";
 
 export default function LibraryNewPage() {
   return <LibraryCreateForm />;

@@ -3,13 +3,15 @@ import { ResourceService } from "@/services/resource";
 import { use } from "react";
 import { Resource } from "@/models/api";
 import type { TimestampFields } from "@/models/types";
+import { readListQuery } from "@/common/filter";
+import { applyListDefaults } from "@/common/list";
 import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
 import { prettifyError, type z } from "zod";
-import { CreateButton } from "../_components/CreateButton";
-import { TableDateFilter } from "../_components/TableDateFilter";
-import { TableSearch } from "../_components/TableSearch";
-import { ResourceTable } from "./_components/ResourceTable";
+import { CreateButton } from "../components/CreateButton";
+import { TableDateFilter } from "../../../components/TableDateFilter";
+import { TableSearch } from "../../../components/TableSearch";
+import { ResourceTable } from "./components/ResourceTable";
 
 const FIELDS = [{ id: "name", label: "Name" }] as const;
 
@@ -32,37 +34,11 @@ export default function ResourcePage({
   }>;
 }) {
   const params = use(searchParams);
-  autoRedirectOnDemand("/resource", params, (params, query) => {
-    let redirect = false;
-    if (!params.sort) {
-      query.set(
-        "sort",
-        JSON.stringify([
-          { field: "createAt", direction: "desc" },
-          { field: "id", direction: "desc" },
-        ]),
-      );
-      redirect = true;
-    }
-    if (!params.page) {
-      query.set("page", "1");
-      redirect = true;
-    }
-    if (!params.size) {
-      query.set("size", "20");
-      redirect = true;
-    }
-    return redirect;
-  });
+  autoRedirectOnDemand("/resource", params, applyListDefaults);
 
-  const { success, data, error } = Resource.list.safeParse({
-    filter: JSON.parse(params.filter ?? "[]"),
-    sort: JSON.parse(params.sort ?? "[]"),
-    pagination: {
-      page: Number.parseInt(params.page as string),
-      size: Number.parseInt(params.size as string),
-    },
-  });
+  const { success, data, error } = Resource.list.safeParse(
+    readListQuery(params),
+  );
   if (!success) {
     console.log(prettifyError(error));
     notFound();

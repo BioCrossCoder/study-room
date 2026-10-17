@@ -2,7 +2,7 @@ import { SummaryService } from "@/services/summary";
 import { Summary } from "@/models/api";
 import { notFound } from "next/navigation";
 import { prettifyError } from "zod";
-import { SummaryDetailsCard } from "./_components/SummaryDetailsCard";
+import { SummaryDetailsCard } from "./components/SummaryDetailsCard";
 import { use } from "react";
 
 export default function SummaryDetailPage({

@@ -2,11 +2,13 @@ import { AnnotationService } from "@/services/annotation";
 import { use } from "react";
 import { Annotation } from "@/models/api";
 import type { TimestampFields } from "@/models/types";
+import { readListQuery } from "@/common/filter";
+import { applyListDefaults } from "@/common/list";
 import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
 import { prettifyError, type z } from "zod";
-import { TableDateFilter } from "../_components/TableDateFilter";
-import { AnnotationTable } from "./_components/AnnotationTable";
+import { TableDateFilter } from "../../../components/TableDateFilter";
+import { AnnotationTable } from "./components/AnnotationTable";
 
 type AnnotationFilter = z.infer<typeof Annotation.list>["filter"][number];
 
@@ -26,37 +28,11 @@ export default function AnnotationPage({
   }>;
 }) {
   const params = use(searchParams);
-  autoRedirectOnDemand("/annotation", params, (params, query) => {
-    let redirect = false;
-    if (!params.sort) {
-      query.set(
-        "sort",
-        JSON.stringify([
-          { field: "createAt", direction: "desc" },
-          { field: "id", direction: "desc" },
-        ]),
-      );
-      redirect = true;
-    }
-    if (!params.page) {
-      query.set("page", "1");
-      redirect = true;
-    }
-    if (!params.size) {
-      query.set("size", "20");
-      redirect = true;
-    }
-    return redirect;
-  });
+  autoRedirectOnDemand("/annotation", params, applyListDefaults);
 
-  const { success, data, error } = Annotation.list.safeParse({
-    filter: JSON.parse(params.filter ?? "[]"),
-    sort: JSON.parse(params.sort ?? "[]"),
-    pagination: {
-      page: Number.parseInt(params.page as string),
-      size: Number.parseInt(params.size as string),
-    },
-  });
+  const { success, data, error } = Annotation.list.safeParse(
+    readListQuery(params),
+  );
   if (!success) {
     console.log(prettifyError(error));
     notFound();

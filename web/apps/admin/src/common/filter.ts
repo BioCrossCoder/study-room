@@ -1,13 +1,26 @@
 import { Result } from "neverthrow";
 
-const parseJSON = Result.fromThrowable(
-  (raw: string | null) => JSON.parse(raw ?? "[]") as unknown,
-);
+export function safeParseJsonArray(
+  raw: string | null | undefined,
+): Record<string, unknown>[] {
+  const parsed = Result.fromThrowable((raw) => JSON.parse(raw ?? "[]"))(
+    raw,
+  ).unwrapOr([]);
+  return Array.isArray(parsed) ? (parsed as Record<string, unknown>[]) : [];
+}
 
-export function parseFilterParam<T extends Record<string, unknown>>(
-  raw: string | null,
-): T {
-  const parsed = parseJSON(raw).unwrapOr([]);
-  const [filter] = Array.isArray(parsed) ? parsed : [];
-  return (filter ?? {}) as T;
+export function readListQuery(params: {
+  filter?: string;
+  sort?: string;
+  page?: string;
+  size?: string;
+}) {
+  return {
+    filter: safeParseJsonArray(params.filter),
+    sort: safeParseJsonArray(params.sort),
+    pagination: {
+      page: Number.parseInt(params.page ?? "1", 10),
+      size: Number.parseInt(params.size ?? "20", 10),
+    },
+  };
 }

@@ -1,0 +1,270 @@
+"use client";
+
+import type { TimeRange } from "@/common/datetime";
+import {
+  DAY_START,
+  LOCALE,
+  formatTimeRange,
+  readTimeFilter,
+  toTimeRange,
+  writeTimeFilter,
+} from "@/common/datetime";
+import { formatTimeZoneLabel } from "common";
+import { useListQuery } from "@/hooks/useListQuery";
+import { useTimeZone } from "@/hooks/useTimeZone";
+import {
+  CalendarDateTime,
+  toCalendarDateTime,
+  today,
+} from "@internationalized/date";
+import {
+  Button,
+  DateField,
+  DateRangePicker,
+  I18nProvider,
+  Label,
+  ListBox,
+  RangeCalendar,
+  Select,
+  TimeField,
+} from "@heroui/react";
+import { X } from "lucide-react";
+import { useRef, useState } from "react";
+
+const GRANULARITY = "minute";
+const HOUR_CYCLE = 24;
+
+export function TableDateFilter({
+  fields: FIELDS,
+}: {
+  fields: readonly { id: string; label: string }[];
+}) {
+  const { base, applyFilter } = useListQuery();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const timeZone = useTimeZone();
+  const applied =
+    FIELDS.find((item) => base[item.id] != null)?.id ?? FIELDS[0].id;
+  const syncKey = `${timeZone}|${JSON.stringify(base)}`;
+
+  const [field, setField] = useState<string>(applied);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const range = readTimeFilter(base[applied], timeZone);
+  const label = FIELDS.find((item) => item.id === field)?.label;
+  const rangeLabel = range ? formatTimeRange(range, timeZone) : "All time";
+  const date = today(timeZone);
+  const maxValue = new CalendarDateTime(
+    date.year,
+    date.month,
+    date.day,
+    23,
+    59,
+    59,
+  );
+  const zoneLabel = formatTimeZoneLabel(new Date(), timeZone);
+
+  const apply = (nextField: string, nextRange: TimeRange | null) => {
+    applyFilter([
+      {
+        ...base,
+        ...Object.fromEntries(FIELDS.map(({ id }) => [id, undefined] as const)),
+        [nextField]: writeTimeFilter(nextRange, timeZone),
+      },
+    ]);
+  };
+
+  return (
+    <I18nProvider locale={LOCALE}>
+      <div className="flex w-full min-w-0 items-center gap-2 @toolbar-md:w-auto @toolbar-md:shrink">
+        <DateField.Group className="w-full min-w-0 gap-1 pe-1 @toolbar-md:w-auto">
+          <Select
+            aria-label="Filter field"
+            className="@max-toolbar-md:min-w-25 shrink-0"
+            selectionMode="single"
+            value={field}
+            onChange={(key) => {
+              const next = key as string;
+              setField(next);
+              apply(next, range);
+            }}
+          >
+            <Select.Trigger>
+              <Select.Value className="text-sm" />
+              <Select.Indicator />
+            </Select.Trigger>
+            <Select.Popover>
+              <ListBox>
+                {FIELDS.map((item) => (
+                  <ListBox.Item
+                    key={item.id}
+                    id={item.id}
+                    textValue={item.label}
+                    className="pe-9"
+                  >
+                    {item.label}
+                    <ListBox.ItemIndicator />
+                  </ListBox.Item>
+                ))}
+              </ListBox>
+            </Select.Popover>
+          </Select>
+          <DateRangePicker
+            key={syncKey}
+            aria-label={`${label} time range`}
+            className="min-w-0 flex-1"
+            granularity={GRANULARITY}
+            hideTimeZone
+            hourCycle={HOUR_CYCLE}
+            isOpen={isOpen}
+            maxValue={maxValue}
+            shouldCloseOnSelect={false}
+            shouldForceLeadingZeros
+            defaultValue={range}
+            onOpenChange={setIsOpen}
+          >
+            {({ state }) => {
+              const startTime = state.timeRange?.start ?? DAY_START;
+              const endTime = state.timeRange?.end ?? DAY_START;
+              const submitDraft = () => {
+                const start = state.dateRange?.start;
+                const end = state.dateRange?.end;
+                const next =
+                  start && end
+                    ? toTimeRange({
+                        start: toCalendarDateTime(start, startTime),
+                        end: toCalendarDateTime(end, endTime),
+                      })
+                    : null;
+                setIsOpen(false);
+                apply(field, next);
+              };
+              return (
+                <>
+                  <DateRangePicker.Trigger
+                    ref={triggerRef}
+                    aria-label={`${label} time range`}
+                    className="justify-between gap-2"
+                  >
+                    <span className="truncate">{rangeLabel}</span>
+                    {range ? null : <DateRangePicker.TriggerIndicator />}
+                  </DateRangePicker.Trigger>
+                  <DateRangePicker.Popover
+                    triggerRef={triggerRef}
+                    className="flex flex-col gap-3"
+                  >
+                    <RangeCalendar aria-label={`${label} time range`}>
+                      <RangeCalendar.Header>
+                        <RangeCalendar.YearPickerTrigger>
+                          <RangeCalendar.YearPickerTriggerHeading />
+                          <RangeCalendar.YearPickerTriggerIndicator />
+                        </RangeCalendar.YearPickerTrigger>
+                        <div className="flex shrink-0 items-center gap-1">
+                          <RangeCalendar.NavButton slot="previous" />
+                          <RangeCalendar.NavButton slot="next" />
+                        </div>
+                      </RangeCalendar.Header>
+                      <RangeCalendar.Grid>
+                        <RangeCalendar.GridHeader>
+                          {(day) => (
+                            <RangeCalendar.HeaderCell>
+                              {day}
+                            </RangeCalendar.HeaderCell>
+                          )}
+                        </RangeCalendar.GridHeader>
+                        <RangeCalendar.GridBody>
+                          {(date) => <RangeCalendar.Cell date={date} />}
+                        </RangeCalendar.GridBody>
+                      </RangeCalendar.Grid>
+                      <RangeCalendar.YearPickerGrid>
+                        <RangeCalendar.YearPickerGridBody>
+                          {({ year }) => (
+                            <RangeCalendar.YearPickerCell year={year} />
+                          )}
+                        </RangeCalendar.YearPickerGridBody>
+                      </RangeCalendar.YearPickerGrid>
+                    </RangeCalendar>
+                    <TimeField
+                      aria-label={`${label} start time`}
+                      granularity={GRANULARITY}
+                      hideTimeZone
+                      hourCycle={HOUR_CYCLE}
+                      shouldForceLeadingZeros
+                      value={startTime}
+                      onChange={(value) => {
+                        if (value) {
+                          state.setTimeRange({ start: value, end: endTime });
+                        }
+                      }}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <Label>Start time</Label>
+                        <TimeField.Group variant="secondary">
+                          <TimeField.Input>
+                            {(segment) => (
+                              <TimeField.Segment segment={segment} />
+                            )}
+                          </TimeField.Input>
+                        </TimeField.Group>
+                      </div>
+                    </TimeField>
+                    <TimeField
+                      aria-label={`${label} end time`}
+                      granularity={GRANULARITY}
+                      hideTimeZone
+                      hourCycle={HOUR_CYCLE}
+                      shouldForceLeadingZeros
+                      value={endTime}
+                      onChange={(value) => {
+                        if (value) {
+                          state.setTimeRange({ start: startTime, end: value });
+                        }
+                      }}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <Label>End time</Label>
+                        <TimeField.Group variant="secondary">
+                          <TimeField.Input>
+                            {(segment) => (
+                              <TimeField.Segment segment={segment} />
+                            )}
+                          </TimeField.Input>
+                        </TimeField.Group>
+                      </div>
+                    </TimeField>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-muted text-xs">{zoneLabel}</span>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="tertiary"
+                          onPress={() => setIsOpen(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button variant="primary" onPress={submitDraft}>
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
+                  </DateRangePicker.Popover>
+                </>
+              );
+            }}
+          </DateRangePicker>
+          {range ? (
+            <Button
+              isIconOnly
+              size="sm"
+              variant="ghost"
+              className="shrink-0"
+              aria-label={`Clear ${label} time range`}
+              onPress={() => apply(field, null)}
+            >
+              <X />
+            </Button>
+          ) : null}
+        </DateField.Group>
+      </div>
+    </I18nProvider>
+  );
+}

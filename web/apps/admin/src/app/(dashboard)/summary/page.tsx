@@ -2,12 +2,14 @@ import { SummaryService } from "@/services/summary";
 import { use } from "react";
 import { Summary } from "@/models/api";
 import type { TimestampFields } from "@/models/types";
+import { readListQuery } from "@/common/filter";
+import { applyListDefaults } from "@/common/list";
 import { autoRedirectOnDemand } from "@/common/utils";
 import { notFound } from "next/navigation";
 import { prettifyError, type z } from "zod";
-import { TableDateFilter } from "../_components/TableDateFilter";
-import { TableSearch } from "../_components/TableSearch";
-import { SummaryTable } from "./_components/SummaryTable";
+import { TableDateFilter } from "../../../components/TableDateFilter";
+import { TableSearch } from "../../../components/TableSearch";
+import { SummaryTable } from "./components/SummaryTable";
 
 const FIELDS = [{ id: "url", label: "URL" }] as const;
 
@@ -29,37 +31,11 @@ export default function SummaryPage({
   }>;
 }) {
   const params = use(searchParams);
-  autoRedirectOnDemand("/summary", params, (params, query) => {
-    let redirect = false;
-    if (!params.sort) {
-      query.set(
-        "sort",
-        JSON.stringify([
-          { field: "createAt", direction: "desc" },
-          { field: "id", direction: "desc" },
-        ]),
-      );
-      redirect = true;
-    }
-    if (!params.page) {
-      query.set("page", "1");
-      redirect = true;
-    }
-    if (!params.size) {
-      query.set("size", "20");
-      redirect = true;
-    }
-    return redirect;
-  });
+  autoRedirectOnDemand("/summary", params, applyListDefaults);
 
-  const { success, data, error } = Summary.list.safeParse({
-    filter: JSON.parse(params.filter ?? "[]"),
-    sort: JSON.parse(params.sort ?? "[]"),
-    pagination: {
-      page: Number.parseInt(params.page as string),
-      size: Number.parseInt(params.size as string),
-    },
-  });
+  const { success, data, error } = Summary.list.safeParse(
+    readListQuery(params),
+  );
   if (!success) {
     console.log(prettifyError(error));
     notFound();

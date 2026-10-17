@@ -1,0 +1,212 @@
+"use client";
+
+import type { ActionResult } from "@/actions/utils";
+import { updateResource } from "@/actions/resource";
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  Label,
+  TextArea,
+  TextField,
+  toast,
+  useOverlayState,
+} from "@heroui/react";
+import { Save } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  useEffect,
+  useEffectEvent,
+  useActionState,
+  useRef,
+  useState,
+} from "react";
+import type { SyntheticEvent } from "react";
+import { formatDateTime } from "common";
+import { useTimeZone } from "@/hooks/useTimeZone";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { DiscardButton } from "@/components/DiscardButton";
+import type { ResourceDetail } from "./types";
+
+export function ResourceUpdateForm({
+  item,
+  onDiscard,
+  onSaved,
+}: {
+  item: ResourceDetail;
+  onDiscard: () => void;
+  onSaved: () => void;
+}) {
+  const router = useRouter();
+  const timeZone = useTimeZone();
+  const overlay = useOverlayState();
+  const formRef = useRef<HTMLFormElement>(null);
+  const confirmedRef = useRef(false);
+  const [values, setValues] = useState({
+    name: item.name,
+    description: item.description,
+  });
+  const [bookmarkId, setBookmarkId] = useState(item.bookmarkId);
+
+  const [state, formAction, isPending] = useActionState(
+    async (_prev: ActionResult<null> | null, form: FormData) => {
+      form.set("id", item.id);
+      return updateResource(null, form);
+    },
+    null,
+  );
+
+  const handleSettled = useEffectEvent((result: ActionResult<null>) => {
+    if (!result.ok) {
+      toast.danger("Failed to save changes", {
+        description: result.error.message,
+      });
+      return;
+    }
+    overlay.close();
+    onSaved();
+    router.refresh();
+  });
+
+  useEffect(() => {
+    if (state) {
+      handleSettled(state);
+    }
+  }, [state]);
+
+  const handleDiscard = () => {
+    overlay.close();
+    onDiscard();
+  };
+
+  const handleSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
+    if (confirmedRef.current) {
+      confirmedRef.current = false;
+      return;
+    }
+    event.preventDefault();
+    overlay.open();
+  };
+
+  const handleConfirm = () => {
+    confirmedRef.current = true;
+    formRef.current?.requestSubmit();
+  };
+
+  return (
+    <Card>
+      <Form
+        ref={formRef}
+        action={formAction}
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-3"
+      >
+        <Card.Header>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <TextField
+                name="name"
+                isRequired
+                value={values.name}
+                onChange={(value) =>
+                  setValues((prev) => ({ ...prev, name: value }))
+                }
+              >
+                <Label className="text-muted">Name</Label>
+                <Input className="truncate text-lg [--field-background:var(--surface-secondary)]" />
+              </TextField>
+              <TextField isDisabled>
+                <Label className="text-muted">ID</Label>
+                <Input className="font-mono text-xs" value={item.id} />
+              </TextField>
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              <ConfirmDialog
+                isOpen={overlay.isOpen}
+                onOpenChange={overlay.setOpen}
+                title="Save Changes"
+                isPending={isPending}
+                onConfirm={handleConfirm}
+              >
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="primary"
+                  type="submit"
+                  aria-label="Save changes"
+                  aria-haspopup="dialog"
+                >
+                  <Save />
+                </Button>
+              </ConfirmDialog>
+              <DiscardButton onDiscard={handleDiscard} />
+            </div>
+          </div>
+        </Card.Header>
+        <Card.Content>
+          <div className="grid gap-3 @2xl:grid-cols-2 @7xl:grid-cols-4">
+            <TextField isDisabled className="@2xl:col-span-2">
+              <Label className="text-muted">URL</Label>
+              <Input value={item.url} />
+            </TextField>
+            <TextField isDisabled>
+              <Label className="text-muted">Created</Label>
+              <Input value={formatDateTime(item.createAt, timeZone)} />
+            </TextField>
+            <TextField isDisabled>
+              <Label className="text-muted">Updated</Label>
+              <Input value={formatDateTime(item.updateAt, timeZone)} />
+            </TextField>
+            <TextField isDisabled className="@2xl:col-span-2">
+              <Label className="text-muted">Last Visit</Label>
+              <Input value={formatDateTime(item.lastVisit, timeZone)} />
+            </TextField>
+            <TextField isDisabled className="@2xl:col-span-2">
+              <Label className="text-muted">Library</Label>
+              <Input value={item.library?.name ?? "-"} />
+            </TextField>
+            <input type="hidden" name="libraryId" value={item.libraryId ?? ""} />
+            <div className="flex items-end gap-2 @2xl:col-span-2">
+              <TextField isDisabled className="min-w-0 flex-1">
+                <Label className="text-muted">Bookmark</Label>
+                <Input
+                  className="font-mono text-xs"
+                  value={bookmarkId ?? "-"}
+                />
+              </TextField>
+              {item.bookmarkId ? (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="shrink-0"
+                  onPress={() =>
+                    setBookmarkId((prev) => (prev ? null : item.bookmarkId))
+                  }
+                >
+                  {bookmarkId ? "Clear" : "Undo"}
+                </Button>
+              ) : null}
+              <input type="hidden" name="bookmarkId" value={bookmarkId ?? ""} />
+            </div>
+            <TextField
+              name="description"
+              isRequired
+              className="@2xl:col-span-2 @7xl:col-span-4"
+              value={values.description}
+              onChange={(value) =>
+                setValues((prev) => ({ ...prev, description: value }))
+              }
+            >
+              <Label className="text-muted">Description</Label>
+              <TextArea
+                rows={4}
+                className="[--field-background:var(--surface-secondary)]"
+              />
+            </TextField>
+          </div>
+        </Card.Content>
+      </Form>
+    </Card>
+  );
+}

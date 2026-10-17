@@ -18,6 +18,7 @@ import { COMPACT_MEDIA } from "@/common/media";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { usePathSegments } from "@/hooks/usePathSegments";
 import { UserInfo } from "@/app/(dashboard)/_components/UserInfo";
+import { useAppHistory } from "@/hooks/useAppHistory";
 
 type NavItem = {
   href: string;
@@ -35,6 +36,7 @@ const ROUTES: readonly NavItem[] = [
 
 export default function DashboardLayout({ children }: LayoutProps<"/">) {
   const router = useRouter();
+  const navigation = useAppHistory();
   const segments = usePathSegments();
   const [expanded, setExpanded] = useState(true);
   const [floating, setFloating] = useState(false);
@@ -142,9 +144,9 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
               isIconOnly
               size="sm"
               variant="ghost"
-              // isDisabled={!canGoBack}
+              isDisabled={!navigation.canGoBack}
               aria-label="Go back"
-              onPress={router.back}
+              onPress={navigation.back}
             >
               <ArrowLeft />
             </Button>
@@ -152,9 +154,9 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
               isIconOnly
               size="sm"
               variant="ghost"
-              // isDisabled={!canGoForward}
+              isDisabled={!navigation.canGoForward}
               aria-label="Go forward"
-              onPress={router.forward}
+              onPress={navigation.forward}
             >
               <ArrowRight />
             </Button>

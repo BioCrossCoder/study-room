@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useSyncExternalStore } from "react";
 import { getMediaQuery } from "@/common/media";
 
@@ -12,9 +10,6 @@ export function useMediaQuery(query: string) {
     },
     [query],
   );
-  const getSnapshot = useCallback(
-    () => getMediaQuery(query).matches,
-    [query],
-  );
+  const getSnapshot = useCallback(() => getMediaQuery(query).matches, [query]);
   return useSyncExternalStore(subscribe, getSnapshot, () => true);
 }

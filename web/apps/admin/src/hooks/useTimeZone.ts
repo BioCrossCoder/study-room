@@ -1,5 +1,3 @@
-"use client";
-
 import { FALLBACK_TIME_ZONE, resolveTimeZone } from "common";
 import { useSyncExternalStore } from "react";
 

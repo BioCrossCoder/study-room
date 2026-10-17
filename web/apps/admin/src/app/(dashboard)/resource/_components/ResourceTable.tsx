@@ -4,10 +4,9 @@ import type { resource } from "@/models/orm";
 import type { Sort } from "@/models/types";
 import { removeResource } from "@/actions/resource";
 import { Table } from "@heroui/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
 import { formatDateTime } from "common";
 import { useTimeZone } from "@/hooks/useTimeZone";
+import { useTableQuery } from "@/hooks/useTableQuery";
 import { ClippedText } from "../../_components/ClippedText";
 import { CopyableText } from "../../_components/CopyableText";
 import { DeleteButton } from "../../_components/DeleteButton";
@@ -31,15 +30,9 @@ export function ResourceTable({
   count: number;
   libraries: { id: string; name: string }[];
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
   const timeZone = useTimeZone();
-  const sort = JSON.parse(searchParams.get("sort") ?? "[]") as ResourceSort[];
-  const primary =
-    sort[0] ??
-    ({ field: "createAt", direction: "desc" } satisfies ResourceSort);
+  const { primary, toggleSort, isPending, apply, searchParams } =
+    useTableQuery<ResourceSort>();
   const conditions = JSON.parse(searchParams.get("filter") ?? "[]") as Record<
     string,
     unknown
@@ -56,33 +49,7 @@ export function ResourceTable({
       ids.length > 0
         ? ids.map((libraryId) => ({ ...criteria, libraryId }))
         : [criteria];
-    const query = new URLSearchParams(searchParams);
-    query.set("filter", JSON.stringify(filter));
-    query.set("page", "1");
-    startTransition(() => {
-      router.push(`${pathname}?${query.toString()}`, { scroll: false });
-    });
-  };
-
-  const toggleSort = (field: ResourceSort["field"]) => {
-    const query = new URLSearchParams(searchParams);
-    query.set(
-      "sort",
-      JSON.stringify([
-        {
-          field,
-          direction:
-            primary.field === field && primary.direction === "desc"
-              ? "asc"
-              : "desc",
-        },
-        { field: "id", direction: "desc" },
-      ]),
-    );
-    query.set("page", "1");
-    startTransition(() => {
-      router.push(`${pathname}?${query.toString()}`, { scroll: false });
-    });
+    apply({ filter: JSON.stringify(filter) });
   };
 
   return (

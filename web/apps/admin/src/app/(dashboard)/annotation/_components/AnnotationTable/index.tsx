@@ -5,8 +5,6 @@ import type { Sort } from "@/models/types";
 import { annotationTypes } from "@/models/enums";
 import { removeAnnotation } from "@/actions/annotation";
 import { Table } from "@heroui/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
 import { ClippedText } from "../../../_components/ClippedText";
 import { CopyableText } from "../../../_components/CopyableText";
 import { DeleteButton } from "../../../_components/DeleteButton";
@@ -15,6 +13,7 @@ import { SortButton } from "../../../_components/SortButton";
 import { TableEmptyState } from "../../../_components/TableEmptyState";
 import { ViewButton } from "../../../_components/ViewButton";
 import { useTimeZone } from "@/hooks/useTimeZone";
+import { useTableQuery } from "@/hooks/useTableQuery";
 import { formatDateTime } from "common";
 import { TypeCell } from "./TypeCell";
 import { TypeFilter } from "./TypeFilter";
@@ -27,14 +26,9 @@ export function AnnotationTable({
   items: (typeof annotation.$inferSelect)[];
   count: number;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
   const timeZone = useTimeZone();
-  const sort = JSON.parse(searchParams.get("sort") ?? "[]") as Sort[];
-  const primary =
-    sort[0] ?? ({ field: "createAt", direction: "desc" } satisfies Sort);
+  const { primary, toggleSort, isPending, apply, searchParams } =
+    useTableQuery<Sort>();
   const conditions = JSON.parse(searchParams.get("filter") ?? "[]") as Record<
     string,
     unknown
@@ -53,33 +47,7 @@ export function AnnotationTable({
       next.types.length > 0 && next.types.length < annotationTypes.length
         ? next.types.map((type) => ({ ...criteria, type }))
         : [criteria];
-    const query = new URLSearchParams(searchParams);
-    query.set("filter", JSON.stringify(filter));
-    query.set("page", "1");
-    startTransition(() => {
-      router.push(`${pathname}?${query.toString()}`, { scroll: false });
-    });
-  };
-
-  const toggleSort = (field: Sort["field"]) => {
-    const query = new URLSearchParams(searchParams);
-    query.set(
-      "sort",
-      JSON.stringify([
-        {
-          field,
-          direction:
-            primary.field === field && primary.direction === "desc"
-              ? "asc"
-              : "desc",
-        },
-        { field: "id", direction: "desc" },
-      ]),
-    );
-    query.set("page", "1");
-    startTransition(() => {
-      router.push(`${pathname}?${query.toString()}`, { scroll: false });
-    });
+    apply({ filter: JSON.stringify(filter) });
   };
 
   return (

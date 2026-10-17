@@ -4,8 +4,6 @@ import type { bookmark } from "@/models/orm";
 import type { Sort } from "@/models/types";
 import { removeBookmark } from "@/actions/bookmark";
 import { Table } from "@heroui/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
 import { CopyableText } from "../../_components/CopyableText";
 import { DeleteButton } from "../../_components/DeleteButton";
 import { PaginationNav } from "../../_components/PaginationNav";
@@ -13,6 +11,7 @@ import { SortButton } from "../../_components/SortButton";
 import { TableEmptyState } from "../../_components/TableEmptyState";
 import { ViewButton } from "../../_components/ViewButton";
 import { useTimeZone } from "@/hooks/useTimeZone";
+import { useTableQuery } from "@/hooks/useTableQuery";
 import { formatDateTime } from "common";
 
 export function BookmarkTable({
@@ -22,35 +21,8 @@ export function BookmarkTable({
   items: (typeof bookmark.$inferSelect)[];
   count: number;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
   const timeZone = useTimeZone();
-  const sort = JSON.parse(searchParams.get("sort") ?? "[]") as Sort[];
-  const primary =
-    sort[0] ?? ({ field: "createAt", direction: "desc" } satisfies Sort);
-
-  const toggleSort = (field: Sort["field"]) => {
-    const query = new URLSearchParams(searchParams);
-    query.set(
-      "sort",
-      JSON.stringify([
-        {
-          field,
-          direction:
-            primary.field === field && primary.direction === "desc"
-              ? "asc"
-              : "desc",
-        },
-        { field: "id", direction: "desc" },
-      ]),
-    );
-    query.set("page", "1");
-    startTransition(() => {
-      router.push(`${pathname}?${query.toString()}`, { scroll: false });
-    });
-  };
+  const { primary, toggleSort, isPending } = useTableQuery<Sort>();
 
   return (
     <Table

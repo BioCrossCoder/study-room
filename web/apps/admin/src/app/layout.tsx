@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
-import { Providers } from "./providers";
+import { LinkRouterProvider } from "../contexts/LinkRouterProvider";
 
 export const metadata: Metadata = {
   title: "Study Room",
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full">
-        <Providers>{children}</Providers>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <LinkRouterProvider>{children}</LinkRouterProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

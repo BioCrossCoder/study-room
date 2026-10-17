@@ -1,7 +1,8 @@
 "use client";
 
 import type { ActionResult } from "@/actions/utils";
-import { createLibrary } from "@/actions/library";
+import { createLibrary, getLibraryMetadata } from "@/actions/library";
+import type { WebMetadata } from "@/models/infra";
 import {
   Button,
   Card,
@@ -15,16 +16,26 @@ import {
 } from "@heroui/react";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useEffectEvent, useActionState, useRef } from "react";
+import {
+  useEffect,
+  useEffectEvent,
+  useActionState,
+  useRef,
+  useState,
+} from "react";
 import type { SyntheticEvent } from "react";
 import { ConfirmDialog } from "../../../_components/ConfirmDialog";
 import { DiscardButton } from "../../../_components/DiscardButton";
+import { UrlField } from "../../../_components/UrlField";
 
 export function LibraryCreateForm() {
   const router = useRouter();
   const overlay = useOverlayState();
   const formRef = useRef<HTMLFormElement>(null);
   const confirmedRef = useRef(false);
+
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
 
   const [state, formAction, isPending] = useActionState(createLibrary, null);
 
@@ -59,6 +70,15 @@ export function LibraryCreateForm() {
     formRef.current?.requestSubmit();
   };
 
+  const handleImport = (metadata: WebMetadata) => {
+    if (metadata.title) {
+      setName(metadata.title);
+    }
+    if (metadata.description) {
+      setDescription(metadata.description);
+    }
+  };
+
   return (
     <Card>
       <Form
@@ -70,7 +90,7 @@ export function LibraryCreateForm() {
         <Card.Header>
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <TextField name="name" isRequired>
+              <TextField name="name" isRequired value={name} onChange={setName}>
                 <Label className="text-muted">Name</Label>
                 <Input className="truncate text-lg [--field-background:var(--surface-secondary)]" />
               </TextField>
@@ -104,15 +124,11 @@ export function LibraryCreateForm() {
         </Card.Header>
         <Card.Content>
           <div className="grid gap-3 @2xl:grid-cols-2 @7xl:grid-cols-4">
-            <TextField
-              name="url"
-              type="url"
-              isRequired
+            <UrlField
               className="@2xl:col-span-2"
-            >
-              <Label className="text-muted">URL</Label>
-              <Input className="[--field-background:var(--surface-secondary)]" />
-            </TextField>
+              onImport={handleImport}
+              getMetadata={getLibraryMetadata}
+            />
             <div className="grid grid-cols-2 gap-3 @2xl:col-span-2">
               <TextField isDisabled>
                 <Label className="text-muted">Created</Label>
@@ -126,6 +142,8 @@ export function LibraryCreateForm() {
             <TextField
               name="description"
               isRequired
+              value={description}
+              onChange={setDescription}
               className="@2xl:col-span-2 @7xl:col-span-4"
             >
               <Label className="text-muted">Description</Label>

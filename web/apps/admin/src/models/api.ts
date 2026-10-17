@@ -4,7 +4,7 @@ import { annotationTypes } from "./enums";
 const id = z.uuid();
 export const idList = z.array(id);
 const name = z.string().min(1).max(100);
-const url = z.url();
+export const url = z.url();
 const description = z.string().nonempty();
 
 // multiple conditions combine as `or` in array, `and` in object

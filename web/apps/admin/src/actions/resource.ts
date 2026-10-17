@@ -1,6 +1,8 @@
 "use server";
 
-import { Resource } from "@/models/api";
+import { Resource, url as urlSchema } from "@/models/api";
+import type { WebMetadata } from "@/models/infra";
+import { MetadataService } from "@/services/metadata";
 import { ResourceService } from "@/services/resource";
 import type { ActionResult } from "./utils";
 import { prettifyError } from "zod";
@@ -22,6 +24,29 @@ export async function createResource(
     };
   }
   const result = await ResourceService.create(data);
+  const ok = result.isOk();
+  return ok
+    ? {
+        ok,
+        data: result.value,
+      }
+    : {
+        ok,
+        error: result.error,
+      };
+}
+
+export async function getResourceMetadata(
+  url: string,
+): Promise<ActionResult<WebMetadata>> {
+  const { success, data, error } = urlSchema.safeParse(url);
+  if (!success) {
+    return {
+      ok: false,
+      error: new Error(prettifyError(error)),
+    };
+  }
+  const result = await MetadataService.get(data);
   const ok = result.isOk();
   return ok
     ? {
@@ -63,9 +88,7 @@ export async function updateResource(
       };
 }
 
-export async function removeResource(
-  id: string,
-): Promise<ActionResult<null>> {
+export async function removeResource(id: string): Promise<ActionResult<null>> {
   const { success, data, error } = Resource.delete.safeParse([id]);
   if (!success) {
     return {

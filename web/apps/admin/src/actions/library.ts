@@ -1,7 +1,9 @@
 "use server";
 
-import { idList, Library } from "@/models/api";
+import { idList, Library, url as urlSchema } from "@/models/api";
+import type { WebMetadata } from "@/models/infra";
 import { LibraryService } from "@/services/library";
+import { MetadataService } from "@/services/metadata";
 import type { ActionResult } from "./utils";
 import { prettifyError } from "zod";
 
@@ -18,6 +20,29 @@ export async function createLibrary(
     };
   }
   const result = await LibraryService.create(data);
+  const ok = result.isOk();
+  return ok
+    ? {
+        ok,
+        data: result.value,
+      }
+    : {
+        ok,
+        error: result.error,
+      };
+}
+
+export async function getLibraryMetadata(
+  url: string,
+): Promise<ActionResult<WebMetadata>> {
+  const { success, data, error } = urlSchema.safeParse(url);
+  if (!success) {
+    return {
+      ok: false,
+      error: new Error(prettifyError(error)),
+    };
+  }
+  const result = await MetadataService.get(data);
   const ok = result.isOk();
   return ok
     ? {

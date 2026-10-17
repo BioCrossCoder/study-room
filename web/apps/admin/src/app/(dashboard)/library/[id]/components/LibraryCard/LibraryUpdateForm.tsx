@@ -1,7 +1,6 @@
 "use client";
 
 import type { library } from "@/models/orm";
-import type { ActionResult } from "@/actions/utils";
 import { updateLibrary } from "@/actions/library";
 import {
   Button,
@@ -25,6 +24,7 @@ import {
 } from "react";
 import type { SyntheticEvent } from "react";
 import { formatDateTime } from "common";
+import { safeWrap } from "@/common/utils";
 import { useTimeZone } from "@/hooks/useTimeZone";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { DiscardButton } from "@/components/DiscardButton";
@@ -48,19 +48,28 @@ export function LibraryUpdateForm({
     description: item.description,
   });
 
+  const saveLibrary = safeWrap(updateLibrary, "Failed to save changes");
+
   const [state, formAction, isPending] = useActionState(
-    async (_prev: ActionResult<null> | null, form: FormData) => {
+    async (_prev: boolean | null, form: FormData) => {
       form.set("id", item.id);
-      return updateLibrary(null, form);
+      const response = await saveLibrary(null, form);
+      if (!response) {
+        return false;
+      }
+      if (!response.ok) {
+        toast.danger("Failed to save changes", {
+          description: response.error.message,
+        });
+        return false;
+      }
+      return true;
     },
     null,
   );
 
-  const handleSettled = useEffectEvent((result: ActionResult<null>) => {
-    if (!result.ok) {
-      toast.danger("Failed to save changes", {
-        description: result.error.message,
-      });
+  const handleSettled = useEffectEvent((saved: boolean) => {
+    if (!saved) {
       return;
     }
     overlay.close();

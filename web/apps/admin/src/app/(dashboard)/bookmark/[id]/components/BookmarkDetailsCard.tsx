@@ -6,12 +6,15 @@ import { DeleteButton } from "@/app/(dashboard)/components/DeleteButton";
 import { Card, Description, Typography } from "@heroui/react";
 import { DateField } from "@/components/DateField";
 import { LinkField } from "@/components/LinkField";
+import { safeWrap } from "@/common/utils";
 
 export function BookmarkDetailsCard({
   item,
 }: {
   item: typeof bookmark.$inferSelect;
 }) {
+  const deleteBookmark = safeWrap(removeBookmark, "Failed to delete bookmark");
+
   return (
     <Card>
       <Card.Header>
@@ -32,7 +35,7 @@ export function BookmarkDetailsCard({
               name={item.id}
               resource="bookmark"
               redirectTo="/bookmark"
-              onDelete={removeBookmark}
+              onDelete={deleteBookmark}
             />
           </div>
         </div>

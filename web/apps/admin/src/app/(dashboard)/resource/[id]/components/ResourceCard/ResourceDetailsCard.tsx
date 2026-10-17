@@ -7,6 +7,7 @@ import { Pencil } from "lucide-react";
 import { DateField } from "@/components/DateField";
 import { LinkField } from "@/components/LinkField";
 import type { ResourceDetail } from "./types";
+import { safeWrap } from "@/common/utils";
 
 export function ResourceDetailsCard({
   item,
@@ -15,6 +16,8 @@ export function ResourceDetailsCard({
   item: ResourceDetail;
   onEdit: () => void;
 }) {
+  const deleteResource = safeWrap(removeResource, "Failed to delete resource");
+
   return (
     <Card>
       <Card.Header>
@@ -43,7 +46,7 @@ export function ResourceDetailsCard({
               name={item.name}
               resource="resource"
               redirectTo="/resource"
-              onDelete={removeResource}
+              onDelete={deleteResource}
             />
           </div>
         </div>

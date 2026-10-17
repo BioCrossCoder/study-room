@@ -7,6 +7,7 @@ import { Button, Card, Description, Typography } from "@heroui/react";
 import { Pencil } from "lucide-react";
 import { DateField } from "@/components/DateField";
 import { LinkField } from "@/components/LinkField";
+import { safeWrap } from "@/common/utils";
 
 export function LibraryDetailsCard({
   item,
@@ -15,6 +16,8 @@ export function LibraryDetailsCard({
   item: typeof library.$inferSelect;
   onEdit: () => void;
 }) {
+  const deleteLibrary = safeWrap(removeLibrary, "Failed to delete library");
+
   return (
     <Card>
       <Card.Header>
@@ -43,7 +46,7 @@ export function LibraryDetailsCard({
               name={item.name}
               resource="library"
               redirectTo="/library"
-              onDelete={removeLibrary}
+              onDelete={deleteLibrary}
             />
           </div>
         </div>

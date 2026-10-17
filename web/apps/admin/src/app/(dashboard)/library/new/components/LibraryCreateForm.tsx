@@ -1,6 +1,5 @@
 "use client";
 
-import type { ActionResult } from "@/actions/utils";
 import { createLibrary, getLibraryMetadata } from "@/actions/library";
 import type { WebMetadata } from "@/models/infra";
 import {
@@ -26,6 +25,7 @@ import {
 import type { SyntheticEvent } from "react";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { DiscardButton } from "@/components/DiscardButton";
+import { safeWrap } from "@/common/utils";
 import { UrlField } from "../../../components/UrlField";
 
 export function LibraryCreateForm() {
@@ -37,17 +37,47 @@ export function LibraryCreateForm() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const [state, formAction, isPending] = useActionState(createLibrary, null);
+  const fetchMetadata = safeWrap(
+    getLibraryMetadata,
+    "Failed to load website metadata",
+  );
 
-  const handleSettled = useEffectEvent((result: ActionResult<string[]>) => {
-    if (!result.ok) {
-      toast.danger("Failed to create library", {
-        description: result.error.message,
-      });
-      return;
+  const loadMetadata = async (url: string) => {
+    const response = await fetchMetadata(url);
+    if (!response) {
+      return null;
     }
+    if (!response.ok) {
+      toast.danger("Failed to load website metadata", {
+        description: response.error.message,
+      });
+      return null;
+    }
+    return response.data;
+  };
+
+  const create = safeWrap(createLibrary, "Failed to create library");
+
+  const [state, formAction, isPending] = useActionState(
+    async (_prev: string[] | null, form: FormData) => {
+      const response = await create(_prev, form);
+      if (!response) {
+        return null;
+      }
+      if (!response.ok) {
+        toast.danger("Failed to create library", {
+          description: response.error.message,
+        });
+        return null;
+      }
+      return response.data;
+    },
+    null,
+  );
+
+  const handleSettled = useEffectEvent((ids: string[]) => {
     overlay.close();
-    router.push(`/library/${result.data[0]}`);
+    router.push(`/library/${ids[0]}`);
   });
 
   useEffect(() => {
@@ -127,7 +157,7 @@ export function LibraryCreateForm() {
             <UrlField
               className="@2xl:col-span-2"
               onImport={handleImport}
-              getMetadata={getLibraryMetadata}
+              getMetadata={loadMetadata}
             />
             <div className="grid grid-cols-2 gap-3 @2xl:col-span-2">
               <TextField isDisabled>

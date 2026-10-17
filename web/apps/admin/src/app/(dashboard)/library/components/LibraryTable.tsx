@@ -12,6 +12,7 @@ import { TableEmptyState } from "@/components/TableEmptyState";
 import { DeleteButton } from "../../components/DeleteButton";
 import { PaginationNav } from "../../../../components/PaginationNav";
 import { ViewButton } from "../../components/ViewButton";
+import { safeWrap } from "@/common/utils";
 import { useListQuery } from "@/hooks/useListQuery";
 
 export function LibraryTable({
@@ -22,6 +23,8 @@ export function LibraryTable({
   count: number;
 }) {
   const { primary, toggleSort, isPending } = useListQuery<Sort>();
+
+  const deleteLibrary = safeWrap(removeLibrary, "Failed to delete library");
 
   return (
     <Table
@@ -71,7 +74,7 @@ export function LibraryTable({
                       id={item.id}
                       name={item.name}
                       resource="library"
-                      onDelete={removeLibrary}
+                      onDelete={deleteLibrary}
                     />
                   </div>
                 </Table.Cell>

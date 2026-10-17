@@ -12,6 +12,7 @@ import { TableEmptyState } from "@/components/TableEmptyState";
 import { DeleteButton } from "../../components/DeleteButton";
 import { PaginationNav } from "../../../../components/PaginationNav";
 import { ViewButton } from "../../components/ViewButton";
+import { safeWrap } from "@/common/utils";
 import { useListQuery } from "@/hooks/useListQuery";
 
 export function BookmarkTable({
@@ -22,6 +23,8 @@ export function BookmarkTable({
   count: number;
 }) {
   const { primary, toggleSort, isPending } = useListQuery<Sort>();
+
+  const deleteBookmark = safeWrap(removeBookmark, "Failed to delete bookmark");
 
   return (
     <Table
@@ -71,7 +74,7 @@ export function BookmarkTable({
                       id={item.id}
                       name={item.id}
                       resource="bookmark"
-                      onDelete={removeBookmark}
+                      onDelete={deleteBookmark}
                     />
                   </div>
                 </Table.Cell>

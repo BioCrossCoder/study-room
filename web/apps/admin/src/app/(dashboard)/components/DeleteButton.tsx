@@ -17,7 +17,7 @@ export function DeleteButton({
   name: string;
   resource: string;
   redirectTo?: string;
-  onDelete: (id: string) => Promise<ActionResult<unknown>>;
+  onDelete: (id: string) => Promise<ActionResult<unknown> | null>;
 }) {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
@@ -26,6 +26,9 @@ export function DeleteButton({
   const handleDelete = () => {
     startTransition(async () => {
       const result = await onDelete(id);
+      if (!result) {
+        return;
+      }
       if (!result.ok) {
         toast.danger(`Failed to delete ${resource}`, {
           description: result.error.message,

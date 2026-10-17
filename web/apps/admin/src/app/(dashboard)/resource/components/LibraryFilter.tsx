@@ -18,6 +18,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { safeWrap } from "@/common/utils";
 
 type SelectOption = {
   id: string;
@@ -58,28 +59,35 @@ export function LibraryFilter({
   const [isOpen, setIsOpen] = useState(false);
   const requestRef = useRef(0);
 
+  const fetchOptions = safeWrap(listLibraryOptions, "Failed to load libraries");
+
   const load = async (nextKeyword: string, nextPage: number) => {
     const request = (requestRef.current += 1);
     setIsLoading(true);
-    const result = await listLibraryOptions(nextKeyword, nextPage, PAGE_SIZE);
+    const response = await fetchOptions(nextKeyword, nextPage, PAGE_SIZE);
     if (request !== requestRef.current) {
       return;
     }
     setIsLoading(false);
-    if (!result.ok) {
+    if (!response) {
+      setFailed(true);
+      return;
+    }
+    if (!response.ok) {
       setFailed(true);
       toast.danger("Failed to load libraries", {
-        description: result.error.message,
+        description: response.error.message,
       });
       return;
     }
     setFailed(false);
-    const items = result.data.list.map(({ id, name }) => ({
+    const { data } = response;
+    const items = data.list.map(({ id, name }) => ({
       id,
       label: name,
     }));
     setOptions((prev) => (nextPage === 1 ? items : [...prev, ...items]));
-    setCount(result.data.count);
+    setCount(data.count);
     setPage(nextPage);
     setLoaded(true);
   };

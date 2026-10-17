@@ -6,12 +6,18 @@ import { DeleteButton } from "@/app/(dashboard)/components/DeleteButton";
 import { Card, Description, Typography } from "@heroui/react";
 import { DateField } from "@/components/DateField";
 import { LinkField } from "@/components/LinkField";
+import { safeWrap } from "@/common/utils";
 
 export function AnnotationDetailsCard({
   item,
 }: {
   item: typeof annotation.$inferSelect;
 }) {
+  const deleteAnnotation = safeWrap(
+    removeAnnotation,
+    "Failed to delete annotation",
+  );
+
   return (
     <Card>
       <Card.Header>
@@ -32,7 +38,7 @@ export function AnnotationDetailsCard({
               name={item.id}
               resource="annotation"
               redirectTo="/annotation"
-              onDelete={removeAnnotation}
+              onDelete={deleteAnnotation}
             />
           </div>
         </div>

@@ -12,6 +12,7 @@ import { TableEmptyState } from "@/components/TableEmptyState";
 import { DeleteButton } from "../../components/DeleteButton";
 import { PaginationNav } from "../../../../components/PaginationNav";
 import { ViewButton } from "../../components/ViewButton";
+import { safeWrap } from "@/common/utils";
 import { useListQuery } from "@/hooks/useListQuery";
 
 export function SummaryTable({
@@ -22,6 +23,8 @@ export function SummaryTable({
   count: number;
 }) {
   const { primary, toggleSort, isPending } = useListQuery<Sort>();
+
+  const deleteSummary = safeWrap(removeSummary, "Failed to delete summary");
 
   return (
     <Table
@@ -71,7 +74,7 @@ export function SummaryTable({
                       id={item.id}
                       name={item.id}
                       resource="summary"
-                      onDelete={removeSummary}
+                      onDelete={deleteSummary}
                     />
                   </div>
                 </Table.Cell>

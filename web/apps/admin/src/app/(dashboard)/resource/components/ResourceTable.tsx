@@ -15,6 +15,7 @@ import { PaginationNav } from "../../../../components/PaginationNav";
 import { ViewButton } from "../../components/ViewButton";
 import { useListQuery } from "@/hooks/useListQuery";
 import { LibraryFilter } from "./LibraryFilter";
+import { safeWrap } from "@/common/utils";
 
 type ResourceSort = {
   field: Sort["field"] | "lastVisit";
@@ -32,6 +33,8 @@ export function ResourceTable({
 }) {
   const { filters, base, primary, toggleSort, isPending, applyFilter } =
     useListQuery<ResourceSort>();
+
+  const deleteResource = safeWrap(removeResource, "Failed to delete resource");
   const libraryIds = filters.flatMap((condition) =>
     typeof condition.libraryId === "string" ? [condition.libraryId] : [],
   );
@@ -121,7 +124,7 @@ export function ResourceTable({
                       id={item.id}
                       name={item.name}
                       resource="resource"
-                      onDelete={removeResource}
+                      onDelete={deleteResource}
                     />
                   </div>
                 </Table.Cell>

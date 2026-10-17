@@ -18,6 +18,7 @@ import { useListQuery } from "@/hooks/useListQuery";
 import { TypeField } from "./TypeField";
 import { TypeFilter } from "./TypeFilter";
 import { UrlFilter } from "./UrlFilter";
+import { safeWrap } from "@/common/utils";
 
 export function AnnotationTable({
   items,
@@ -28,6 +29,11 @@ export function AnnotationTable({
 }) {
   const { filters, base, primary, toggleSort, isPending, applyFilter } =
     useListQuery<Sort>();
+
+  const deleteAnnotation = safeWrap(
+    removeAnnotation,
+    "Failed to delete annotation",
+  );
   const urlFilter = typeof base.url === "string" ? base.url : "";
   const selectedTypes = filters.flatMap((condition) =>
     typeof condition.type === "string" ? [condition.type] : [],
@@ -121,7 +127,7 @@ export function AnnotationTable({
                       id={item.id}
                       name={item.id}
                       resource="annotation"
-                      onDelete={removeAnnotation}
+                      onDelete={deleteAnnotation}
                     />
                   </div>
                 </Table.Cell>

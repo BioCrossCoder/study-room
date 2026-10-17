@@ -6,12 +6,15 @@ import { DeleteButton } from "@/app/(dashboard)/components/DeleteButton";
 import { Card, Description, Typography } from "@heroui/react";
 import { DateField } from "@/components/DateField";
 import { LinkField } from "@/components/LinkField";
+import { safeWrap } from "@/common/utils";
 
 export function SummaryDetailsCard({
   item,
 }: {
   item: typeof summary.$inferSelect;
 }) {
+  const deleteSummary = safeWrap(removeSummary, "Failed to delete summary");
+
   return (
     <Card>
       <Card.Header>
@@ -32,7 +35,7 @@ export function SummaryDetailsCard({
               name={item.id}
               resource="summary"
               redirectTo="/summary"
-              onDelete={removeSummary}
+              onDelete={deleteSummary}
             />
           </div>
         </div>

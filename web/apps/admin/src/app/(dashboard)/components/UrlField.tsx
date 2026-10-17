@@ -1,13 +1,12 @@
 "use client";
 
-import type { ActionResult } from "@/actions/utils";
 import { url as urlSchema } from "@/models/api";
 import type { WebMetadata } from "@/models/infra";
-import { Button, Input, Label, Spinner, TextField, toast } from "@heroui/react";
+import { Button, Input, Label, Spinner, TextField } from "@heroui/react";
 import { Import } from "lucide-react";
 import { useState } from "react";
 
-type GetMetadata = (url: string) => Promise<ActionResult<WebMetadata>>;
+type GetMetadata = (url: string) => Promise<WebMetadata | null>;
 
 export function UrlField({
   className,
@@ -61,15 +60,9 @@ function useGetWebsiteMetadata(getMetadata: GetMetadata) {
 
   const importMetadata = async (url: string) => {
     setIsLoading(true);
-    const result = await getMetadata(url);
+    const metadata = await getMetadata(url);
     setIsLoading(false);
-    if (!result.ok) {
-      toast.danger("Failed to load website metadata", {
-        description: result.error.message,
-      });
-      return null;
-    }
-    return result.data;
+    return metadata;
   };
 
   return { importMetadata, isLoading };
